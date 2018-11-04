@@ -1,3 +1,10 @@
+p={
+  x=12,
+  y=16,
+  vx=0,
+  vy=0
+}
+
 t=0
 x=60
 y=42
@@ -25,8 +32,28 @@ function TIC()
     print("X Start", 84, 94)
     t=t+1
   else
+    if btn(2) then
+      p.vx=math.max(p.vx-0.1, -2.0)
+    elseif btn(3) then
+      p.vx=math.min(p.vx+0.1, 2.0)
+    else
+      p.vx=0
+    end
+
+    if btnp(4) then p.vy=p.vy-2.0 end
+
+    if mget((p.x+16)//8,(p.y+16)//8)==16 then
+      p.vy=math.min(0,p.vy)
+    else
+      p.vy=p.vy+0.1
+    end
+
+    p.x=p.x+p.vx
+    p.y=p.y+p.vy
+
     cls(1)
-    print("STARTED",84,84)
+    map()
+    spr(257,p.x,p.y,14,1,0,0,1,2)
   end
 
 end
