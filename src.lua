@@ -5,6 +5,39 @@ p={
   vy=0
 }
 
+s={
+  z=100,
+  vz=0,
+  el={
+    H=100,
+    C=100,
+    O=100,
+    Fe=100,
+    Cu=100,
+    Sn=100
+  },
+  com={
+    acc=100,
+    roto=100,
+    prop=100,
+    eng=100,
+    gear=100,
+    cool=100,
+    gen=100,
+    hyd=100,
+    sonar=100,
+    tankH=100,
+    tankH20=100,
+    tankCH4=100,
+    battery=100
+  },
+  sto={
+    H=100,
+    H20=100,
+    CH4=100
+  }
+}
+
 t=0
 x=60
 y=42
