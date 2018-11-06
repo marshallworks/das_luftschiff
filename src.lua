@@ -1,5 +1,5 @@
 p={
-  x=12,
+  x=52,
   y=16,
   vx=0,
   vy=0
@@ -41,10 +41,17 @@ s={
 t=0
 x=60
 y=42
+infoW=40
 cStart=0
 waterLevel=0
 boilerLevel=9
 startScreen=true
+
+function init()
+  poke(0x03FF8, 3)
+end
+
+init()
 
 function TIC()
 
@@ -68,6 +75,7 @@ function TIC()
     print("X Start", 84, 94)
     t=t+1
   else
+    s.z = s.z + s.vz
     boilerLevel=boilerLevel-0.004
     waterLevel=waterLevel+0.004
 
@@ -85,17 +93,21 @@ function TIC()
     if btnp(4) then p.vy=p.vy-2.4 end
 
     if btn(5) then
-      tId = mget((p.x+4)//8,(p.y+8)//8)
-      if tId==9 or tId==10 or tId==25 or tId==26 then
+      tId = mget((p.x+4 - infoW)//8 + cStart,(p.y+8)//8)
+      if tId==41 or tId==42 or tId==57 or tId==58 then
         boilerLevel=boilerLevel+0.1
         if boilerLevel > 9 then boilerLevel = 9 end
-      elseif tId==41 or tId==42 or tId==57 or tId==58 then
+      elseif tId==75 or tId==76 or tId==91 or tId==92 then
         waterLevel=waterLevel-0.1
         if waterLevel < 0 then waterLevel = 0 end
       end
     end
 
-    if mget((p.x+4)//8,(p.y+16)//8)==16 then
+    s.vz = 0
+    if waterLevel > 5 then s.vz = s.vz - 0.01 end
+    if boilerLevel < 1 then s.vz = s.vz - 0.03 end
+
+    if mget((p.x+4 - infoW)//8 + cStart,(p.y+16)//8) == 16 then
       p.vy=math.min(0,p.vy)
     else
       p.vy=p.vy+0.1
@@ -105,20 +117,29 @@ function TIC()
     p.y=p.y+p.vy
 
     if p.x > 240 then
-      cStart=29
-      p.x=0
-    elseif p.x<-8 then
+      cStart=24
+      p.x = infoW + 4
+    elseif p.x < infoW - 4 then
       cStart=0
       p.x=239
     end
 
-    cls(1)
-    map(cStart,0)
+    cls(0)
+    map(cStart,0,25,17,infoW,0)
     if cStart==0 then
-      rect(20,89-boilerLevel,8,boilerLevel,2)
-      rect(172,89-waterLevel,6,waterLevel,2)
+      rect(92,89-boilerLevel,8,boilerLevel,2)
+      rect(117,89-waterLevel,6,waterLevel,2)
     end
-    spr(257,p.x,p.y,14,1,0,0,1,2)
+    spr(257,p.x,p.y,0,1,0,0,1,2)
+    drawStatus()
   end
 
+end
+
+
+function drawStatus()
+  rect(0, 0, infoW, 136, 0)
+  print("Luftschiff", 1, 1, 15, false, 1, true)
+  print(string.format("Alt %d", s.z//1), 1, 10, 14, false, 1, true)
+  print(string.sub(string.format("DV %f", s.vz), 1, -5), 1, 20, 14, false, 1, true)
 end
