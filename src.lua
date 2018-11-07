@@ -38,9 +38,12 @@ s={
   }
 }
 
-t=0
-x=60
-y=42
+start={
+  t=0,
+  x=60,
+  y=42
+}
+
 infoW=40
 cStart=0
 waterLevel=0
@@ -64,18 +67,17 @@ function TIC()
 
     cls(0)
     sprId=0
-    if (t%60)//30 == 0 then
+    if (start.t%60)//30 == 0 then
       sprId=1
     else
       sprId=49
     end
 
-    spr(sprId,x,y,14,2,0,0,8,3)
+    spr(sprId,start.x,start.y,14,2,0,0,8,3)
     print("Das Luftschiff",84,84)
     print("X Start", 84, 94)
-    t=t+1
+    start.t=start.t+1
   else
-    s.z = s.z + s.vz
     boilerLevel=boilerLevel-0.004
     waterLevel=waterLevel+0.004
 
@@ -103,9 +105,11 @@ function TIC()
       end
     end
 
-    s.vz = 0
-    if waterLevel > 5 then s.vz = s.vz - 0.01 end
-    if boilerLevel < 1 then s.vz = s.vz - 0.03 end
+    s.vz = (4 / (s.z + 4)) - 0.04
+    if waterLevel > 5 then s.vz = s.vz - 0.03 end
+    if boilerLevel < 1 then s.vz = s.vz - 0.08 end
+
+    s.z = s.z + s.vz
 
     if mget((p.x+4 - infoW)//8 + cStart,(p.y+16)//8) == 16 then
       p.vy=math.min(0,p.vy)
