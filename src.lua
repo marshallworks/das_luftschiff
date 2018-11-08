@@ -17,7 +17,13 @@ s={
     Sn=100
   },
   com={
-    acc=100,
+    acc={
+      health=100,
+      cap=100,
+      res={
+        elec=-0.5
+      }
+    },
     roto=100,
     prop=100,
     eng=100,
@@ -43,6 +49,65 @@ start={
   x=60,
   y=42
 }
+
+-- simplified
+-- inputs
+-- throttle position
+-- helm position
+-- output
+-- velocity
+-- direction
+-- altitude
+
+-- generator
+-- rpm to electricity
+
+-- batteries
+-- electricity storage
+
+-- water tank
+-- water storage
+
+-- thruster & lifter
+-- electricity to rpm
+-- rpm to thrust
+-- hydraulic pressure to control through actuators
+
+-- turbine
+-- steam to rpm
+-- grease
+
+-- boiler
+-- water and methane to steam
+-- grease
+
+-- hydraulic pump
+-- rpm to hydraulic pressure
+
+-- bladder
+-- hydrogen volume to buoyancy
+
+-- accumulator
+-- speed and electricity to:
+-- Hydrogen
+-- Carbon
+-- Oxygen
+
+-- radar
+-- electricity to view
+
+-- lighting?
+
+-- hydrogen tank
+-- hydrogen storage
+
+-- methane tank
+-- methane storage
+
+-- helm
+-- hydraulic pressure to control inputs
+
+-- throttle to methane output to boiler
 
 infoW=40
 cStart=0
