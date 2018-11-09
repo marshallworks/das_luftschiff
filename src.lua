@@ -1,3 +1,6 @@
+ROTOR_MAX_POWER_DEMAND = 10
+PROP_MAX_POWER_DEMAND = 8
+
 p={
   x=52,
   y=16,
@@ -143,11 +146,7 @@ function TIC()
     print("X Start", 84, 94)
     start.t=start.t+1
   else
-    boilerLevel=boilerLevel-0.004
-    waterLevel=waterLevel+0.004
-
-    if boilerLevel < 0 then boilerLevel = 0 end
-    if waterLevel > 11 then waterLevel = 11 end
+    simulate()
 
     if btn(2) then
       p.vx=math.max(p.vx-0.1, -2.0)
@@ -158,23 +157,6 @@ function TIC()
     end
 
     if btnp(4) then p.vy=p.vy-2.4 end
-
-    if btn(5) then
-      tId = mget((p.x+4 - infoW)//8 + cStart,(p.y+8)//8)
-      if tId==41 or tId==42 or tId==57 or tId==58 then
-        boilerLevel=boilerLevel+0.1
-        if boilerLevel > 9 then boilerLevel = 9 end
-      elseif tId==75 or tId==76 or tId==91 or tId==92 then
-        waterLevel=waterLevel-0.1
-        if waterLevel < 0 then waterLevel = 0 end
-      end
-    end
-
-    s.vz = (4 / (s.z + 4)) - 0.04
-    if waterLevel > 5 then s.vz = s.vz - 0.03 end
-    if boilerLevel < 1 then s.vz = s.vz - 0.08 end
-
-    s.z = s.z + s.vz
 
     if mget((p.x+4 - infoW)//8 + cStart,(p.y+16)//8) == 16 then
       p.vy=math.min(0,p.vy)
@@ -211,4 +193,84 @@ function drawStatus()
   print("Luftschiff", 1, 1, 15, false, 1, true)
   print(string.format("Alt %d", s.z//1), 1, 10, 14, false, 1, true)
   print(string.sub(string.format("DV %f", s.vz), 1, -5), 1, 20, 14, false, 1, true)
+end
+
+
+function simulate()
+  powerDemandRotors = s.com.roto.status * s.control.throttle.roto * ROTOR_MAX_POWER_DEMAND
+  powerDemandProps = s.com.prop.status * s.control.throttle.prop * PROP_MAX_POWER_DEMAND
+  powerDemandControls = CONTROLS_POWER_DEMAND
+  powerDemandSplitter = 0
+  powerDemandH20Acc = s.com.acc.h20.status * H20_ACC_POWER_DEMAND
+  powerDemandCH4Acc = s.com.acc.ch4.status * CH4_ACC_POWER_DEMAND
+  powerDemandBattery = s.com.battery.status * BATTER_CHARGE_RATE
+  if (s.com.hydrogenTank.fill < HYDROGEN_MAX_FILL) or
+      (s.com.oxygenTank.fill < OXYGEN_MAX_FILL) then
+    powerDemandSplitter = s.com.splitter.status * SPLITTER_POWER_DEMAND
+  end
+
+  totalPowerDemand = powerDemandRotors + powerDemandProps + powerDemandControls +
+      powerDemandSplitter + powerDemandH20Acc + powerDemandCH4Acc + powerDemandBattery
+  availableGenPower = s.com.generator.status * GEN_MAX_OUTPUT
+  availableBatteryPower = math.min(s.com.battery.status * BATTERY_MAX_OUTPUT, s.com.battery.fill)
+  availableTotalPower = availableGenPower + availableBatteryPower
+
+  rotorsPowerSupply = powerDemandRotors
+  propsPowerSupply = powerDemandProps
+  controlsPowerSupply = powerDemandControls
+  splitterPowerSupply = powerDemandSplitter
+  AccH20PowerSupply = powerDemandH20Acc
+  AccCH4PowerSupply = powerDemandCH4Acc
+  batteryPowerSupply = powerDemandBattery
+  batteryPowerDrain = 0
+  rpmDemandGenerator = (totalPowerDemand / availableGenPower) GEN_MAX_RPM
+
+  if totalPowerDemand > availableTotalPower then
+    proportionPower = (1 / totalPowerDemand) * availableTotalPower
+    rotorsPowerSupply = powerDemandRotors * proportionPower
+    propsPowerSupply = powerDemandProps * proportionPower
+    controlsPowerSupply = powerDemandControls * proportionPower
+    splitterPowerSupply = powerDemandSplitter * proportionPower
+    AccH20PowerSupply = powerDemandH20Acc * proportionPower
+    AccCH4PowerSupply = powerDemandCH4Acc * proportionPower
+    batteryPowerSupply = powerDemandBattery * proportionPower
+    batteryPowerDrain = availableBatteryPower
+    rpmDemandGenerator = GEN_MAX_RPM
+  else if totalPowerDemand > availableGenPower then
+    batteryPowerDrain = totalPowerDemand - availableGenPower
+    rpmDemandGenerator = GEN_MAX_RPM
+  end
+
+  -- change prop change to degrees per tic
+  hydraulicDemandProps = s.com.prop.status * math.abs(s.control.helm.heading - s.com.prop.heading) * PROP_PER_DEGREE_HYDRAULIC_DEMAND
+  hydraulicDemandRotors = s.com.roto.status * math.abs(s.control.helm.pitch - s.com.roto.pitch) * ROTOR_PER_DEGREE_HYDRAULIC_DEMAND
+
+  totalHydraulicDemand = hydraulicDemandProps + hydraulicDemandRotors
+  -- Continue here
+
+  hydrogenDemandBladder = s.com.bladder.fill < BLADDER_MAX_FILL ? BLADDER_FILL_RATE : 0;
+
+
+  boilerLevel=boilerLevel-0.004
+  waterLevel=waterLevel+0.004
+
+  if boilerLevel < 0 then boilerLevel = 0 end
+  if waterLevel > 11 then waterLevel = 11 end
+
+  if btn(5) then
+    tId = mget((p.x+4 - infoW)//8 + cStart,(p.y+8)//8)
+    if tId==41 or tId==42 or tId==57 or tId==58 then
+      boilerLevel=boilerLevel+0.1
+      if boilerLevel > 9 then boilerLevel = 9 end
+    elseif tId==75 or tId==76 or tId==91 or tId==92 then
+      waterLevel=waterLevel-0.1
+      if waterLevel < 0 then waterLevel = 0 end
+    end
+  end
+
+  s.vz = (4 / (s.z + 4)) - 0.04
+  if waterLevel > 5 then s.vz = s.vz - 0.03 end
+  if boilerLevel < 1 then s.vz = s.vz - 0.08 end
+
+  s.z = s.z + s.vz
 end
