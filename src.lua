@@ -1,6 +1,41 @@
-ROTOR_MAX_POWER_DEMAND = 10
-PROP_MAX_POWER_DEMAND = 8
+-- Game Configuration
+CONTROLS_POWER_DEMAND = 1
 
+ROTOR_MAX_POWER_DEMAND = 10
+ROTOR_MAX_ROTATE_SPEED = 1
+ROTOR_PER_DEGREE_HYDRAULIC_DEMAND = 5
+
+PROP_MAX_POWER_DEMAND = 10
+PROP_MAX_ROTATE_SPEED = 1
+PROP_PER_DEGREE_HYDRAULIC_DEMAND = 5
+
+GEN_MAX_KWH = 1000
+GEN_MAX_RPM = 8000
+TURBINE_MAX_RPM = 8000
+TURBINE_MAX_STEAM = 1000
+BOILER_MAX_REG_STEAM = 800
+BOILER_H2O_PER_STEAM = 1
+BOILER_CH4_PER_STEAM = 4
+BOILER_O_PER_STEAM = 2
+
+BATTERY_MAX_CHARGE = 200
+BATTERY_MAX_CHARGE_RATE = 20
+
+HYDRAULIC_MAX_PRESSURE = 100
+
+BLADDER_MAX_FILL = 1000
+H_TANK_MAX_FILL = 100
+O_TANK_MAX_FILL = 100
+H2O_TANK_MAX_FILL = 100
+CH4_TANK_MAX_FILL = 100
+
+BLADDER_MAX_FILL_RATE = 10
+H_TANK_MAX_FILL_RATE = 10
+O_TANK_MAX_FILL_RATE = 10
+H2O_TANK_MAX_FILL_RATE = 10
+CH4_TANK_MAX_FILL_RATE = 10
+
+-- Game State
 p={
   x=52,
   y=16,
@@ -8,42 +43,96 @@ p={
   vy=0
 }
 
-s={
-  z=100,
-  vz=0,
-  el={
-    H=100,
-    C=100,
-    O=100,
-    Fe=100,
-    Cu=100,
-    Sn=100
+ship = {
+  alt = 10000,
+  vsi = 0,
+  con = {
+    throttle = {
+      props = 50,
+      rotors = 50
+    },
+    rotation = {
+      props = 0,
+      rotors = 0
+    }
   },
-  com={
-    acc={
-      health=100,
-      cap=100,
-      res={
-        elec=-0.5
+  env = {
+    H2O = 100,
+    CH4 = 100
+  },
+  com = {
+    controls = {
+      status = 1
+    },
+    engine = {
+      boiler = {
+        status = 1
+      },
+      turbine = {
+        status = 1
+      },
+    },
+    hydraulics = {
+      reservoir = {
+        status = 1,
+        level = HYDRAULIC_MAX_PRESSURE
+      },
+      pump = {
+        status = 1
       }
     },
-    roto=100,
-    prop=100,
-    eng=100,
-    gear=100,
-    cool=100,
-    gen=100,
-    hyd=100,
-    sonar=100,
-    tankH=100,
-    tankH20=100,
-    tankCH4=100,
-    battery=100
-  },
-  sto={
-    H=100,
-    H20=100,
-    CH4=100
+    generator = {
+      status = 1
+    },
+    rotors = {
+      one = {
+        status = 1
+      }
+    },
+    props = {
+      one = {
+        status = 1
+      }
+    },
+    acc = {
+      H2O = {
+        status = 1.0
+      },
+      CH4 = {
+        status = 1.0
+      },
+    },
+    bladders = {
+      one = {
+        status = 1,
+        level = BLADDER_MAX_FILL
+      }
+    },
+    battery = {
+      status = 1,
+      level = BATTERY_MAX_CHARGE
+    },
+    splitter = {
+      status = 1
+    },
+    tanks = {
+      H = {
+        status = 1,
+        level = H_TANK_MAX_FILL
+      },
+      O = {
+        status = 1,
+        level = O_TANK_MAX_FILL
+      },
+      H2O = {
+        status = 1,
+        level = H2O_TANK_MAX_FILL
+      },
+      CH4 = {
+        status = 1,
+        level = CH4_TANK_MAX_FILL
+    }
+    },
   }
 }
 
@@ -52,65 +141,6 @@ start={
   x=60,
   y=42
 }
-
--- simplified
--- inputs
--- throttle position
--- helm position
--- output
--- velocity
--- direction
--- altitude
-
--- generator
--- rpm to electricity
-
--- batteries
--- electricity storage
-
--- water tank
--- water storage
-
--- thruster & lifter
--- electricity to rpm
--- rpm to thrust
--- hydraulic pressure to control through actuators
-
--- turbine
--- steam to rpm
--- grease
-
--- boiler
--- water and methane to steam
--- grease
-
--- hydraulic pump
--- rpm to hydraulic pressure
-
--- bladder
--- hydrogen volume to buoyancy
-
--- accumulator
--- speed and electricity to:
--- Hydrogen
--- Carbon
--- Oxygen
-
--- radar
--- electricity to view
-
--- lighting?
-
--- hydrogen tank
--- hydrogen storage
-
--- methane tank
--- methane storage
-
--- helm
--- hydraulic pressure to control inputs
-
--- throttle to methane output to boiler
 
 infoW=40
 cStart=0
@@ -191,86 +221,275 @@ end
 function drawStatus()
   rect(0, 0, infoW, 136, 0)
   print("Luftschiff", 1, 1, 15, false, 1, true)
-  print(string.format("Alt %d", s.z//1), 1, 10, 14, false, 1, true)
-  print(string.sub(string.format("DV %f", s.vz), 1, -5), 1, 20, 14, false, 1, true)
+  print(string.format("Alt %d", ship.alt//1), 1, 10, 14, false, 1, true)
+  print(string.sub(string.format("VSI %f", ship.vsi), 1, -5), 1, 20, 14, false, 1, true)
 end
 
 
 function simulate()
-  powerDemandRotors = s.com.roto.status * s.control.throttle.roto * ROTOR_MAX_POWER_DEMAND
-  powerDemandProps = s.com.prop.status * s.control.throttle.prop * PROP_MAX_POWER_DEMAND
-  powerDemandControls = CONTROLS_POWER_DEMAND
-  powerDemandSplitter = 0
-  powerDemandH20Acc = s.com.acc.h20.status * H20_ACC_POWER_DEMAND
-  powerDemandCH4Acc = s.com.acc.ch4.status * CH4_ACC_POWER_DEMAND
-  powerDemandBattery = s.com.battery.status * BATTER_CHARGE_RATE
-  if (s.com.hydrogenTank.fill < HYDROGEN_MAX_FILL) or
-      (s.com.oxygenTank.fill < OXYGEN_MAX_FILL) then
-    powerDemandSplitter = s.com.splitter.status * SPLITTER_POWER_DEMAND
+  demand = {
+    kW = {
+      controls = CONTROLS_POWER_DEMAND,
+      rotorOne = 0,
+      propOne = 0,
+      splitter = 0,
+      H2OAcc = 0,
+      CH4Acc = 0,
+      battery = 0
+    },
+    psi = {
+      hydraulicReservoir = 0,
+      rotorOne = 0,
+      propOne = 0
+    },
+    rpm = {
+      hydraulicPump = 0,
+      generator = 0
+    },
+    H2O = {
+      tank = 0,
+      boiler = 0,
+      splitter = 0
+    },
+    CH4 = {
+      tank = 0,
+      boiler = 0
+    },
+    H = {
+      tank = 0,
+      bladders = 0
+    },
+    O = {
+      tank = 0,
+      boiler = 0
+    },
+    steam = 0
+  }
+
+  storageSupply = {
+    kW = 0,
+    psi = 0,
+    H2O = 0,
+    CH4 = 0,
+    H = 0,
+    O = 0
+  }
+
+  systemSupply = {
+    kW = ship.com.battery.level,
+    psi = ship.com.hydraulics.reservoir.level,
+    H2O = ship.com.tanks.H2O.level,
+    CH4 = ship.com.tanks.CH4.level,
+    H = ship.com.tanks.H.level,
+    O = ship.com.tanks.O.level
+  }
+
+  supply = {
+    kW = {
+      controls = 0,
+      rotorOne = 0,
+      propOne = 0,
+      splitter = 0,
+      H2OAcc = 0,
+      CH4Acc = 0,
+      battery = 0
+    },
+    psi = {
+      hydraulicReservoir = 0,
+      rotorOne = 0,
+      propOne = 0
+    },
+    rpm = {
+      hydraulicPump = 0,
+      generator = 0
+    },
+    H2O = {
+      tank = 0,
+      boiler = 0,
+      splitter = 0
+    },
+    CH4 = {
+      tank = 0,
+      boiler = 0
+    },
+    H = {
+      tank = 0,
+      bladders = 0
+    },
+    O = {
+      tank = 0,
+      boiler = 0
+    },
+    steam = 0
+  }
+
+  -- ************
+  -- PASS ONE
+  -- ************
+
+  -- Adjust demand for control input
+  demand.kW.rotorOne = ROTOR_MAX_POWER_DEMAND * ship.com.rotors.one.status *
+      ship.con.throttle.rotors
+  demand.kW.propOne = PROP_MAX_POWER_DEMAND * ship.com.props.one.status *
+      ship.con.throttle.props
+  if ship.con.rotorRotation ~= ship.com.rotors.rotation then
+    rotorAngleChange = math.abs(ship.con.rotorRotation - ship.com.rotors.rotation)
+    rotorAngleChange = math.min(rotorAngleChange, ROTOR_MAX_ROTATE_SPEED)
+    demand.psi.rotorOne = rotorAngleChange * ROTOR_PER_DEGREE_HYDRAULIC_DEMAND
+  end
+  if ship.con.propRotation ~= ship.com.props.rotation then
+    propAngleChange = math.abs(ship.con.propRotation - ship.com.props.rotation)
+    propAngleChange = math.min(propAngleChange, PROP_MAX_ROTATE_SPEED)
+    demand.psi.propOne = propAngleChange * PROP_PER_DEGREE_HYDRAULIC_DEMAND
   end
 
-  totalPowerDemand = powerDemandRotors + powerDemandProps + powerDemandControls +
-      powerDemandSplitter + powerDemandH20Acc + powerDemandCH4Acc + powerDemandBattery
-  availableGenPower = s.com.generator.status * GEN_MAX_OUTPUT
-  availableBatteryPower = math.min(s.com.battery.status * BATTERY_MAX_OUTPUT, s.com.battery.fill)
-  availableTotalPower = availableGenPower + availableBatteryPower
+  -- Adjust demand for tank levels
+  demand.H2O.tank = math.min(H2O_TANK_MAX_FILL - ship.com.tanks.H2O.level,
+                             H2O_TANK_MAX_FILL_RATE)
+  demand.CH4.tank = math.min(CH4_TANK_MAX_FILL - ship.com.tanks.CH4.level,
+                             CH4_TANK_MAX_FILL_RATE)
+  demand.H.tank = math.min(H_TANK_MAX_FILL - ship.com.tanks.H.level,
+                           H_TANK_MAX_FILL_RATE)
+  demand.O.tank = math.min(O_TANK_MAX_FILL - ship.com.tanks.O.level,
+                           O_TANK_MAX_FILL_RATE)
 
-  rotorsPowerSupply = powerDemandRotors
-  propsPowerSupply = powerDemandProps
-  controlsPowerSupply = powerDemandControls
-  splitterPowerSupply = powerDemandSplitter
-  AccH20PowerSupply = powerDemandH20Acc
-  AccCH4PowerSupply = powerDemandCH4Acc
-  batteryPowerSupply = powerDemandBattery
-  batteryPowerDrain = 0
-  rpmDemandGenerator = (totalPowerDemand / availableGenPower) GEN_MAX_RPM
+  -- Adjust demand for bladder levels
+  demand.H.bladders = math.min(BLADDER_MAX_FILL - ship.com.bladders.one.level,
+                               BLADDER_MAX_FILL_RATE)
 
-  if totalPowerDemand > availableTotalPower then
-    proportionPower = (1 / totalPowerDemand) * availableTotalPower
-    rotorsPowerSupply = powerDemandRotors * proportionPower
-    propsPowerSupply = powerDemandProps * proportionPower
-    controlsPowerSupply = powerDemandControls * proportionPower
-    splitterPowerSupply = powerDemandSplitter * proportionPower
-    AccH20PowerSupply = powerDemandH20Acc * proportionPower
-    AccCH4PowerSupply = powerDemandCH4Acc * proportionPower
-    batteryPowerSupply = powerDemandBattery * proportionPower
-    batteryPowerDrain = availableBatteryPower
-    rpmDemandGenerator = GEN_MAX_RPM
-  else if totalPowerDemand > availableGenPower then
-    batteryPowerDrain = totalPowerDemand - availableGenPower
-    rpmDemandGenerator = GEN_MAX_RPM
+  -- Adjust demand for battery level
+  demand.kW.battery = math.min(BATTERY_MAX_CHARGE_RATE,
+      BATTERY_MAX_CHARGE * ship.com.battery.status - ship.com.battery.level)
+  demand.kW.battery = math.max(demand.kW.battery, 0)
+
+  -- Adjust demand for hydraulic reservoir level
+  demand.psi.hydraulicReservoir = HYDRAULIC_MAX_PRESSURE - ship.com.hydraulics.reservoir.level
+
+  -- ************
+  -- PASS TWO
+  -- ************
+
+  -- Add splitter energy demand
+  if demand.H.tank > 0 or demand.O.tank > 0 then
+    demand.kW.splitter = SPLITTER_POWER_DEMAND * ship.com.splitter.status
+    demand.H2O.splitter = SPLITTER_MAX_H2O * ship.com.splitter.status
+    storageSupply.H = SPLITTER_PER_TIC_H * ship.com.splitter.status
+    storageSupply.O = SPLITTER_PER_TIC_O * ship.com.splitter.status
   end
 
-  -- change prop change to degrees per tic
-  hydraulicDemandProps = s.com.prop.status * math.abs(s.control.helm.heading - s.com.prop.heading) * PROP_PER_DEGREE_HYDRAULIC_DEMAND
-  hydraulicDemandRotors = s.com.roto.status * math.abs(s.control.helm.pitch - s.com.roto.pitch) * ROTOR_PER_DEGREE_HYDRAULIC_DEMAND
-
-  totalHydraulicDemand = hydraulicDemandProps + hydraulicDemandRotors
-  -- Continue here
-
-  hydrogenDemandBladder = s.com.bladder.fill < BLADDER_MAX_FILL ? BLADDER_FILL_RATE : 0;
-
-
-  boilerLevel=boilerLevel-0.004
-  waterLevel=waterLevel+0.004
-
-  if boilerLevel < 0 then boilerLevel = 0 end
-  if waterLevel > 11 then waterLevel = 11 end
-
-  if btn(5) then
-    tId = mget((p.x+4 - infoW)//8 + cStart,(p.y+8)//8)
-    if tId==41 or tId==42 or tId==57 or tId==58 then
-      boilerLevel=boilerLevel+0.1
-      if boilerLevel > 9 then boilerLevel = 9 end
-    elseif tId==75 or tId==76 or tId==91 or tId==92 then
-      waterLevel=waterLevel-0.1
-      if waterLevel < 0 then waterLevel = 0 end
-    end
+  -- Add H2O demand
+  if demand.H2O.tank > 0 then
+    demand.kW.H2OAcc = H2O_ACC_POWER_DEMAND * ship.com.acc.h2o.status
+    storageSupply.H2O = s.env.H2O * H2O_ACC_PER_TIC * ship.com.acc.h2o.status
   end
 
-  s.vz = (4 / (s.z + 4)) - 0.04
-  if waterLevel > 5 then s.vz = s.vz - 0.03 end
-  if boilerLevel < 1 then s.vz = s.vz - 0.08 end
+  -- Add CH4 demand
+  if demand.CH4.tank > 0 then
+    demand.kW.CH4Acc = CH4_ACC_POWER_DEMAND * ship.com.acc.ch4.status
+    storageSupply.CH4 = s.env.CH4 * CH4_ACC_PER_TIC * ship.com.acc.ch4.status
+  end
 
-  s.z = s.z + s.vz
+  -- ************
+  -- PASS THREE
+  -- ************
+
+  -- Get hydraulic rpm
+  if demand.psi.hydraulicReservoir > 0 then
+    demand.rpm.hydraulicPump = math.min(HYDRAULIC_PUMP_MAX_RPM,
+        demand.psi.hydraulicReservoir * HYDRAULIC_PUMP_RPM_PER_PSI)
+  end
+
+  -- Get generator rpm
+  totalPowerDemand = math.min(demand.kW.controls + demand.kW.rotorOne +
+      demand.kW.propOne + demand.kW.splitter + demand.kW.H2OAcc +
+      demand.kW.CH4Acc + demand.kW.battery,
+      GEN_MAX_KWH * ship.com.generator.status)
+  demand.rpm.generator = (totalPowerDemand / GEN_MAX_KWH) * GEN_MAX_RPM
+
+  -- ************
+  -- PASS FOUR
+  -- ************
+
+  totalRPMDemand = math.min(demand.rpm.hydraulicPump + demand.rpm.generator,
+      TURBINE_MAX_RPM * ship.com.engine.turbine.status)
+  demand.steam = (totalRPMDemand / TURBINE_MAX_RPM) * TURBINE_MAX_STEAM
+
+  -- ************
+  -- PASS FIVE
+  -- ************
+
+  regSteamDemand = demand.steam
+  plusSteamDemand = 0
+  if demand.steam > BOILER_MAX_REG_STEAM then
+    regSteamDemand = BOILER_MAX_REG_STEAM
+    plusSteamDemand = demand.steam - BOILER_MAX_REG_STEAM
+  end
+  demand.H2O.boiler = regSteamDemand * BOILER_H2O_PER_STEAM
+  demand.CH4.boiler = regSteamDemand * BOILER_CH4_PER_STEAM
+  demand.O.boiler = plusSteamDemand * BOILER_O_PER_STEAM
+
+  -- ************
+  -- PASS SIX
+  -- ************
+
+  supply.H.bladders = math.min(demand.H.bladders, systemSupply.H)
+  supply.O.boiler = math.min(demand.O.boiler, systemSupply.O)
+  supply.CH4.boiler = math.min(demand.CH4.boiler, systemSupply.CH4)
+
+  if demand.H2O.boiler + demand.H2O.splitter <= systemSupply.H2O then
+    supply.H2O.boiler = demand.H2O.boiler
+    supply.H2O.splitter = demand.H2O.splitter
+  elseif systemSupply.H2O > 0 then
+    totalH2ODemand = demand.H2O.boiler + demand.H2O.splitter
+    boilerDemand = demand.H2O.boiler / totalH2ODemand
+    splitterDemand = demand.H2O.splitter / totalH2ODemand
+    supply.H2O.boiler = boilerDemand * systemSupply.H2O
+    supply.H2O.splitter = splitterDemand * systemSupply.H2O
+  end
+
+  -- ************
+  -- PASS SEVEN
+  -- ************
+
+  boilerH2OSupplied = (demand.H2O.boiler > 0) and supply.H2O.boiler / demand.H2O.boiler or 0
+  boilerCH4Supplied = (demand.CH4.boiler > 0) and supply.CH4.boiler / demand.CH4.boiler or 0
+  boilerOSupplied = (demand.O.boiler > 0) and supply.O.boiler / demand.O.boiler or 0
+
+  supply.steam = math.min(boilerH2OSupplied, boilerCH4Supplied) * regSteamDemand + boilerOSupplied * plusSteamDemand
+
+  -- ************
+  -- PASS EIGHT
+  -- ************
+
+  turbineSteamSupplied = (demand.steam > 0) and supply.steam / demand.steam or 0
+  supply.rpm.generator = demand.rpm.generator * turbineSteamSupplied
+  supply.rpm.hydraulicPump = demand.rpm.hydraulicPump * turbineSteamSupplied
+
+  -- ************
+  -- PASS NINE
+  -- ************
+
+  hydraulicPumpRPMSupplied = (demand.rpm.hydraulicPump > 0) and supply.rpm.hydraulicPump / demand.rpm.hydraulicPump or 0
+  supply.psi.hydraulicReservoir = demand.psi.hydraulicReservoir * hydraulicPumpRPMSupplied
+
+  if (demand.psi.rotorOne > 0 or demand.psi.propOne > 0) then
+    totalPSIDemand = demand.psi.rotorOne + demand.psi.propOne
+    psiSuppliedPercent = systemSupply.psi / totalPSIDemand
+    supply.psi.rotorOne = demand.psi.rotorOne * psiSuppliedPercent
+    supply.psi.propOne = demand.psi.propOne * psiSuppliedPercent
+  end
+
+  generatorRPMSupplied = (demand.rpm.generator > 0) and supply.rpm.generator / demand.rpm.generator or 0
+  supply.kW.controls = demand.kW.controls * generatorRPMSupplied
+  supply.kW.rotorOne = demand.kW.rotorOne * generatorRPMSupplied
+  supply.kW.propOne = demand.kW.propOne * generatorRPMSupplied
+  supply.kW.splitter = demand.kW.splitter * generatorRPMSupplied
+  supply.kW.H2OAcc = demand.kW.H2OAcc * generatorRPMSupplied
+  supply.kW.CH4Acc = demand.kW.CH4Acc * generatorRPMSupplied
+  supply.kW.battery = demand.kW.battery * generatorRPMSupplied
+
+  -- ************
+  -- APPLY
+  -- ************
+
 end
