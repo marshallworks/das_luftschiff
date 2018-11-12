@@ -6,10 +6,12 @@ SPLITTER_MAX_H2O = 10
 SPLITTER_PER_TIC_H = 200
 SPLITTER_PER_TIC_O = 100
 
+ROTOR_MAX_THRUST = 240
 ROTOR_MAX_POWER_DEMAND = 20
 ROTOR_MAX_ROTATE_SPEED = 4
 ROTOR_PER_DEGREE_HYDRAULIC_DEMAND = 5
 
+PROP_MAX_THRUST = 120
 PROP_MAX_POWER_DEMAND = 10
 PROP_MAX_ROTATE_SPEED = 2
 PROP_PER_DEGREE_HYDRAULIC_DEMAND = 2
@@ -36,7 +38,8 @@ O_TANK_MAX_FILL = 100
 H2O_TANK_MAX_FILL = 100
 CH4_TANK_MAX_FILL = 100
 
-BLADDER_MAX_FILL_RATE = 10
+BLADDER_MAX_VENT_RATE = 10
+BLADDER_MAX_FILL_RATE = 20
 H_TANK_MAX_FILL_RATE = 10
 O_TANK_MAX_FILL_RATE = 10
 H2O_TANK_MAX_FILL_RATE = 10
@@ -99,13 +102,15 @@ ship = {
     rotors = {
       one = {
         status = 1,
-        rotation = 0
+        rotation = 0,
+        thrust = 0
       }
     },
     props = {
       one = {
         status = 1,
-        rotation = 0
+        rotation = 0,
+        thrust = 0
       }
     },
     acc = {
@@ -118,7 +123,7 @@ ship = {
     },
     bladders = {
       one = {
-        status = 1,
+        status = 0.1,
         level = BLADDER_MAX_FILL - 10
       }
     },
@@ -145,7 +150,7 @@ ship = {
       CH4 = {
         status = 1,
         level = CH4_TANK_MAX_FILL - 4
-    }
+      }
     },
   }
 }
@@ -161,6 +166,8 @@ cStart=0
 waterLevel=0
 boilerLevel=9
 startScreen=true
+
+debugType = 0
 
 function init()
   poke(0x03FF8, 3)
@@ -218,9 +225,20 @@ function TIC()
       p.x=239
     end
 
+    if btnp(7) then
+      debugType = (debugType > 3) and 0 or debugType + 1
+    end
+
     cls(0)
     simulate()
-    -- drawGame()
+
+    if debugType == 0 then
+      drawGame()
+    elseif debugType == 1 then
+      drawShipDebugOne(ship)
+    elseif debugType == 2 then
+      drawShipDebugTwo(ship)
+    end
   end
 
 end
@@ -242,6 +260,11 @@ function drawStatus()
   print("Luftschiff", 1, 1, 15, false, 1, true)
   print(string.format("Alt %d", ship.alt//1), 1, 10, 14, false, 1, true)
   print(string.sub(string.format("VSI %f", ship.vsi), 1, -5), 1, 20, 14, false, 1, true)
+  print(string.format("BH %d", ship.com.bladders.one.level//1), 1, 30, 14, false, 1, true)
+  print(string.format("PT %d", ship.com.props.one.thrust//1), 1, 40, 14, false, 1, true)
+  print(string.format("PR %d", ship.com.props.one.rotation//1), 1, 50, 14, false, 1, true)
+  print(string.format("RT %d", ship.com.rotors.one.thrust//1), 1, 60, 14, false, 1, true)
+  print(string.format("RR %d", ship.com.rotors.one.rotation//1), 1, 70, 14, false, 1, true)
 end
 
 
@@ -510,9 +533,76 @@ function simulate()
   -- ************
   -- APPLY
   -- ************
-  drawSimDebug(demand, supply)
+
+  ship.com.bladders.one.level = ship.com.bladders.one.level -
+      math.max(0.01, 1.0 - ship.com.bladders.one.status) * BLADDER_MAX_VENT_RATE
+  ship.com.bladders.one.level = math.min(BLADDER_MAX_FILL,
+      ship.com.bladders.one.level + supply.H.bladders)
+
+  ship.com.rotors.one.thrust = supply.kW.rotorOne / demand.kW.rotorOne * ROTOR_MAX_THRUST
+  ship.com.props.one.thrust = supply.kW.propOne / demand.kW.propOne * PROP_MAX_THRUST
+
+  if debugType == 3 then
+    drawSimDebug(demand, supply)
+  elseif debugType == 4 then
+    drawStorageDebug(systemSupply, storageSupply)
+  end
+
 end
 
+
+function drawShipDebugOne(s)
+  lines = {}
+
+  lines[1] = "Ship Status Page 1"
+  lines[2] = string.format("Alt: %f", s.alt)
+  lines[3] = string.format("VSI: %f", s.vsi)
+  lines[4] = string.format("Con TP: %f", s.con.throttle.props)
+  lines[5] = string.format("Con TR: %f", s.con.throttle.rotors)
+  lines[6] = string.format("Con RP: %f", s.con.rotation.props)
+  lines[7] = string.format("Con RR: %f", s.con.rotation.rotors)
+  lines[8] = string.format("Env H2O: %f", s.env.H2O)
+  lines[9] = string.format("Env CH4: %f", s.env.CH4)
+  lines[10] = "COMPONENTS"
+  lines[11] = string.format("Control S: %f", s.com.controls.status)
+  lines[12] = string.format("Boiler S: %f", s.com.engine.boiler.status)
+  lines[13] = string.format("Turbine S: %f", s.com.engine.turbine.status)
+  lines[14] = string.format("Hyd Res S: %f", s.com.hydraulics.reservoir.status)
+  lines[15] = string.format("Hyd Res L: %f", s.com.hydraulics.reservoir.level)
+  lines[16] = string.format("Hyd Pum S: %f", s.com.hydraulics.pump.status)
+  lines[17] = string.format("Gen S: %f", s.com.generator.status)
+  lines[18] = string.format("R1S: %f", s.com.rotors.one.status)
+  lines[19] = string.format("R1R: %f", s.com.rotors.one.rotation)
+  lines[20] = string.format("R1T: %f", s.com.rotors.one.thrust)
+  lines[21] = string.format("P1S: %f", s.com.props.one.status)
+  lines[22] = string.format("P1R: %f", s.com.props.one.rotation)
+  lines[23] = string.format("P1T: %f", s.com.props.one.thrust)
+  lines[24] = string.format("AccH2O S: %f", s.com.acc.H2O.status)
+  lines[25] = string.format("AccCH4 S: %f", s.com.acc.CH4.status)
+  lines[26] = string.format("BLAD1 S: %f", s.com.bladders.one.status)
+  lines[27] = string.format("BLAD1 L: %f", s.com.bladders.one.level)
+  lines[28] = string.format("Batt S: %f", s.com.battery.status)
+  lines[29] = string.format("Batt L: %f", s.com.battery.level)
+  lines[30] = string.format("Split S: %f", s.com.splitter.status)
+
+  drawDebugLines(lines, 30)
+end
+
+function drawShipDebugTwo(s)
+  lines = {}
+
+  lines[1] = "Ship Status Page 2"
+  lines[2] = string.format("T H S: %f", s.com.tanks.H.status)
+  lines[3] = string.format("T H L: %f", s.com.tanks.H.level)
+  lines[4] = string.format("T O S: %f", s.com.tanks.O.status)
+  lines[5] = string.format("T O L: %f", s.com.tanks.O.level)
+  lines[6] = string.format("T H2O S: %f", s.com.tanks.H2O.status)
+  lines[7] = string.format("T H2O L: %f", s.com.tanks.H2O.level)
+  lines[8] = string.format("T CH4 S: %f", s.com.tanks.CH4.status)
+  lines[9] = string.format("T CH4 L: %f", s.com.tanks.CH4.level)
+
+  drawDebugLines(lines, 9)
+end
 
 function drawSimDebug(demand, supply)
   lines = {}
@@ -548,7 +638,38 @@ function drawSimDebug(demand, supply)
   lines[29] = "Steam"
   lines[30] = string.format("Steam: D%f S%f", demand.steam, supply.steam)
 
-  for i=1, 30 do
+  drawDebugLines(lines, 30)
+end
+
+
+function drawStorageDebug(inStorage, availableForStorage)
+  lines = {}
+
+  lines[1] = "kW"
+  lines[2] = string.format("In Storage: %f, Available for Storage: %f",
+                           inStorage.kW, availableForStorage.kW)
+  lines[3] = "PSI"
+  lines[4] = string.format("In Storage: %f, Available for Storage: %f",
+                           inStorage.psi, availableForStorage.psi)
+  lines[5] = "H2O"
+  lines[6] = string.format("In Storage: %f, Available for Storage: %f",
+                           inStorage.H2O, availableForStorage.H2O)
+  lines[7] = "CH4"
+  lines[8] = string.format("In Storage: %f, Available for Storage: %f",
+                           inStorage.CH4, availableForStorage.CH4)
+  lines[9] = "H"
+  lines[10] = string.format("In Storage: %f, Available for Storage: %f",
+                            inStorage.H, availableForStorage.H)
+  lines[11] = "O"
+  lines[12] = string.format("In Storage: %f, Available for Storage: %f",
+                            inStorage.O, availableForStorage.O)
+
+  drawDebugLines(lines, 12)
+end
+
+
+function drawDebugLines(lines, count)
+  for i=1, count do
     if i < 16 then
       print(lines[i], 1, i*9-8, 15, false, 1, true)
     else
