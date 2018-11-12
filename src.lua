@@ -1,13 +1,18 @@
 -- Game Configuration
 CONTROLS_POWER_DEMAND = 1
 
-ROTOR_MAX_POWER_DEMAND = 10
-ROTOR_MAX_ROTATE_SPEED = 1
+SPLITTER_POWER_DEMAND = 10
+SPLITTER_MAX_H2O = 10
+SPLITTER_PER_TIC_H = 200
+SPLITTER_PER_TIC_O = 100
+
+ROTOR_MAX_POWER_DEMAND = 20
+ROTOR_MAX_ROTATE_SPEED = 4
 ROTOR_PER_DEGREE_HYDRAULIC_DEMAND = 5
 
 PROP_MAX_POWER_DEMAND = 10
-PROP_MAX_ROTATE_SPEED = 1
-PROP_PER_DEGREE_HYDRAULIC_DEMAND = 5
+PROP_MAX_ROTATE_SPEED = 2
+PROP_PER_DEGREE_HYDRAULIC_DEMAND = 2
 
 GEN_MAX_KWH = 1000
 GEN_MAX_RPM = 8000
@@ -22,6 +27,8 @@ BATTERY_MAX_CHARGE = 200
 BATTERY_MAX_CHARGE_RATE = 20
 
 HYDRAULIC_MAX_PRESSURE = 100
+HYDRAULIC_PUMP_MAX_RPM = 10
+HYDRAULIC_PUMP_RPM_PER_PSI = 2
 
 BLADDER_MAX_FILL = 1000
 H_TANK_MAX_FILL = 100
@@ -34,6 +41,11 @@ H_TANK_MAX_FILL_RATE = 10
 O_TANK_MAX_FILL_RATE = 10
 H2O_TANK_MAX_FILL_RATE = 10
 CH4_TANK_MAX_FILL_RATE = 10
+
+H2O_ACC_POWER_DEMAND = 10
+CH4_ACC_POWER_DEMAND = 12
+H2O_ACC_PER_TIC = 2
+CH4_ACC_PER_TIC = 1
 
 -- Game State
 p={
@@ -48,12 +60,12 @@ ship = {
   vsi = 0,
   con = {
     throttle = {
-      props = 50,
-      rotors = 50
+      props = 0.5,
+      rotors = 0.5
     },
     rotation = {
-      props = 0,
-      rotors = 0
+      props = 90,
+      rotors = 90
     }
   },
   env = {
@@ -75,7 +87,7 @@ ship = {
     hydraulics = {
       reservoir = {
         status = 1,
-        level = HYDRAULIC_MAX_PRESSURE
+        level = HYDRAULIC_MAX_PRESSURE - 10
       },
       pump = {
         status = 1
@@ -86,12 +98,14 @@ ship = {
     },
     rotors = {
       one = {
-        status = 1
+        status = 1,
+        rotation = 0
       }
     },
     props = {
       one = {
-        status = 1
+        status = 1,
+        rotation = 0
       }
     },
     acc = {
@@ -105,12 +119,12 @@ ship = {
     bladders = {
       one = {
         status = 1,
-        level = BLADDER_MAX_FILL
+        level = BLADDER_MAX_FILL - 10
       }
     },
     battery = {
       status = 1,
-      level = BATTERY_MAX_CHARGE
+      level = BATTERY_MAX_CHARGE - 10
     },
     splitter = {
       status = 1
@@ -118,19 +132,19 @@ ship = {
     tanks = {
       H = {
         status = 1,
-        level = H_TANK_MAX_FILL
+        level = H_TANK_MAX_FILL - 1
       },
       O = {
         status = 1,
-        level = O_TANK_MAX_FILL
+        level = O_TANK_MAX_FILL - 2
       },
       H2O = {
         status = 1,
-        level = H2O_TANK_MAX_FILL
+        level = H2O_TANK_MAX_FILL - 3
       },
       CH4 = {
         status = 1,
-        level = CH4_TANK_MAX_FILL
+        level = CH4_TANK_MAX_FILL - 4
     }
     },
   }
@@ -176,7 +190,6 @@ function TIC()
     print("X Start", 84, 94)
     start.t=start.t+1
   else
-    simulate()
 
     if btn(2) then
       p.vx=math.max(p.vx-0.1, -2.0)
@@ -206,15 +219,21 @@ function TIC()
     end
 
     cls(0)
-    map(cStart,0,25,17,infoW,0)
-    if cStart==0 then
-      rect(92,89-boilerLevel,8,boilerLevel,2)
-      rect(117,89-waterLevel,6,waterLevel,2)
-    end
-    spr(257,p.x,p.y,0,1,0,0,1,2)
-    drawStatus()
+    simulate()
+    -- drawGame()
   end
 
+end
+
+
+function drawGame()
+  map(cStart,0,25,17,infoW,0)
+  if cStart==0 then
+    rect(92,89-boilerLevel,8,boilerLevel,2)
+    rect(117,89-waterLevel,6,waterLevel,2)
+  end
+  spr(257,p.x,p.y,0,1,0,0,1,2)
+  drawStatus()
 end
 
 
@@ -332,13 +351,13 @@ function simulate()
       ship.con.throttle.rotors
   demand.kW.propOne = PROP_MAX_POWER_DEMAND * ship.com.props.one.status *
       ship.con.throttle.props
-  if ship.con.rotorRotation ~= ship.com.rotors.rotation then
-    rotorAngleChange = math.abs(ship.con.rotorRotation - ship.com.rotors.rotation)
+  if ship.con.rotation.rotors ~= ship.com.rotors.one.rotation then
+    rotorAngleChange = math.abs(ship.con.rotation.rotors - ship.com.rotors.one.rotation)
     rotorAngleChange = math.min(rotorAngleChange, ROTOR_MAX_ROTATE_SPEED)
     demand.psi.rotorOne = rotorAngleChange * ROTOR_PER_DEGREE_HYDRAULIC_DEMAND
   end
-  if ship.con.propRotation ~= ship.com.props.rotation then
-    propAngleChange = math.abs(ship.con.propRotation - ship.com.props.rotation)
+  if ship.con.rotation.props ~= ship.com.props.one.rotation then
+    propAngleChange = math.abs(ship.con.rotation.props - ship.com.props.one.rotation)
     propAngleChange = math.min(propAngleChange, PROP_MAX_ROTATE_SPEED)
     demand.psi.propOne = propAngleChange * PROP_PER_DEGREE_HYDRAULIC_DEMAND
   end
@@ -379,14 +398,14 @@ function simulate()
 
   -- Add H2O demand
   if demand.H2O.tank > 0 then
-    demand.kW.H2OAcc = H2O_ACC_POWER_DEMAND * ship.com.acc.h2o.status
-    storageSupply.H2O = s.env.H2O * H2O_ACC_PER_TIC * ship.com.acc.h2o.status
+    demand.kW.H2OAcc = H2O_ACC_POWER_DEMAND * ship.com.acc.H2O.status
+    storageSupply.H2O = ship.env.H2O * H2O_ACC_PER_TIC * ship.com.acc.H2O.status
   end
 
   -- Add CH4 demand
   if demand.CH4.tank > 0 then
-    demand.kW.CH4Acc = CH4_ACC_POWER_DEMAND * ship.com.acc.ch4.status
-    storageSupply.CH4 = s.env.CH4 * CH4_ACC_PER_TIC * ship.com.acc.ch4.status
+    demand.kW.CH4Acc = CH4_ACC_POWER_DEMAND * ship.com.acc.CH4.status
+    storageSupply.CH4 = ship.env.CH4 * CH4_ACC_PER_TIC * ship.com.acc.CH4.status
   end
 
   -- ************
@@ -491,5 +510,49 @@ function simulate()
   -- ************
   -- APPLY
   -- ************
+  drawSimDebug(demand, supply)
+end
 
+
+function drawSimDebug(demand, supply)
+  lines = {}
+
+  lines[1] = "Power"
+  lines[2] = string.format("Controls: D%f S%f", demand.kW.controls, supply.kW.controls)
+  lines[3] = string.format("Rotors: D%f S%f", demand.kW.rotorOne, supply.kW.rotorOne)
+  lines[4] = string.format("Props: D%f S%f", demand.kW.propOne, supply.kW.propOne)
+  lines[5] = string.format("Splitter: D%f S%f", demand.kW.splitter, supply.kW.splitter)
+  lines[6] = string.format("H2OAcc: D%f S%f", demand.kW.H2OAcc, supply.kW.H2OAcc)
+  lines[7] = string.format("CH4Acc: D%f S%f", demand.kW.CH4Acc, supply.kW.CH4Acc)
+  lines[8] = string.format("Battery: D%f S%f", demand.kW.battery, supply.kW.battery)
+  lines[9] = "PSI"
+  lines[10] = string.format("Hyd Res: D%f S%f", demand.psi.hydraulicReservoir, supply.psi.hydraulicReservoir)
+  lines[11] = string.format("Rotors: D%f S%f", demand.psi.rotorOne, supply.psi.rotorOne)
+  lines[12] = string.format("Props: D%f S%f", demand.psi.propOne, supply.psi.propOne)
+  lines[13] = "RPM"
+  lines[14] = string.format("Hyd Pum: D%f S%f", demand.rpm.hydraulicPump, supply.rpm.hydraulicPump)
+  lines[15] = string.format("Gen: D%f S%f", demand.rpm.generator, supply.rpm.generator)
+  lines[16] = "H2O"
+  lines[17] = string.format("Tank: D%f S%f", demand.H2O.tank, supply.H2O.tank)
+  lines[18] = string.format("Boiler: D%f S%f", demand.H2O.boiler, supply.H2O.boiler)
+  lines[19] = string.format("Splitter: D%f S%f", demand.H2O.splitter, supply.H2O.splitter)
+  lines[20] = "CH4"
+  lines[21] = string.format("Tank: D%f S%f", demand.CH4.tank, supply.CH4.tank)
+  lines[22] = string.format("Boiler: D%f S%f", demand.CH4.boiler, supply.CH4.boiler)
+  lines[23] = "H"
+  lines[24] = string.format("Tank: D%f S%f", demand.H.tank, supply.H.tank)
+  lines[25] = string.format("Bladders: D%f S%f", demand.H.bladders, supply.H.bladders)
+  lines[26] = "O"
+  lines[27] = string.format("Tank: D%f S%f", demand.O.tank, supply.O.tank)
+  lines[28] = string.format("Boiler: D%f S%f", demand.O.boiler, supply.O.boiler)
+  lines[29] = "Steam"
+  lines[30] = string.format("Steam: D%f S%f", demand.steam, supply.steam)
+
+  for i=1, 30 do
+    if i < 16 then
+      print(lines[i], 1, i*9-8, 15, false, 1, true)
+    else
+      print(lines[i], 120, i*9-143, 15, false, 1, true)
+    end
+  end
 end
