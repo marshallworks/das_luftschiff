@@ -3,7 +3,10 @@
 KG_TO_N = 9.81
 H_MASS_TO_VOLUME = 11.988
 DRAG_COEFFICENT = 0.26
-DRAG_AREA = 20
+DRAG_AREA = 28
+GRAVITY = 9.8
+SEA_LEVEL_AIR_DENSITY = 1.225
+HYDROGEN_DENSITY = 0.08988
 
 -- Balance
 -- All units are in per frame 1/60th of a second.
@@ -17,7 +20,6 @@ DRAG_AREA = 20
 --   NM: newton per meter (torque)
 --   KNSM: kilo newton per square meter (pressure)
 SHIP_DRY_WEIGHT_KG = 120000
-SHIP_DRY_WEIGHT_KN = (SHIP_DRY_WEIGHT_KG * KG_TO_N) * 0.001
 
 DISPLAYS_POWER_DEMAND_KW = 0.017
 
@@ -83,7 +85,7 @@ ship = {
   speed = 0,
   acceleration = 0,
   heading = 0,
-  alt = 10000,
+  alt = 100,
   vsi = 0,
   con = {
     throttle = {
@@ -96,7 +98,7 @@ ship = {
     }
   },
   env = {
-    Atmo = 1.0,
+    Atmo = SEA_LEVEL_AIR_DENSITY,
     H2O = 0.5,
     CH4 = 0.5
   },
@@ -949,11 +951,36 @@ function applyThrust(sim)
 end
 
 function applyForces(sim)
+  altAdjustment = 5000 / (ship.alt + 5000)
+  ship.env.Atmo = altAdjustment * SEA_LEVEL_AIR_DENSITY
+
+  totalHydrogenVolume = ship.com.bladders.one.level +
+      ship.com.bladders.two.level + ship.com.bladders.three.level +
+      ship.com.bladders.four.level
+  totalHydrogenWeight = totalHydrogenVolume * HYDROGEN_DENSITY
+  totalAirWeight = totalHydrogenVolume * SEA_LEVEL_AIR_DENSITY
+
+  totalShipWeightKG = SHIP_DRY_WEIGHT_KG + totalHydrogenWeight +
+      ship.com.tanks.H.level + ship.com.tanks.O.level +
+      ship.com.tanks.H2O.level + ship.com.tanks.CH4.level
+  totalShipWeightKN = (totalShipWeightKG * KG_TO_N) * 0.001
+
   ship.heading = (ship.com.props.one.rotation + ship.com.props.two.rotation) / 2
   drag = DRAG_COEFFICENT * DRAG_AREA * 0.5 * ship.env.Atmo * (ship.speed * ship.speed)
-  ship.acceleration = (ship.com.props.one.thrust + ship.com.props.two.thrust - drag) /
-      SHIP_DRY_WEIGHT_KN
+  ship.acceleration = (ship.com.props.one.thrust * altAdjustment +
+                       ship.com.props.two.thrust * altAdjustment - drag) /
+      totalShipWeightKN
   ship.speed = ship.speed + 0.5 * (ship.acceleration * 0.00027777777)
+
+  totalHydrogenLiftForce = (totalAirWeight - totalHydrogenWeight) * KG_TO_N * 5.6395
+
+  vForce = ((ship.com.rotors.one.thrust * altAdjustment +
+             ship.com.rotors.two.thrust * altAdjustment +
+             ship.com.rotors.three.thrust * altAdjustment +
+             ship.com.rotors.four.thrust * altAdjustment) +
+      totalHydrogenLiftForce) / totalShipWeightKN
+  ship.vsi = ship.vsi + 0.5 * ((vForce - totalShipWeightKN) * 0.00027777777)
+  ship.alt = ship.alt + ship.vsi
 end
 
 
