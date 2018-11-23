@@ -34,12 +34,12 @@ SPLITTER_PER_TIC_O = 2.128
 
 ROTOR_MAX_THRUST_KN = 70000
 ROTOR_MAX_POWER_DEMAND_KW = 46.4
-ROTOR_MAX_ROTATE_SPEED_D = 0.02
+ROTOR_MAX_ROTATE_SPEED_D = 0.04
 ROTOR_MAX_HYDRAULIC_DEMAND_KNSM = 6.4
 
 PROP_MAX_THRUST_KN = 47600
 PROP_MAX_POWER_DEMAND_KW = 18.5
-PROP_MAX_ROTATE_SPEED_D = 0.03
+PROP_MAX_ROTATE_SPEED_D = 0.06
 PROP_MAX_HYDRAULIC_DEMAND_KNSM = 5.2
 
 GEN_MAX_KW = 225
@@ -89,6 +89,7 @@ ship = {
   speed = 0,
   acceleration = 0,
   heading = 0,
+  rotation = 0,
   vsi = 0,
   pos = {
     x = 0,
@@ -96,6 +97,7 @@ ship = {
     z = 100
   },
   con = {
+    alt = 1000,
     vsi = 0.0,
     throttle = {
       props = 0.5,
@@ -231,41 +233,147 @@ start = {
 }
 
 gauges = {
-  origins = {
+  needles = {
+    vsi = {
+      x = 101,
+      y = 79,
+      c = 6
+    },
     heading = {
-      x = 210,
-      y = 86
+      x = 207,
+      y = 79,
+      c = 6
+    },
+    rotation = {
+      x = 76,
+      y = 74,
+      c = 6
+    },
+    con_vsi = {
+      x = 101,
+      y = 80,
+      c = 8
     },
     con_heading = {
-      x = 211,
-      y = 87
+      x = 208,
+      y = 80,
+      c = 8
+    },
+    con_rotation = {
+      x = 77,
+      y = 75,
+      c = 8
     },
     props = {
       one = {
         x = 193,
-        y = 113
+        y = 113,
+        c = 6
       },
       two = {
         x = 217,
-        y = 113
+        y = 113,
+        c = 6
       }
     },
     rotors = {
       one = {
         x = 69,
-        y = 110
+        y = 110,
+        c = 6
       },
       two = {
         x = 93,
-        y = 110
+        y = 110,
+        c = 6
       },
       three = {
         x = 117,
-        y = 110
+        y = 110,
+        c = 6
       },
       four = {
         x = 141,
-        y = 110
+        y = 110,
+        c = 6
+      }
+    }
+  },
+  levels = {
+    con_alt = {
+      x = 114,
+      y = 68,
+      w = 4,
+      h = 24,
+      c = 8
+    },
+    con_throttle = {
+      x = 186,
+      y = 68,
+      w = 4,
+      h = 24,
+      c = 8
+    }
+  },
+  bars = {
+    alt = {
+      x = 114,
+      y = 68,
+      w = 4,
+      h = 24,
+      c = 6
+    },
+    speed = {
+      x = 186,
+      y = 68,
+      w = 4,
+      h = 24,
+      c = 6
+    },
+    props = {
+      one = {
+        x = 185,
+        y = 108,
+        w = 2,
+        h = 11,
+        c = 6
+      },
+      two = {
+        x = 209,
+        y = 108,
+        w = 2,
+        h = 11,
+        c = 6
+      }
+    },
+    rotors = {
+      one = {
+        x = 57,
+        y = 108,
+        w = 2,
+        h = 11,
+        c = 6
+      },
+      two = {
+        x = 81,
+        y = 108,
+        w = 2,
+        h = 11,
+        c = 6
+      },
+      three = {
+        x = 105,
+        y = 108,
+        w = 2,
+        h = 11,
+        c = 6
+      },
+      four = {
+        x = 129,
+        y = 108,
+        w = 2,
+        h = 11,
+        c = 6
       }
     }
   }
@@ -361,63 +469,101 @@ function drawGame()
   if showControls then
     map(0,119,25,17,infoW,0)
 
-    headingVec = {
-      x = 0,
-      y = -10,
-    }
+    drawNeedleLevelStatus(gauges.needles.vsi, ship.vsi, -1.2, 1.2, 0, 180, 8)
+    drawNeedleLevelStatus(gauges.needles.con_vsi, ship.con.vsi, -1.2, 1.2, 0, 180, 10)
 
-    shHeading = rotateV2(headingVec, ship.heading)
-    conHeading = rotateV2(headingVec, ship.con.rotation.props)
+    drawNeedleAngeStatus(gauges.needles.heading, ship.heading, { x = 0, y = -8 })
+    drawNeedleAngeStatus(gauges.needles.rotation, ship.rotation, { x = 0, y = 15 })
+    drawNeedleAngeStatus(gauges.needles.con_heading, ship.con.rotation.props,
+                     { x = 0, y = -10 })
+    drawNeedleAngeStatus(gauges.needles.con_rotation, ship.con.rotation.rotors,
+                     { x = 0, y = 17 })
 
-    line(gauges.origins.con_heading.x, gauges.origins.con_heading.y,
-         gauges.origins.con_heading.x + conHeading.x,
-         gauges.origins.con_heading.y + conHeading.y, 8)
-    line(gauges.origins.heading.x, gauges.origins.heading.y,
-         gauges.origins.heading.x + shHeading.x,
-         gauges.origins.heading.y + shHeading.y, 6)
+    drawBarStatus(gauges.bars.alt, ship.pos.z, 4000)
+    drawBarStatus(gauges.bars.speed, ship.speed, 300)
 
-    propVec = {
-      x = 0,
-      y = -5
-    }
+    drawLevelStatus(gauges.levels.con_alt, ship.con.alt, 4000)
+    drawLevelStatus(gauges.levels.con_throttle, ship.con.throttle.props, 1.0)
 
-    propOne = rotateV2(propVec, ship.com.props.one.rotation)
-    propTwo = rotateV2(propVec, ship.com.props.two.rotation)
+    drawPropRotationStatus(gauges.needles.props.one,
+                           ship.com.props.one.rotation)
+    drawPropRotationStatus(gauges.needles.props.two,
+                           ship.com.props.two.rotation)
 
-    line(gauges.origins.props.one.x, gauges.origins.props.one.y,
-         gauges.origins.props.one.x + propOne.x,
-         gauges.origins.props.one.y + propOne.y, 6)
-    line(gauges.origins.props.two.x, gauges.origins.props.two.y,
-         gauges.origins.props.two.x + propTwo.x,
-         gauges.origins.props.two.y + propTwo.y, 6)
+    drawRotorRotationStatus(gauges.needles.rotors.one,
+                            ship.com.rotors.one.rotation)
+    drawRotorRotationStatus(gauges.needles.rotors.two,
+                            ship.com.rotors.two.rotation)
+    drawRotorRotationStatus(gauges.needles.rotors.three,
+                            ship.com.rotors.three.rotation)
+    drawRotorRotationStatus(gauges.needles.rotors.four,
+                            ship.com.rotors.four.rotation)
 
-    rotorVec = {
-      x = 0,
-      y = 7
-    }
+    print("PRP1", 184, 101, 5, false, 1, true)
+    print("PRP2", 208, 101, 5, false, 1, true)
 
-    rotOne = rotateV2(rotorVec, ship.com.rotors.one.rotation)
-    rotTwo = rotateV2(rotorVec, ship.com.rotors.two.rotation)
-    rotThree = rotateV2(rotorVec, ship.com.rotors.three.rotation)
-    rotFour = rotateV2(rotorVec, ship.com.rotors.four.rotation)
+    drawPropThrustStatus(gauges.bars.props.one, ship.com.props.one.thrust)
+    drawPropThrustStatus(gauges.bars.props.two, ship.com.props.two.thrust)
 
-    line(gauges.origins.rotors.one.x, gauges.origins.rotors.one.y,
-         gauges.origins.rotors.one.x + rotOne.x,
-         gauges.origins.rotors.one.y + rotOne.y, 6)
-    line(gauges.origins.rotors.two.x, gauges.origins.rotors.two.y,
-         gauges.origins.rotors.two.x + rotTwo.x,
-         gauges.origins.rotors.two.y + rotTwo.y, 6)
-    line(gauges.origins.rotors.three.x, gauges.origins.rotors.three.y,
-         gauges.origins.rotors.three.x + rotThree.x,
-         gauges.origins.rotors.three.y + rotThree.y, 6)
-    line(gauges.origins.rotors.four.x, gauges.origins.rotors.four.y,
-         gauges.origins.rotors.four.x + rotFour.x,
-         gauges.origins.rotors.four.y + rotFour.y, 6)
+    print("RTR1", 56, 101, 5, false, 1, true)
+    print("RTR2", 80, 101, 5, false, 1, true)
+    print("RTR3", 104, 101, 5, false, 1, true)
+    print("RTR4", 128, 101, 5, false, 1, true)
+
+    drawRotorThrustStatus(gauges.bars.rotors.one, ship.com.rotors.one.thrust)
+    drawRotorThrustStatus(gauges.bars.rotors.two, ship.com.rotors.two.thrust)
+    drawRotorThrustStatus(gauges.bars.rotors.three, ship.com.rotors.three.thrust)
+    drawRotorThrustStatus(gauges.bars.rotors.four, ship.com.rotors.four.thrust)
   else
     map(cStart,0,25,17,infoW,0)
     spr(257,p.x,p.y,0,1,0,0,1,2)
   end
   drawStatus()
+end
+
+function drawNeedleAngeStatus(needle, angle, vec)
+  target = rotateV2(vec, angle)
+  line(needle.x, needle.y, needle.x + target.x, needle.y + target.y, needle.c)
+end
+
+function drawNeedleLevelStatus(needle, value, min_value, max_value,
+                               min_angle, max_angle, length)
+  vec = { x = 0, y = length }
+  normal = inverseLerp(min_value, max_value, value)
+  angle = lerp(min_angle, max_angle, normal)
+  drawNeedleAngeStatus(needle, angle, vec)
+end
+
+function drawPropRotationStatus(needle, angle)
+  drawNeedleAngeStatus(needle, angle, { x = 0, y = -5})
+end
+
+function drawRotorRotationStatus(needle, angle)
+  drawNeedleAngeStatus(needle, angle, { x = 0, y = 7})
+end
+
+function drawLevelStatus(level, value, max)
+  baseY = level.y + level.h
+  normal = inverseLerp(0, max, value)
+  levelHeight = (lerp(0, level.h, normal) + 1.5)//1
+  levelY = baseY - levelHeight
+  line(level.x, levelY, level.x + level.w - 1, levelY, level.c)
+end
+
+function drawBarStatus(bar, value, max)
+  baseY = bar.y + bar.h
+  normal = inverseLerp(0, max, value)
+  barHeight = (lerp(0, bar.h, normal) + 0.5)//1
+  barY = baseY - barHeight
+  rect(bar.x, barY, bar.w, barHeight, bar.c)
+end
+
+function drawPropThrustStatus(bar, thrust)
+  drawBarStatus(bar, thrust, PROP_MAX_THRUST_KN)
+end
+
+function drawRotorThrustStatus(bar, thrust)
+  drawBarStatus(bar, thrust, ROTOR_MAX_THRUST_KN)
 end
 
 function drawStatus()
@@ -1122,6 +1268,9 @@ function applyForces(sim)
       HYDROGEN_LIFT_ADJUST
   totalWingLiftForce = (ship.speed * WING_LIFT) * altAdjustment
 
+  ship.rotation = (ship.com.rotors.one.rotation + ship.com.rotors.two.rotation +
+                   ship.com.rotors.three.rotation +
+                   ship.com.rotors.four.rotation) / 4
   vertDrag = DRAG_COEFFICENT * BOTTOM_DRAG_AREA * 0.5 * ship.env.Atmo *
       (ship.vsi * ship.vsi)
   vForce = ((ship.com.rotors.one.thrust * rotor1Ycomp +
@@ -1145,7 +1294,7 @@ function applyForces(sim)
     ship.con.throttle.rotors = math.max(ship.con.throttle.rotors - 0.1, 0.0)
   end
 
-  if ship.pos.z < 1000 then
+  if ship.pos.z < ship.con.alt then
     ship.con.vsi = 0.5
   else
     ship.con.vsi = 0.0
@@ -1206,6 +1355,10 @@ end
 
 function lerp(a, b, t)
   return a + (b - a) * t
+end
+
+function inverseLerp(a, b, v)
+  return (v - a) / (b - a)
 end
 
 function rotateV2(vec, angle)
