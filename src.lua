@@ -74,15 +74,15 @@ CH4_TANK_MAX_KGF = 8.274
 
 H2O_ACC_POWER_DEMAND_KW = 0.067
 CH4_ACC_POWER_DEMAND_KW = 0.117
-H2O_ACC_PER_TIC = 12 --2.6090
-CH4_ACC_PER_TIC = 20 --5.0662
+H2O_ACC_PER_TIC = 12
+CH4_ACC_PER_TIC = 20
 
 -- Game State
-p={
-  x=52,
-  y=16,
-  vx=0,
-  vy=0
+p = {
+  x = 52,
+  y = 16,
+  vx = 0,
+  vy = 0
 }
 
 ship = {
@@ -224,15 +224,57 @@ ship = {
   }
 }
 
-start={
-  t=0,
-  x=60,
-  y=42
+start = {
+  t= 0,
+  x= 60,
+  y= 42
 }
 
-infoW=40
-cStart=0
-startScreen=true
+gauges = {
+  origins = {
+    heading = {
+      x = 210,
+      y = 86
+    },
+    con_heading = {
+      x = 211,
+      y = 87
+    },
+    props = {
+      one = {
+        x = 193,
+        y = 113
+      },
+      two = {
+        x = 217,
+        y = 113
+      }
+    },
+    rotors = {
+      one = {
+        x = 69,
+        y = 110
+      },
+      two = {
+        x = 93,
+        y = 110
+      },
+      three = {
+        x = 117,
+        y = 110
+      },
+      four = {
+        x = 141,
+        y = 110
+      }
+    }
+  }
+}
+
+infoW = 40
+cStart = 0
+startScreen = true
+showControls = false
 
 debugType = 0
 
@@ -292,6 +334,10 @@ function TIC()
       p.x=239
     end
 
+    if btnp(6) then
+      showControls = not showControls
+    end
+
     if btnp(7) then
       debugType = (debugType > 3) and 0 or debugType + 1
     end
@@ -312,8 +358,65 @@ end
 
 
 function drawGame()
-  map(cStart,0,25,17,infoW,0)
-  spr(257,p.x,p.y,0,1,0,0,1,2)
+  if showControls then
+    map(0,119,25,17,infoW,0)
+
+    headingVec = {
+      x = 0,
+      y = -10,
+    }
+
+    shHeading = rotateV2(headingVec, ship.heading)
+    conHeading = rotateV2(headingVec, ship.con.rotation.props)
+
+    line(gauges.origins.con_heading.x, gauges.origins.con_heading.y,
+         gauges.origins.con_heading.x + conHeading.x,
+         gauges.origins.con_heading.y + conHeading.y, 8)
+    line(gauges.origins.heading.x, gauges.origins.heading.y,
+         gauges.origins.heading.x + shHeading.x,
+         gauges.origins.heading.y + shHeading.y, 6)
+
+    propVec = {
+      x = 0,
+      y = -5
+    }
+
+    propOne = rotateV2(propVec, ship.com.props.one.rotation)
+    propTwo = rotateV2(propVec, ship.com.props.two.rotation)
+
+    line(gauges.origins.props.one.x, gauges.origins.props.one.y,
+         gauges.origins.props.one.x + propOne.x,
+         gauges.origins.props.one.y + propOne.y, 6)
+    line(gauges.origins.props.two.x, gauges.origins.props.two.y,
+         gauges.origins.props.two.x + propTwo.x,
+         gauges.origins.props.two.y + propTwo.y, 6)
+
+    rotorVec = {
+      x = 0,
+      y = 7
+    }
+
+    rotOne = rotateV2(rotorVec, ship.com.rotors.one.rotation)
+    rotTwo = rotateV2(rotorVec, ship.com.rotors.two.rotation)
+    rotThree = rotateV2(rotorVec, ship.com.rotors.three.rotation)
+    rotFour = rotateV2(rotorVec, ship.com.rotors.four.rotation)
+
+    line(gauges.origins.rotors.one.x, gauges.origins.rotors.one.y,
+         gauges.origins.rotors.one.x + rotOne.x,
+         gauges.origins.rotors.one.y + rotOne.y, 6)
+    line(gauges.origins.rotors.two.x, gauges.origins.rotors.two.y,
+         gauges.origins.rotors.two.x + rotTwo.x,
+         gauges.origins.rotors.two.y + rotTwo.y, 6)
+    line(gauges.origins.rotors.three.x, gauges.origins.rotors.three.y,
+         gauges.origins.rotors.three.x + rotThree.x,
+         gauges.origins.rotors.three.y + rotThree.y, 6)
+    line(gauges.origins.rotors.four.x, gauges.origins.rotors.four.y,
+         gauges.origins.rotors.four.x + rotFour.x,
+         gauges.origins.rotors.four.y + rotFour.y, 6)
+  else
+    map(cStart,0,25,17,infoW,0)
+    spr(257,p.x,p.y,0,1,0,0,1,2)
+  end
   drawStatus()
 end
 
@@ -1103,6 +1206,17 @@ end
 
 function lerp(a, b, t)
   return a + (b - a) * t
+end
+
+function rotateV2(vec, angle)
+  r = math.rad(angle)
+  aSin = math.sin(r)
+  aCos = math.cos(r)
+
+  return {
+    x = vec.x * aCos - vec.y * aSin,
+    y = vec.y * aCos + vec.x * aSin
+  }
 end
 
 function drawShipDebugOne(s)
