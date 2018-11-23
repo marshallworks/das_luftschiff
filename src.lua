@@ -3,7 +3,8 @@
 KG_TO_N = 9.81
 H_MASS_TO_VOLUME = 11.988
 DRAG_COEFFICENT = 0.26
-DRAG_AREA = 28
+FRONT_DRAG_AREA = 28
+BOTTOM_DRAG_AREA = 64
 GRAVITY = 9.8
 SEA_LEVEL_AIR_DENSITY = 1.225
 HYDROGEN_DENSITY = 0.08988
@@ -102,7 +103,7 @@ ship = {
     },
     rotation = {
       props = 45,
-      rotors = 0
+      rotors = 50
     }
   },
   env = {
@@ -324,8 +325,9 @@ function drawStatus()
   print(string.format("Hdg %d", ship.heading//1), 1, 30, 14, false, 1, true)
   print(string.format("Alt %d", ship.pos.z//1), 1, 40, 14, false, 1, true)
   print(string.sub(string.format("VSI %f", ship.vsi), 1, -5), 1, 50, 14, false, 1, true)
-  print(string.format("X %d", ship.pos.x//1), 1, 60, 14, false, 1, true)
-  print(string.format("Y %d", ship.pos.y//1), 1, 70, 14, false, 1, true)
+  print(string.format("X %d", (ship.pos.x * 0.001)//1), 1, 60, 14, false, 1, true)
+  print(string.format("Y %d", (ship.pos.y * 0.001)//1), 1, 70, 14, false, 1, true)
+  print(string.format("R %d", ship.com.rotors.one.rotation//1), 1, 80, 14, false, 1, true)
 end
 
 function simulate()
@@ -966,7 +968,25 @@ end
 
 function applyForces(sim)
   altAdjustment = clamp01(5000 / (ship.pos.z + 5000))
+  thrustAdjustment = lerp(0.4, 1.0, altAdjustment)
   ship.env.Atmo = altAdjustment * SEA_LEVEL_AIR_DENSITY
+
+  rotor1Xcomp = math.cos(math.rad(90 - ship.com.rotors.one.rotation)) *
+      thrustAdjustment
+  rotor1Ycomp = math.sin(math.rad(90 - ship.com.rotors.one.rotation)) *
+      thrustAdjustment
+  rotor2Xcomp = math.cos(math.rad(90 - ship.com.rotors.two.rotation)) *
+      thrustAdjustment
+  rotor2Ycomp = math.sin(math.rad(90 - ship.com.rotors.two.rotation)) *
+      thrustAdjustment
+  rotor3Xcomp = math.cos(math.rad(90 - ship.com.rotors.three.rotation)) *
+      thrustAdjustment
+  rotor3Ycomp = math.sin(math.rad(90 - ship.com.rotors.three.rotation)) *
+      thrustAdjustment
+  rotor4Xcomp = math.cos(math.rad(90 - ship.com.rotors.four.rotation)) *
+      thrustAdjustment
+  rotor4Ycomp = math.sin(math.rad(90 - ship.com.rotors.four.rotation)) *
+      thrustAdjustment
 
   totalHydrogenVolume = ship.com.bladders.one.level +
       ship.com.bladders.two.level + ship.com.bladders.three.level +
@@ -980,14 +1000,18 @@ function applyForces(sim)
   totalShipWeightKN = (totalShipWeightKG * KG_TO_N) * 0.001
 
   ship.heading = (ship.com.props.one.rotation + ship.com.props.two.rotation) / 2
-  drag = DRAG_COEFFICENT * DRAG_AREA * 0.5 * ship.env.Atmo *
+  drag = DRAG_COEFFICENT * FRONT_DRAG_AREA * 0.5 * ship.env.Atmo *
       (ship.speed * ship.speed)
-  ship.acceleration = (ship.com.props.one.thrust * altAdjustment +
-                       ship.com.props.two.thrust * altAdjustment - drag) /
+  ship.acceleration = (ship.com.props.one.thrust * thrustAdjustment +
+                       ship.com.props.two.thrust * thrustAdjustment +
+                       ship.com.rotors.one.thrust * rotor1Xcomp +
+                       ship.com.rotors.two.thrust * rotor2Xcomp +
+                       ship.com.rotors.three.thrust * rotor3Xcomp +
+                       ship.com.rotors.four.thrust * rotor4Xcomp - drag) /
       totalShipWeightKN
   ship.speed = ship.speed + 0.5 * (ship.acceleration * 0.00027777777)
-  changeX = 0.001 * ship.speed * math.cos(math.rad(ship.heading))
-  changeY = 0.001 * ship.speed * math.sin(math.rad(ship.heading))
+  changeX = ship.speed * math.cos(math.rad(ship.heading))
+  changeY = ship.speed * math.sin(math.rad(ship.heading))
   ship.pos.x = ship.pos.x + changeX
   ship.pos.y = ship.pos.y + changeY
 
@@ -995,12 +1019,12 @@ function applyForces(sim)
       HYDROGEN_LIFT_ADJUST
   totalWingLiftForce = (ship.speed * WING_LIFT) * altAdjustment
 
-  vertDrag = DRAG_COEFFICENT * DRAG_AREA * 2.0 * 0.5 * ship.env.Atmo *
+  vertDrag = DRAG_COEFFICENT * BOTTOM_DRAG_AREA * 0.5 * ship.env.Atmo *
       (ship.vsi * ship.vsi)
-  vForce = ((ship.com.rotors.one.thrust * altAdjustment +
-             ship.com.rotors.two.thrust * altAdjustment +
-             ship.com.rotors.three.thrust * altAdjustment +
-             ship.com.rotors.four.thrust * altAdjustment) +
+  vForce = ((ship.com.rotors.one.thrust * rotor1Ycomp +
+             ship.com.rotors.two.thrust * rotor2Ycomp +
+             ship.com.rotors.three.thrust * rotor3Ycomp +
+             ship.com.rotors.four.thrust * rotor4Ycomp) +
       totalHydrogenLiftForce + totalWingLiftForce) / totalShipWeightKN
   if ship.vsi > 0 then
     vForce = vForce - vertDrag
@@ -1019,7 +1043,7 @@ function applyForces(sim)
   end
 
   if ship.pos.z < 1000 then
-    ship.con.vsi = 0.1
+    ship.con.vsi = 0.5
   else
     ship.con.vsi = 0.0
   end
@@ -1075,6 +1099,10 @@ end
 
 function nroot(root, num)
   return num^(1 / root)
+end
+
+function lerp(a, b, t)
+  return a + (b - a) * t
 end
 
 function drawShipDebugOne(s)
