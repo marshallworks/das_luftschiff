@@ -7,6 +7,9 @@ DRAG_AREA = 28
 GRAVITY = 9.8
 SEA_LEVEL_AIR_DENSITY = 1.225
 HYDROGEN_DENSITY = 0.08988
+WING_LIFT = 128
+
+HYDROGEN_LIFT_ADJUST = 5.6395
 
 -- Balance
 -- All units are in per frame 1/60th of a second.
@@ -70,8 +73,8 @@ CH4_TANK_MAX_KGF = 8.274
 
 H2O_ACC_POWER_DEMAND_KW = 0.067
 CH4_ACC_POWER_DEMAND_KW = 0.117
-H2O_ACC_PER_TIC = 2.6090
-CH4_ACC_PER_TIC = 5.0662
+H2O_ACC_PER_TIC = 12 --2.6090
+CH4_ACC_PER_TIC = 20 --5.0662
 
 -- Game State
 p={
@@ -85,22 +88,27 @@ ship = {
   speed = 0,
   acceleration = 0,
   heading = 0,
-  alt = 100,
   vsi = 0,
+  pos = {
+    x = 0,
+    y = 0,
+    z = 100
+  },
   con = {
+    vsi = 0.0,
     throttle = {
       props = 0.5,
       rotors = 0.7
     },
     rotation = {
-      props = 90,
-      rotors = 90
+      props = 45,
+      rotors = 0
     }
   },
   env = {
     Atmo = SEA_LEVEL_AIR_DENSITY,
-    H2O = 0.5,
-    CH4 = 0.5
+    H2O = 0.4,
+    CH4 = 0.4
   },
   com = {
     displays = {
@@ -314,8 +322,10 @@ function drawStatus()
   print(string.format("Spd %d", ship.speed//1), 1, 10, 14, false, 1, true)
   print(string.format("Acc %d", ship.acceleration//1), 1, 20, 14, false, 1, true)
   print(string.format("Hdg %d", ship.heading//1), 1, 30, 14, false, 1, true)
-  print(string.format("Alt %d", ship.alt//1), 1, 40, 14, false, 1, true)
+  print(string.format("Alt %d", ship.pos.z//1), 1, 40, 14, false, 1, true)
   print(string.sub(string.format("VSI %f", ship.vsi), 1, -5), 1, 50, 14, false, 1, true)
+  print(string.format("X %d", ship.pos.x//1), 1, 60, 14, false, 1, true)
+  print(string.format("Y %d", ship.pos.y//1), 1, 70, 14, false, 1, true)
 end
 
 function simulate()
@@ -849,6 +859,10 @@ function distributeHydraulics(sim)
 end
 
 function distributePower(sim)
+  altAdjustment = clamp01(5000 / (ship.pos.z + 5000))
+  speedAdjustment = clamp(nroot(6.6, ship.speed) - 1.0, 0.2, 1.2)
+  intakeAdjustment = altAdjustment * speedAdjustment
+
   ship.com.displays.active = (sim.supply.kW.displays >= sim.demand.kW.displays)
 
   if sim.supply.kW.splitter > 0 then
@@ -866,12 +880,12 @@ function distributePower(sim)
 
   if sim.supply.kW.H2OAcc > 0 then
     sim.supply.H2O.tank = (sim.supply.kW.H2OAcc / H2O_ACC_POWER_DEMAND_KW) *
-        H2O_ACC_PER_TIC * ship.env.H2O
+        H2O_ACC_PER_TIC * ship.env.H2O * intakeAdjustment
   end
 
   if sim.supply.kW.CH4Acc > 0 then
     sim.supply.CH4.tank = (sim.supply.kW.CH4Acc / CH4_ACC_POWER_DEMAND_KW) *
-        CH4_ACC_PER_TIC * ship.env.CH4
+        CH4_ACC_PER_TIC * ship.env.CH4 * intakeAdjustment
   end
 
   if sim.supply.kW.battery > 0 then
@@ -951,7 +965,7 @@ function applyThrust(sim)
 end
 
 function applyForces(sim)
-  altAdjustment = 5000 / (ship.alt + 5000)
+  altAdjustment = clamp01(5000 / (ship.pos.z + 5000))
   ship.env.Atmo = altAdjustment * SEA_LEVEL_AIR_DENSITY
 
   totalHydrogenVolume = ship.com.bladders.one.level +
@@ -966,21 +980,49 @@ function applyForces(sim)
   totalShipWeightKN = (totalShipWeightKG * KG_TO_N) * 0.001
 
   ship.heading = (ship.com.props.one.rotation + ship.com.props.two.rotation) / 2
-  drag = DRAG_COEFFICENT * DRAG_AREA * 0.5 * ship.env.Atmo * (ship.speed * ship.speed)
+  drag = DRAG_COEFFICENT * DRAG_AREA * 0.5 * ship.env.Atmo *
+      (ship.speed * ship.speed)
   ship.acceleration = (ship.com.props.one.thrust * altAdjustment +
                        ship.com.props.two.thrust * altAdjustment - drag) /
       totalShipWeightKN
   ship.speed = ship.speed + 0.5 * (ship.acceleration * 0.00027777777)
+  changeX = 0.001 * ship.speed * math.cos(math.rad(ship.heading))
+  changeY = 0.001 * ship.speed * math.sin(math.rad(ship.heading))
+  ship.pos.x = ship.pos.x + changeX
+  ship.pos.y = ship.pos.y + changeY
 
-  totalHydrogenLiftForce = (totalAirWeight - totalHydrogenWeight) * KG_TO_N * 5.6395
+  totalHydrogenLiftForce = (totalAirWeight - totalHydrogenWeight) * KG_TO_N *
+      HYDROGEN_LIFT_ADJUST
+  totalWingLiftForce = (ship.speed * WING_LIFT) * altAdjustment
 
+  vertDrag = DRAG_COEFFICENT * DRAG_AREA * 2.0 * 0.5 * ship.env.Atmo *
+      (ship.vsi * ship.vsi)
   vForce = ((ship.com.rotors.one.thrust * altAdjustment +
              ship.com.rotors.two.thrust * altAdjustment +
              ship.com.rotors.three.thrust * altAdjustment +
              ship.com.rotors.four.thrust * altAdjustment) +
-      totalHydrogenLiftForce) / totalShipWeightKN
-  ship.vsi = ship.vsi + 0.5 * ((vForce - totalShipWeightKN) * 0.00027777777)
-  ship.alt = ship.alt + ship.vsi
+      totalHydrogenLiftForce + totalWingLiftForce) / totalShipWeightKN
+  if ship.vsi > 0 then
+    vForce = vForce - vertDrag
+  elseif ship.vsi < 0 then
+    vForce = vForce + vertDrag
+  end
+
+  ship.vsi = ship.vsi + 0.5 * ((vForce - totalShipWeightKN - vertDrag) * 0.00027777777)
+  ship.pos.z = ship.pos.z + ship.vsi
+
+  -- Auto controls
+  if ship.vsi < ship.con.vsi then
+    ship.con.throttle.rotors = math.min(ship.con.throttle.rotors + 0.1, 1.0)
+  elseif ship.vsi > ship.con.vsi then
+    ship.con.throttle.rotors = math.max(ship.con.throttle.rotors - 0.1, 0.0)
+  end
+
+  if ship.pos.z < 1000 then
+    ship.con.vsi = 0.1
+  else
+    ship.con.vsi = 0.0
+  end
 end
 
 
@@ -1023,11 +1065,23 @@ function safeDivide(num, den)
   return (den > 0) and num / den or 0
 end
 
+function clamp(val, low, high)
+  return math.min(math.max(val, low), high)
+end
+
+function clamp01(val)
+  return clamp(val, 0.0, 1.0)
+end
+
+function nroot(root, num)
+  return num^(1 / root)
+end
+
 function drawShipDebugOne(s)
   lines = {}
 
   lines[1] = "Ship Status Page 1"
-  lines[2] = string.format("Alt: %f", s.alt)
+  lines[2] = string.format("Alt: %f", s.pos.z)
   lines[3] = string.format("VSI: %f", s.vsi)
   lines[4] = string.format("Con TP: %f", s.con.throttle.props)
   lines[5] = string.format("Con TR: %f", s.con.throttle.rotors)
