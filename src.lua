@@ -103,7 +103,7 @@ ship = {
     },
     rotation = {
       props = 45,
-      rotors = 50
+      rotors = 40
     }
   },
   env = {
