@@ -23,6 +23,7 @@ HYDROGEN_LIFT_ADJUST = 5.6395
 --   KN: kilo newton (force)
 --   NM: newton per meter (torque)
 --   KNSM: kilo newton per square meter (pressure)
+SHIP_MAX_ALT = 6000
 SHIP_DRY_WEIGHT_KG = 120000
 
 DISPLAYS_POWER_DEMAND_KW = 0.017
@@ -86,15 +87,16 @@ p = {
 }
 
 ship = {
-  speed = 0,
+  speed = 20,
   acceleration = 0,
   heading = 0,
   rotation = 0,
   vsi = 0,
+  set_vsi = 0,
   pos = {
     x = 0,
     y = 0,
-    z = 100
+    z = 1000
   },
   con = {
     alt = 1000,
@@ -104,8 +106,8 @@ ship = {
       rotors = 0.7
     },
     rotation = {
-      props = 45,
-      rotors = 40
+      props = 0,
+      rotors = 0
     }
   },
   env = {
@@ -385,6 +387,7 @@ startScreen = true
 showControls = false
 
 debugType = 0
+controlType = 0
 
 function init()
   poke(0x03FF8, 3)
@@ -415,35 +418,70 @@ function TIC()
     start.t=start.t+1
   else
 
-    if btn(2) then
-      p.vx=math.max(p.vx-0.1, -2.0)
-    elseif btn(3) then
-      p.vx=math.min(p.vx+0.1, 2.0)
-    else
-      p.vx=0
-    end
-
-    if btnp(4) then p.vy=p.vy-2.4 end
-
-    if mget((p.x+4 - infoW)//8 + cStart,(p.y+16)//8) == 16 then
-      p.vy=math.min(0,p.vy)
-    else
-      p.vy=p.vy+0.1
-    end
-
-    p.x=p.x+p.vx
-    p.y=p.y+p.vy
-
-    if p.x > 240 then
-      cStart=24
-      p.x = infoW + 4
-    elseif p.x < infoW - 4 then
-      cStart=0
-      p.x=239
-    end
-
     if btnp(6) then
       showControls = not showControls
+    end
+
+    if showControls then
+      if btnp(2) then controlType = controlType - 1 end
+      if btnp(3) then controlType = controlType + 1 end
+
+      if controlType < 0 then controlType = 4 end
+      if controlType > 4 then controlType = 0 end
+
+      if controlType == 0 then
+        if btn(0) then ship.con.rotation.rotors = ship.con.rotation.rotors + 1 end
+        if btn(1) then ship.con.rotation.rotors = ship.con.rotation.rotors - 1 end
+        if ship.con.rotation.rotors < 0 then ship.con.rotation.rotors = 0 end
+        if ship.con.rotation.rotors > 90 then ship.con.rotation.rotors = 90 end
+      elseif controlType == 1 then
+        if btn(0) then ship.con.vsi = ship.con.vsi + 0.02 end
+        if btn(1) then ship.con.vsi = ship.con.vsi - 0.02 end
+        if ship.con.vsi < -1.2 then ship.con.vsi = -1.2 end
+        if ship.con.vsi > 1.2 then ship.con.vsi = 1.2 end
+      elseif controlType == 2 then
+        if btn(0) then ship.con.alt = ship.con.alt + 10 end
+        if btn(1) then ship.con.alt = ship.con.alt - 10 end
+        if ship.con.alt < 0 then ship.con.alt = 0 end
+        if ship.con.alt > SHIP_MAX_ALT then ship.con.alt = SHIP_MAX_ALT end
+      elseif controlType == 3 then
+        if btn(0) then ship.con.throttle.props = ship.con.throttle.props + 0.01 end
+        if btn(1) then ship.con.throttle.props = ship.con.throttle.props - 0.01 end
+        if ship.con.throttle.props < 0.0 then ship.con.throttle.props = 0.0 end
+        if ship.con.throttle.props > 1.0 then ship.con.throttle.props = 1.0 end
+      elseif controlType == 4 then
+        if btn(0) then ship.con.rotation.props = ship.con.rotation.props - 1 end
+        if btn(1) then ship.con.rotation.props = ship.con.rotation.props + 1 end
+        if ship.con.rotation.props < 0 then ship.con.rotation.props = 360 end
+        if ship.con.rotation.props > 360 then ship.con.rotation.props = ship.con.rotation.props - 360 end
+      end
+    else
+      if btn(2) then
+        p.vx=math.max(p.vx-0.1, -2.0)
+      elseif btn(3) then
+        p.vx=math.min(p.vx+0.1, 2.0)
+      else
+        p.vx=0
+      end
+
+      if btnp(4) then p.vy=p.vy-2.4 end
+
+      if mget((p.x+4 - infoW)//8 + cStart,(p.y+16)//8) == 16 then
+        p.vy=math.min(0,p.vy)
+      else
+        p.vy=p.vy+0.1
+      end
+
+      p.x=p.x+p.vx
+      p.y=p.y+p.vy
+
+      if p.x > 240 then
+        cStart=24
+        p.x = infoW + 4
+      elseif p.x < infoW - 4 then
+        cStart=0
+        p.x=239
+      end
     end
 
     if btnp(7) then
@@ -479,10 +517,10 @@ function drawGame()
     drawNeedleAngeStatus(gauges.needles.con_rotation, ship.con.rotation.rotors,
                      { x = 0, y = 17 })
 
-    drawBarStatus(gauges.bars.alt, ship.pos.z, 4000)
+    drawBarStatus(gauges.bars.alt, ship.pos.z, SHIP_MAX_ALT)
     drawBarStatus(gauges.bars.speed, ship.speed, 300)
 
-    drawLevelStatus(gauges.levels.con_alt, ship.con.alt, 4000)
+    drawLevelStatus(gauges.levels.con_alt, ship.con.alt, SHIP_MAX_ALT)
     drawLevelStatus(gauges.levels.con_throttle, ship.con.throttle.props, 1.0)
 
     drawPropRotationStatus(gauges.needles.props.one,
@@ -514,6 +552,18 @@ function drawGame()
     drawRotorThrustStatus(gauges.bars.rotors.two, ship.com.rotors.two.thrust)
     drawRotorThrustStatus(gauges.bars.rotors.three, ship.com.rotors.three.thrust)
     drawRotorThrustStatus(gauges.bars.rotors.four, ship.com.rotors.four.thrust)
+
+    if controlType == 0 then
+      rectb(55, 63, 26, 34, 14)
+    elseif controlType == 1 then
+      rectb(87, 63, 18, 34, 14)
+    elseif controlType == 2 then
+      rectb(111, 63, 10, 34, 14)
+    elseif controlType == 3 then
+      rectb(183, 63, 10, 34, 14)
+    elseif controlType == 4 then
+      rectb(191, 63, 34, 34, 14)
+    end
   else
     map(cStart,0,25,17,infoW,0)
     spr(257,p.x,p.y,0,1,0,0,1,2)
@@ -1258,7 +1308,8 @@ function applyForces(sim)
                        ship.com.rotors.three.thrust * rotor3Xcomp +
                        ship.com.rotors.four.thrust * rotor4Xcomp - drag) /
       totalShipWeightKN
-  ship.speed = ship.speed + 0.5 * (ship.acceleration * 0.00027777777)
+  -- TODO Remove fudge?
+  ship.speed = ship.speed + 0.5 * (ship.acceleration * 10 * 0.00027777777)
   changeX = ship.speed * math.cos(math.rad(ship.heading))
   changeY = ship.speed * math.sin(math.rad(ship.heading))
   ship.pos.x = ship.pos.x + changeX
@@ -1288,16 +1339,18 @@ function applyForces(sim)
   ship.pos.z = ship.pos.z + ship.vsi
 
   -- Auto controls
-  if ship.vsi < ship.con.vsi then
+  if ship.vsi < ship.set_vsi then
     ship.con.throttle.rotors = math.min(ship.con.throttle.rotors + 0.1, 1.0)
-  elseif ship.vsi > ship.con.vsi then
+  elseif ship.vsi > ship.set_vsi then
     ship.con.throttle.rotors = math.max(ship.con.throttle.rotors - 0.1, 0.0)
   end
 
-  if ship.pos.z < ship.con.alt then
-    ship.con.vsi = 0.5
+  if ship.pos.z + 10 < ship.con.alt and ship.con.vsi > 0 then
+    ship.set_vsi = ship.con.vsi
+  elseif ship.pos.z - 10 > ship.con.alt and ship.con.vsi < 0 then
+    ship.set_vsi = ship.con.vsi
   else
-    ship.con.vsi = 0.0
+    ship.set_vsi = 0.0
   end
 end
 
