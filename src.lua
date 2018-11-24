@@ -81,8 +81,8 @@ CH4_ACC_PER_TIC = 20
 
 -- Game State
 p = {
-  x = 16,
-  y = 16,
+  x = 248,
+  y = 48,
   vx = 0,
   vy = 0,
   mapX = 0,
@@ -519,14 +519,20 @@ function TIC()
     else
       onFloor = false
       inCeiling = false
+      onLadder = false
       testX = (p.x + 4) // 8
       testYD = (p.y + 16) // 8
       testYU = (p.y) // 8
       if mget(testX, testYD) == 16 then onFloor = true end
       if mget(testX, testYU) == 16 then inCeiling = true end
+      if mget(testX, testYD - 1) == 32 then onLadder = true end
 
-      if btnp(0) and onFloor then
-        p.vy = -2.2
+      if btn(0) and onLadder then
+        p.vy = math.max(p.vy - 0.1, -1.5)
+      elseif btn(1) and onLadder then
+        p.vy = math.max(p.vy + 0.1, 1.5)
+      elseif onLadder then
+        p.vy = 0.0
       elseif p.vy == 0 and onFloor then
         p.y = testYD * 8 - 16
         p.vy = math.min(p.vy, 0.0)
@@ -551,8 +557,16 @@ function TIC()
       p.x=p.x+p.vx
       p.y=p.y+p.vy
 
-      if p.x < 0 then p.x = 0 end
-      if p.x > 376 then p.x = 376 end
+      if p.y > 92 then
+        if p.x < 40 then p.x = 40 end
+        if p.x > 408 then p.x = 408 end
+      elseif p.y > 60 then
+        if p.x < 24 then p.x = 24 end
+        if p.x > 432 then p.x = 432 end
+      else
+        if p.x < 24 then p.x = 24 end
+        if p.x > 448 then p.x = 448 end
+      end
 
       p.mapX = (p.x + 0.5) / 8 - 15
       p.mapY = 0 -- (p.y + 0.5) / 8 - 8
@@ -595,8 +609,13 @@ end
 
 
 function drawGame()
-  map(p.mapX, p.mapY, 30, 17, 0, 0)
-  spr(257, p.x - p.mapOffsetX, p.y - p.mapOffsetY, 0, 1, 0, 0, 1, 2)
+  if showControls then
+    map(p.mapX, 3, 30, 6, 0, 0)
+    spr(257, p.x - p.mapOffsetX, p.y - 3 * 8, 0, 1, 0, 0, 1, 2)
+  else
+    map(p.mapX, p.mapY, 30, 17, 0, 0)
+    spr(257, p.x - p.mapOffsetX, p.y - p.mapOffsetY, 0, 1, 0, 0, 1, 2)
+  end
 
   if showControls then
     map(0, 125, 30, 11, 0, 48)
