@@ -123,123 +123,279 @@ ship = {
   com = {
     displays = {
       status = 1.0,
-      active = true
+      active = true,
+      drawable = "display",
+      bb = {
+        min_x = 25,
+        min_y = 6,
+        max_x = 28,
+        max_y = 7
+      }
     },
     engine = {
       boiler = {
         status = 1.0,
+        drawable = "boiler",
         bb = {
-          min_x = 72,
-          min_y = 72,
-          max_x = 87,
-          max_y = 87
+          min_x = 18,
+          min_y = 10,
+          max_x = 21,
+          max_y = 11
         }
       },
       turbine = {
         status = 1.0,
+        drawable = "turbine",
         bb = {
-          min_x = 48,
-          min_y = 72,
-          max_x = 63,
-          max_y = 87
+          min_x = 15,
+          min_y = 10,
+          max_x = 16,
+          max_y = 11
         }
       },
     },
     hydraulics = {
       reservoir = {
         status = 1.0,
-        level = HYDRAULIC_MAX_KNSM
+        level = HYDRAULIC_MAX_KNSM,
+        drawable = "hyd_acc",
+        bb = {
+          min_x = 7,
+          min_y = 6,
+          max_x = 8,
+          max_y = 7
+        }
       },
       pump = {
-        status = 1.0
+        status = 1.0,
+        drawable = "hyd_pump",
+        bb = {
+          min_x = 7,
+          min_y = 10,
+          max_x = 8,
+          max_y = 11
+        }
       }
     },
     generator = {
-      status = 1.0
+      status = 1.0,
+      drawable = "generator",
+      bb = {
+        min_x = 10,
+        min_y = 10,
+        max_x = 13,
+        max_y = 11
+      }
     },
     rotors = {
       one = {
         status = 1.0,
         rotation = 0,
-        thrust = 0
+        thrust = 0,
+        drawable = "rotor_lower",
+        bb = {
+          min_x = 46,
+          min_y = 15,
+          max_x = 51,
+          max_y = 15
+        }
       },
       two = {
         status = 1.0,
         rotation = 0,
-        thrust = 0
+        thrust = 0,
+        drawable = "rotor_lower",
+        bb = {
+          min_x = 36,
+          min_y = 15,
+          max_x = 41,
+          max_y = 15
+        }
       },
       three = {
         status = 1.0,
         rotation = 0,
-        thrust = 0
+        thrust = 0,
+        drawable = "rotor_lower",
+        bb = {
+          min_x = 18,
+          min_y = 15,
+          max_x = 23,
+          max_y = 15
+        }
       },
       four = {
         status = 1.0,
         rotation = 0,
-        thrust = 0
+        thrust = 0,
+        drawable = "rotor_lower",
+        bb = {
+          min_x = 8,
+          min_y = 15,
+          max_x = 13,
+          max_y = 15
+        }
       }
     },
     props = {
       one = {
         status = 1.0,
         rotation = 0,
-        thrust = 0
+        thrust = 0,
+        drawable = "prop",
+        bb = {
+          min_x = 3,
+          min_y = 5,
+          max_x = 4,
+          max_y = 7
+        }
       },
       two = {
         status = 1.0,
         rotation = 0,
-        thrust = 0
+        thrust = 0,
+        drawable = "prop",
+        bb = {
+          min_x = 3,
+          min_y = 9,
+          max_x = 4,
+          max_y = 11
+        }
       }
     },
     acc = {
       H2O = {
-        status = 1.0
+        status = 1.0,
+        drawable = "H2Oacc",
+        bb = {
+          min_x = 55,
+          min_y = 6,
+          max_x = 56,
+          max_y = 7
+        }
       },
       CH4 = {
-        status = 1.0
+        status = 1.0,
+        drawable = "CH4acc",
+        bb = {
+          min_x = 53,
+          min_y = 10,
+          max_x = 54,
+          max_y = 11
+        }
       },
     },
-    bladders = {
+    cells = {
       one = {
         status = 1.0,
-        level = BLADDER_MAX_M3
+        level = BLADDER_MAX_M3,
+        drawable = "Hcell",
+        bb = {
+          min_x = 47,
+          min_y = 4,
+          max_x = 54,
+          max_y = 5
+        }
       },
       two = {
         status = 1.0,
-        level = BLADDER_MAX_M3
+        level = BLADDER_MAX_M3,
+        drawable = "Hcell",
+        bb = {
+          min_x = 38,
+          min_y = 4,
+          max_x = 45,
+          max_y = 5
+        }
       },
       three = {
         status = 1.0,
-        level = BLADDER_MAX_M3
+        level = BLADDER_MAX_M3,
+        drawable = "Hcell",
+        bb = {
+          min_x = 14,
+          min_y = 4,
+          max_x = 21,
+          max_y = 5
+        }
       },
       four = {
         status = 1.0,
-        level = BLADDER_MAX_M3
+        level = BLADDER_MAX_M3,
+        drawable = "Hcell",
+        bb = {
+          min_x = 5,
+          min_y = 4,
+          max_x = 12,
+          max_y = 5
+        }
       }
     },
     battery = {
       status = 1.0,
-      level = BATTERY_MAX_CHARGE_KW
+      level = BATTERY_MAX_CHARGE_KW,
+      drawable = "battery",
+      bb = {
+        min_x = 12,
+        min_y = 6,
+        max_x = 17,
+        max_y = 7
+      }
     },
     splitter = {
-      status = 1.0
+      status = 1.0,
+      drawable = "splitter",
+      bb = {
+        min_x = 34,
+        min_y = 11,
+        max_x = 35,
+        max_y = 11
+      }
     },
     tanks = {
       H = {
         status = 1.0,
-        level = H_TANK_MAX_KG
+        level = H_TANK_MAX_KG,
+        drawable = "Htank",
+        bb = {
+          min_x = 28,
+          min_y = 9,
+          max_x = 31,
+          max_y = 12
+        }
       },
       O = {
         status = 1.0,
-        level = O_TANK_MAX_KG
+        level = O_TANK_MAX_KG,
+        drawable = "Otank",
+        bb = {
+          min_x = 28,
+          min_y = 14,
+          max_x = 31,
+          max_y = 15
+        }
       },
       H2O = {
         status = 1.0,
-        level = H2O_TANK_MAX_KG
+        level = H2O_TANK_MAX_KG,
+        drawable = "H2Otank",
+        bb = {
+          min_x = 38,
+          min_y = 10,
+          max_x = 43,
+          max_y = 11
+        }
       },
       CH4 = {
         status = 1.0,
-        level = CH4_TANK_MAX_KG
+        level = CH4_TANK_MAX_KG,
+        drawable = "CH4tank",
+        bb = {
+          min_x = 45,
+          min_y = 10,
+          max_x = 50,
+          max_y = 11
+        }
       }
     },
   }
@@ -389,7 +545,7 @@ gauges = {
         c = 6
       }
     },
-    bladders = {
+    cells = {
       one = {
         x = 202,
         y = 108,
@@ -439,102 +595,102 @@ gauges = {
 }
 
 drawables = {
-  "prop" = {
+  prop = {
     s = 400,
     w = 2,
     h = 3
   },
-  "splitter" = {
+  splitter = {
     s = 418,
     w = 2,
     h = 1
   },
-  "rotor_upper" = {
+  rotor_upper = {
     s = 420,
     w = 2,
     h = 1
   },
-  "rotor_lower" = {
+  rotor_lower = {
     s = 434,
     w = 6,
     h = 1
   },
-  "display" = {
+  display = {
     s = 424,
     w = 4,
     h = 2
   },
-  "CH4acc" = {
+  CH4acc = {
     s = 428,
     w = 2,
     h = 2
   },
-  "H2Oacc" = {
+  H2Oacc = {
     s = 430,
     w = 2,
     h = 2
   },
-  "battery" = {
+  battery = {
     s = 448,
     w = 3,
     h = 2
   },
-  "hyd_pump" = {
+  hyd_pump = {
     s = 451,
     w = 2,
     h = 2
   },
-  "generator" = {
+  generator = {
     s = 453,
     w = 4,
     h = 2
   },
-  "turbine" = {
+  turbine = {
     s = 457,
     w = 2,
     h = 2
   },
-  "boiler" = {
+  boiler = {
     s = 459,
     w = 3,
     h = 2
   },
-  "pto_upper" = {
+  pto_upper = {
     s = 462,
     w = 1,
     h = 1
   },
-  "pto_lower" = {
+  pto_lower = {
     s = 463,
     w = 1,
     h = 1
   },
-  "hyd_acc" = {
+  hyd_acc = {
     s = 480,
     w = 2,
     h = 2
   },
-  "Hcell" = {
+  Hcell = {
     s = 482,
     w = 5,
     h = 2
   },
-  "H2Otank" = {
+  H2Otank = {
     s = 487,
     w = 3,
     h = 2
   },
-  "CH4tank" = {
+  CH4tank = {
     s = 490,
     w = 2,
     h = 2
   },
-  "Otank" = {
+  Otank = {
     s = 492,
     w = 2,
     h = 2
   },
-  "Htank" = {
+  Htank = {
     s = 478,
     w = 2,
     h = 3
@@ -793,10 +949,10 @@ function drawGame()
 
     print("Hyd Cells", 200, 100, 5, false, 1, true)
 
-    drawBarStatus(gauges.bars.bladders.one, ship.com.bladders.one.level, BLADDER_MAX_M3)
-    drawBarStatus(gauges.bars.bladders.two, ship.com.bladders.two.level, BLADDER_MAX_M3)
-    drawBarStatus(gauges.bars.bladders.three, ship.com.bladders.three.level, BLADDER_MAX_M3)
-    drawBarStatus(gauges.bars.bladders.four, ship.com.bladders.four.level, BLADDER_MAX_M3)
+    drawBarStatus(gauges.bars.cells.one, ship.com.cells.one.level, BLADDER_MAX_M3)
+    drawBarStatus(gauges.bars.cells.two, ship.com.cells.two.level, BLADDER_MAX_M3)
+    drawBarStatus(gauges.bars.cells.three, ship.com.cells.three.level, BLADDER_MAX_M3)
+    drawBarStatus(gauges.bars.cells.four, ship.com.cells.four.level, BLADDER_MAX_M3)
 
     if controlType == 0 then
       rectb(55, 63, 26, 34, 14)
@@ -818,7 +974,49 @@ function drawGame()
     elseif contains(ship.com.engine.turbine.bb, testPos) then
       print("Turbine", 2, 12, 6, false, 1, true)
     end
+
+    drawComponent(ship.com.displays.bb, ship.com.displays.drawable)
+
+    drawComponent(ship.com.engine.boiler.bb, ship.com.engine.boiler.drawable)
+    drawComponent(ship.com.engine.turbine.bb, ship.com.engine.turbine.drawable)
+
+    drawComponent(ship.com.hydraulics.reservoir.bb, ship.com.hydraulics.reservoir.drawable)
+    drawComponent(ship.com.hydraulics.pump.bb, ship.com.hydraulics.pump.drawable)
+
+    drawComponent(ship.com.generator.bb, ship.com.generator.drawable)
+
+    drawComponent(ship.com.rotors.one.bb, ship.com.rotors.one.drawable)
+    drawComponent(ship.com.rotors.two.bb, ship.com.rotors.two.drawable)
+    drawComponent(ship.com.rotors.three.bb, ship.com.rotors.three.drawable)
+    drawComponent(ship.com.rotors.four.bb, ship.com.rotors.four.drawable)
+
+    drawComponent(ship.com.props.one.bb, ship.com.props.one.drawable)
+    drawComponent(ship.com.props.two.bb, ship.com.props.two.drawable)
+
+    drawComponent(ship.com.acc.H2O.bb, ship.com.acc.H2O.drawable)
+    drawComponent(ship.com.acc.CH4.bb, ship.com.acc.CH4.drawable)
+
+    drawComponent(ship.com.cells.one.bb, ship.com.cells.one.drawable)
+    drawComponent(ship.com.cells.two.bb, ship.com.cells.two.drawable)
+    drawComponent(ship.com.cells.three.bb, ship.com.cells.three.drawable)
+    drawComponent(ship.com.cells.four.bb, ship.com.cells.four.drawable)
+
+    drawComponent(ship.com.battery.bb, ship.com.battery.drawable)
+    drawComponent(ship.com.splitter.bb, ship.com.splitter.drawable)
+
+    drawComponent(ship.com.tanks.H.bb, ship.com.tanks.H.drawable)
+    drawComponent(ship.com.tanks.O.bb, ship.com.tanks.O.drawable)
+    drawComponent(ship.com.tanks.H2O.bb, ship.com.tanks.H2O.drawable)
+    drawComponent(ship.com.tanks.CH4.bb, ship.com.tanks.CH4.drawable)
   end
+end
+
+function drawComponent(bb, drawableId)
+  drawable = drawables[drawableId]
+  posX = ((bb.min_x * 8 - p.mapOffsetX) // 8) * 8
+  posY = ((bb.min_y * 8 - p.mapOffsetY) // 8) * 8
+
+  spr(drawable.s, posX, posY, 0, 1, 0, 0, drawable.w, drawable.h)
 end
 
 function drawNeedleAngeStatus(needle, angle, vec)
@@ -916,7 +1114,7 @@ function simulate()
         tank = 0
       },
       H_V = {
-        bladders = {
+        cells = {
           one = 0,
           two = 0,
           three = 0,
@@ -977,7 +1175,7 @@ function simulate()
         tank = 0
       },
       H_V = {
-        bladders = {
+        cells = {
           one = 0,
           two = 0,
           three = 0,
@@ -1013,7 +1211,7 @@ function simulate()
   sim = controlsPowerDemand(sim)
   sim = controlsHydraulicDemand(sim)
   sim = storageTanksDemand(sim)
-  sim = bladderDemand(sim)
+  sim = cellDemand(sim)
   sim = batteryDemand(sim)
   sim = hydraulicReservoirDemand(sim)
   sim = splitterAccDemand(sim)
@@ -1112,15 +1310,15 @@ function storageTanksDemand(sim)
   return sim
 end
 
-function bladderDemand(sim)
-  sim.demand.H_V.bladders.one = math.min(
-      BLADDER_MAX_M3 - ship.com.bladders.one.level, BLADDER_MAX_M3F)
-  sim.demand.H_V.bladders.two = math.min(
-      BLADDER_MAX_M3 - ship.com.bladders.two.level, BLADDER_MAX_M3F)
-  sim.demand.H_V.bladders.three = math.min(
-      BLADDER_MAX_M3 - ship.com.bladders.three.level, BLADDER_MAX_M3F)
-  sim.demand.H_V.bladders.four = math.min(
-      BLADDER_MAX_M3 - ship.com.bladders.four.level, BLADDER_MAX_M3F)
+function cellDemand(sim)
+  sim.demand.H_V.cells.one = math.min(
+      BLADDER_MAX_M3 - ship.com.cells.one.level, BLADDER_MAX_M3F)
+  sim.demand.H_V.cells.two = math.min(
+      BLADDER_MAX_M3 - ship.com.cells.two.level, BLADDER_MAX_M3F)
+  sim.demand.H_V.cells.three = math.min(
+      BLADDER_MAX_M3 - ship.com.cells.three.level, BLADDER_MAX_M3F)
+  sim.demand.H_V.cells.four = math.min(
+      BLADDER_MAX_M3 - ship.com.cells.four.level, BLADDER_MAX_M3F)
 
   return sim
 end
@@ -1211,22 +1409,22 @@ function elementSupply(sim)
     sim.supply.H2O.splitter = splitterPercent * sim.availableForUse.H2O
   end
 
-  totalH_VDemand = sim.demand.H_V.bladders.one + sim.demand.H_V.bladders.two +
-      sim.demand.H_V.bladders.three + sim.demand.H_V.bladders.four
+  totalH_VDemand = sim.demand.H_V.cells.one + sim.demand.H_V.cells.two +
+      sim.demand.H_V.cells.three + sim.demand.H_V.cells.four
   if sim.availableForUse.H_V > totalH_VDemand then
-    sim.supply.H_V.bladders.one = sim.demand.H_V.bladders.one
-    sim.supply.H_V.bladders.two = sim.demand.H_V.bladders.two
-    sim.supply.H_V.bladders.three = sim.demand.H_V.bladders.three
-    sim.supply.H_V.bladders.four = sim.demand.H_V.bladders.four
+    sim.supply.H_V.cells.one = sim.demand.H_V.cells.one
+    sim.supply.H_V.cells.two = sim.demand.H_V.cells.two
+    sim.supply.H_V.cells.three = sim.demand.H_V.cells.three
+    sim.supply.H_V.cells.four = sim.demand.H_V.cells.four
   elseif sim.availableForUse.H_V > 0 then
-    bOnePercent = sim.demand.H_V.bladders.one / totalH_VDemand
-    bTwoPercent = sim.demand.H_V.bladders.two / totalH_VDemand
-    bThreePercent = sim.demand.H_V.bladders.three / totalH_VDemand
-    bFourPercent = sim.demand.H_V.bladders.four / totalH_VDemand
-    sim.supply.H_V.bladders.one = bOnePercent * sim.availableForUse.H_V
-    sim.supply.H_V.bladders.two = bTwoPercent * sim.availableForUse.H_V
-    sim.supply.H_V.bladders.three = bThreePercent * sim.availableForUse.H_V
-    sim.supply.H_V.bladders.four = bFourPercent * sim.availableForUse.H_V
+    bOnePercent = sim.demand.H_V.cells.one / totalH_VDemand
+    bTwoPercent = sim.demand.H_V.cells.two / totalH_VDemand
+    bThreePercent = sim.demand.H_V.cells.three / totalH_VDemand
+    bFourPercent = sim.demand.H_V.cells.four / totalH_VDemand
+    sim.supply.H_V.cells.one = bOnePercent * sim.availableForUse.H_V
+    sim.supply.H_V.cells.two = bTwoPercent * sim.availableForUse.H_V
+    sim.supply.H_V.cells.three = bThreePercent * sim.availableForUse.H_V
+    sim.supply.H_V.cells.four = bFourPercent * sim.availableForUse.H_V
   end
 
   return sim
@@ -1435,20 +1633,20 @@ function distributePower(sim)
 end
 
 function drainTanks(sim)
-  ship.com.bladders.one.level = ship.com.bladders.one.level -
-      math.max(0.01, 1.0 - ship.com.bladders.one.status) * BLADDER_MAX_VENT_M3F
-  ship.com.bladders.two.level = ship.com.bladders.two.level -
-      math.max(0.01, 1.0 - ship.com.bladders.two.status) * BLADDER_MAX_VENT_M3F
-  ship.com.bladders.three.level = ship.com.bladders.three.level -
-      math.max(0.01, 1.0 - ship.com.bladders.three.status) * BLADDER_MAX_VENT_M3F
-  ship.com.bladders.four.level = ship.com.bladders.four.level -
-      math.max(0.01, 1.0 - ship.com.bladders.four.status) * BLADDER_MAX_VENT_M3F
+  ship.com.cells.one.level = ship.com.cells.one.level -
+      math.max(0.01, 1.0 - ship.com.cells.one.status) * BLADDER_MAX_VENT_M3F
+  ship.com.cells.two.level = ship.com.cells.two.level -
+      math.max(0.01, 1.0 - ship.com.cells.two.status) * BLADDER_MAX_VENT_M3F
+  ship.com.cells.three.level = ship.com.cells.three.level -
+      math.max(0.01, 1.0 - ship.com.cells.three.status) * BLADDER_MAX_VENT_M3F
+  ship.com.cells.four.level = ship.com.cells.four.level -
+      math.max(0.01, 1.0 - ship.com.cells.four.status) * BLADDER_MAX_VENT_M3F
 
   ship.com.tanks.H.level = ship.com.tanks.H.level -
-      sim.supply.H_V.bladders.one / H_MASS_TO_VOLUME -
-      sim.supply.H_V.bladders.two / H_MASS_TO_VOLUME -
-      sim.supply.H_V.bladders.three / H_MASS_TO_VOLUME -
-      sim.supply.H_V.bladders.four / H_MASS_TO_VOLUME
+      sim.supply.H_V.cells.one / H_MASS_TO_VOLUME -
+      sim.supply.H_V.cells.two / H_MASS_TO_VOLUME -
+      sim.supply.H_V.cells.three / H_MASS_TO_VOLUME -
+      sim.supply.H_V.cells.four / H_MASS_TO_VOLUME
   ship.com.tanks.O.level = ship.com.tanks.O.level - sim.supply.O.boiler
   ship.com.tanks.H2O.level = ship.com.tanks.H2O.level - sim.supply.H2O.boiler -
       sim.supply.H2O.splitter
@@ -1461,14 +1659,14 @@ function drainTanks(sim)
 end
 
 function fillTanks(sim)
-  ship.com.bladders.one.level = math.min(BLADDER_MAX_M3,
-      ship.com.bladders.one.level + sim.supply.H_V.bladders.one)
-  ship.com.bladders.two.level = math.min(BLADDER_MAX_M3,
-      ship.com.bladders.two.level + sim.supply.H_V.bladders.two)
-  ship.com.bladders.three.level = math.min(BLADDER_MAX_M3,
-      ship.com.bladders.three.level + sim.supply.H_V.bladders.three)
-  ship.com.bladders.four.level = math.min(BLADDER_MAX_M3,
-      ship.com.bladders.four.level + sim.supply.H_V.bladders.four)
+  ship.com.cells.one.level = math.min(BLADDER_MAX_M3,
+      ship.com.cells.one.level + sim.supply.H_V.cells.one)
+  ship.com.cells.two.level = math.min(BLADDER_MAX_M3,
+      ship.com.cells.two.level + sim.supply.H_V.cells.two)
+  ship.com.cells.three.level = math.min(BLADDER_MAX_M3,
+      ship.com.cells.three.level + sim.supply.H_V.cells.three)
+  ship.com.cells.four.level = math.min(BLADDER_MAX_M3,
+      ship.com.cells.four.level + sim.supply.H_V.cells.four)
 
   ship.com.tanks.H.level = math.min(H_TANK_MAX_KG,
       ship.com.tanks.H.level + sim.supply.H_M.tank)
@@ -1524,9 +1722,9 @@ function applyForces(sim)
   rotor4Ycomp = math.sin(math.rad(90 - ship.com.rotors.four.rotation)) *
       thrustAdjustment
 
-  totalHydrogenVolume = ship.com.bladders.one.level +
-      ship.com.bladders.two.level + ship.com.bladders.three.level +
-      ship.com.bladders.four.level
+  totalHydrogenVolume = ship.com.cells.one.level +
+      ship.com.cells.two.level + ship.com.cells.three.level +
+      ship.com.cells.four.level
   totalHydrogenWeight = totalHydrogenVolume * HYDROGEN_DENSITY
   totalAirWeight = totalHydrogenVolume * SEA_LEVEL_AIR_DENSITY
 
@@ -1694,8 +1892,8 @@ function drawShipDebugOne(s)
   lines[23] = string.format("P1T: %f", s.com.props.one.thrust)
   lines[24] = string.format("AccH2O S: %f", s.com.acc.H2O.status)
   lines[25] = string.format("AccCH4 S: %f", s.com.acc.CH4.status)
-  lines[26] = string.format("BLAD1 S: %f", s.com.bladders.one.status)
-  lines[27] = string.format("BLAD1 L: %f", s.com.bladders.one.level)
+  lines[26] = string.format("BLAD1 S: %f", s.com.cells.one.status)
+  lines[27] = string.format("BLAD1 L: %f", s.com.cells.one.level)
   lines[28] = string.format("Batt S: %f", s.com.battery.status)
   lines[29] = string.format("Batt L: %f", s.com.battery.level)
   lines[30] = string.format("Split S: %f", s.com.splitter.status)
@@ -1746,7 +1944,7 @@ function drawSimDebug()
   lines[22] = string.format("Boiler: D%f S%f", sim.demand.CH4.boiler, sim.supply.CH4.boiler)
   lines[23] = "H"
   lines[24] = string.format("Tank: D%f S%f", sim.demand.H_M.tank, sim.supply.H_M.tank)
-  lines[25] = string.format("Bladders: D%f S%f", sim.demand.H_V.bladders.one, sim.supply.H_V.bladders.one)
+  lines[25] = string.format("Cells: D%f S%f", sim.demand.H_V.cells.one, sim.supply.H_V.cells.one)
   lines[26] = "O"
   lines[27] = string.format("Tank: D%f S%f", sim.demand.O.tank, sim.supply.O.tank)
   lines[28] = string.format("Boiler: D%f S%f", sim.demand.O.boiler, sim.supply.O.boiler)
