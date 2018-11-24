@@ -245,12 +245,6 @@ ship = {
   }
 }
 
-start = {
-  t= 0,
-  x= 60,
-  y= 42
-}
-
 gauges = {
   needles = {
     vsi = {
@@ -442,6 +436,115 @@ gauges = {
       }
     }
   }
+}
+
+drawables = {
+  "prop" = {
+    s = 400,
+    w = 2,
+    h = 3
+  },
+  "splitter" = {
+    s = 418,
+    w = 2,
+    h = 1
+  },
+  "rotor_upper" = {
+    s = 420,
+    w = 2,
+    h = 1
+  },
+  "rotor_lower" = {
+    s = 434,
+    w = 6,
+    h = 1
+  },
+  "display" = {
+    s = 424,
+    w = 4,
+    h = 2
+  },
+  "CH4acc" = {
+    s = 428,
+    w = 2,
+    h = 2
+  },
+  "H2Oacc" = {
+    s = 430,
+    w = 2,
+    h = 2
+  },
+  "battery" = {
+    s = 448,
+    w = 3,
+    h = 2
+  },
+  "hyd_pump" = {
+    s = 451,
+    w = 2,
+    h = 2
+  },
+  "generator" = {
+    s = 453,
+    w = 4,
+    h = 2
+  },
+  "turbine" = {
+    s = 457,
+    w = 2,
+    h = 2
+  },
+  "boiler" = {
+    s = 459,
+    w = 3,
+    h = 2
+  },
+  "pto_upper" = {
+    s = 462,
+    w = 1,
+    h = 1
+  },
+  "pto_lower" = {
+    s = 463,
+    w = 1,
+    h = 1
+  },
+  "hyd_acc" = {
+    s = 480,
+    w = 2,
+    h = 2
+  },
+  "Hcell" = {
+    s = 482,
+    w = 5,
+    h = 2
+  },
+  "H2Otank" = {
+    s = 487,
+    w = 3,
+    h = 2
+  },
+  "CH4tank" = {
+    s = 490,
+    w = 2,
+    h = 2
+  },
+  "Otank" = {
+    s = 492,
+    w = 2,
+    h = 2
+  },
+  "Htank" = {
+    s = 478,
+    w = 2,
+    h = 3
+  }
+}
+
+start = {
+  t= 0,
+  x= 60,
+  y= 42
 }
 
 startScreen = true
