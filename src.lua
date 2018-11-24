@@ -10,7 +10,7 @@ SEA_LEVEL_AIR_DENSITY = 1.225
 HYDROGEN_DENSITY = 0.08988
 WING_LIFT = 128
 
-HYDROGEN_LIFT_ADJUST = 5.6395
+HYDROGEN_LIFT_ADJUST = 5.95
 
 -- Balance
 -- All units are in per frame 1/60th of a second.
@@ -23,6 +23,7 @@ HYDROGEN_LIFT_ADJUST = 5.6395
 --   KN: kilo newton (force)
 --   NM: newton per meter (torque)
 --   KNSM: kilo newton per square meter (pressure)
+SHIP_MAX_SPEED = 300
 SHIP_MAX_ALT = 6000
 SHIP_DRY_WEIGHT_KG = 120000
 
@@ -102,7 +103,7 @@ ship = {
     alt = 1000,
     vsi = 0.0,
     throttle = {
-      props = 0.5,
+      props = 0.1,
       rotors = 0.7
     },
     rotation = {
@@ -242,7 +243,7 @@ gauges = {
       c = 6
     },
     heading = {
-      x = 207,
+      x = 175,
       y = 79,
       c = 6
     },
@@ -257,7 +258,7 @@ gauges = {
       c = 8
     },
     con_heading = {
-      x = 208,
+      x = 176,
       y = 80,
       c = 8
     },
@@ -268,12 +269,12 @@ gauges = {
     },
     props = {
       one = {
-        x = 193,
+        x = 161,
         y = 113,
         c = 6
       },
       two = {
-        x = 217,
+        x = 185,
         y = 113,
         c = 6
       }
@@ -310,7 +311,7 @@ gauges = {
       c = 8
     },
     con_throttle = {
-      x = 186,
+      x = 138,
       y = 68,
       w = 4,
       h = 24,
@@ -326,7 +327,7 @@ gauges = {
       c = 6
     },
     speed = {
-      x = 186,
+      x = 138,
       y = 68,
       w = 4,
       h = 24,
@@ -334,14 +335,14 @@ gauges = {
     },
     props = {
       one = {
-        x = 185,
+        x = 153,
         y = 108,
         w = 2,
         h = 11,
         c = 6
       },
       two = {
-        x = 209,
+        x = 177,
         y = 108,
         w = 2,
         h = 11,
@@ -375,6 +376,52 @@ gauges = {
         y = 108,
         w = 2,
         h = 11,
+        c = 6
+      }
+    },
+    bladders = {
+      one = {
+        x = 202,
+        y = 108,
+        w = 4,
+        h = 16,
+        c = 6
+      },
+      two = {
+        x = 210,
+        y = 108,
+        w = 4,
+        h = 16,
+        c = 6
+      },
+      three = {
+        x = 218,
+        y = 108,
+        w = 4,
+        h = 16,
+        c = 6
+      },
+      four = {
+        x = 226,
+        y = 108,
+        w = 4,
+        h = 16,
+        c = 6
+      }
+    },
+    tanks = {
+      H2O = {
+        x = 202,
+        y = 68,
+        w = 4,
+        h = 24,
+        c = 6
+      },
+      CH4 = {
+        x = 218,
+        y = 68,
+        w = 4,
+        h = 24,
         c = 6
       }
     }
@@ -504,8 +551,21 @@ end
 
 
 function drawGame()
+  map(cStart, 0, 30, 17, 0, 0)
+  spr(257, p.x, p.y, 0, 1, 0, 0, 1, 2)
+
   if showControls then
-    map(0,119,25,17,infoW,0)
+    map(0, 125, 30, 11, 0, 48)
+
+    print("DLS Radar", 8, 57, 5, false, 1, true)
+    print("RTR", 62, 57, 5, false, 1, true)
+    print("Angle", 58, 65, 5, false, 1, true)
+    print("VS", 94, 57, 5, false, 1, true)
+    print("Alt", 111, 57, 5, false, 1, true)
+    print("Spd", 135, 57, 5, false, 1, true)
+    print("Heading", 163, 57, 5, false, 1, true)
+    print("H2O", 199, 57, 5, false, 1, true)
+    print("CH4", 215, 57, 5, false, 1, true)
 
     drawNeedleLevelStatus(gauges.needles.vsi, ship.vsi, -1.2, 1.2, 0, 180, 8)
     drawNeedleLevelStatus(gauges.needles.con_vsi, ship.con.vsi, -1.2, 1.2, 0, 180, 10)
@@ -518,15 +578,38 @@ function drawGame()
                      { x = 0, y = 17 })
 
     drawBarStatus(gauges.bars.alt, ship.pos.z, SHIP_MAX_ALT)
-    drawBarStatus(gauges.bars.speed, ship.speed, 300)
+    drawBarStatus(gauges.bars.speed, ship.speed, SHIP_MAX_SPEED)
+
+    drawBarStatus(gauges.bars.tanks.H2O, ship.com.tanks.H2O.level, H2O_TANK_MAX_KG)
+    drawBarStatus(gauges.bars.tanks.CH4, ship.com.tanks.CH4.level, CH4_TANK_MAX_KG)
+
+    altY = lerp(91, 67, inverseLerp(0, SHIP_MAX_ALT, ship.pos.z)) - 2.5
+    spdY = lerp(91, 67, inverseLerp(0, SHIP_MAX_SPEED, ship.speed)) - 2.5
+    print(string.sub(string.format("%f", ship.pos.z/1000.0), 1, -6).."k", 120, altY, 6, false, 1, true)
+    if ship.speed < 100 then
+      print(string.sub(string.format("%f", ship.speed), 1, -6), 144, spdY, 6, false, 1, true)
+    else
+      print(string.format("%d", ship.speed//1), 144, spdY, 6, false, 1, true)
+    end
 
     drawLevelStatus(gauges.levels.con_alt, ship.con.alt, SHIP_MAX_ALT)
     drawLevelStatus(gauges.levels.con_throttle, ship.con.throttle.props, 1.0)
+
+    print("PRP1", 152, 100, 5, false, 1, true)
+    print("PRP2", 176, 100, 5, false, 1, true)
 
     drawPropRotationStatus(gauges.needles.props.one,
                            ship.com.props.one.rotation)
     drawPropRotationStatus(gauges.needles.props.two,
                            ship.com.props.two.rotation)
+
+    drawPropThrustStatus(gauges.bars.props.one, ship.com.props.one.thrust)
+    drawPropThrustStatus(gauges.bars.props.two, ship.com.props.two.thrust)
+
+    print("RTR1", 56, 100, 5, false, 1, true)
+    print("RTR2", 80, 100, 5, false, 1, true)
+    print("RTR3", 104, 100, 5, false, 1, true)
+    print("RTR4", 128, 100, 5, false, 1, true)
 
     drawRotorRotationStatus(gauges.needles.rotors.one,
                             ship.com.rotors.one.rotation)
@@ -537,38 +620,30 @@ function drawGame()
     drawRotorRotationStatus(gauges.needles.rotors.four,
                             ship.com.rotors.four.rotation)
 
-    print("PRP1", 184, 101, 5, false, 1, true)
-    print("PRP2", 208, 101, 5, false, 1, true)
-
-    drawPropThrustStatus(gauges.bars.props.one, ship.com.props.one.thrust)
-    drawPropThrustStatus(gauges.bars.props.two, ship.com.props.two.thrust)
-
-    print("RTR1", 56, 101, 5, false, 1, true)
-    print("RTR2", 80, 101, 5, false, 1, true)
-    print("RTR3", 104, 101, 5, false, 1, true)
-    print("RTR4", 128, 101, 5, false, 1, true)
-
     drawRotorThrustStatus(gauges.bars.rotors.one, ship.com.rotors.one.thrust)
     drawRotorThrustStatus(gauges.bars.rotors.two, ship.com.rotors.two.thrust)
     drawRotorThrustStatus(gauges.bars.rotors.three, ship.com.rotors.three.thrust)
     drawRotorThrustStatus(gauges.bars.rotors.four, ship.com.rotors.four.thrust)
+
+    print("Hyd Cells", 200, 100, 5, false, 1, true)
+
+    drawBarStatus(gauges.bars.bladders.one, ship.com.bladders.one.level, BLADDER_MAX_M3)
+    drawBarStatus(gauges.bars.bladders.two, ship.com.bladders.two.level, BLADDER_MAX_M3)
+    drawBarStatus(gauges.bars.bladders.three, ship.com.bladders.three.level, BLADDER_MAX_M3)
+    drawBarStatus(gauges.bars.bladders.four, ship.com.bladders.four.level, BLADDER_MAX_M3)
 
     if controlType == 0 then
       rectb(55, 63, 26, 34, 14)
     elseif controlType == 1 then
       rectb(87, 63, 18, 34, 14)
     elseif controlType == 2 then
-      rectb(111, 63, 10, 34, 14)
+      rectb(111, 63, 24, 34, 14)
     elseif controlType == 3 then
-      rectb(183, 63, 10, 34, 14)
+      rectb(135, 63, 24, 34, 14)
     elseif controlType == 4 then
-      rectb(191, 63, 34, 34, 14)
+      rectb(159, 63, 34, 34, 14)
     end
-  else
-    map(cStart,0,25,17,infoW,0)
-    spr(257,p.x,p.y,0,1,0,0,1,2)
   end
-  drawStatus()
 end
 
 function drawNeedleAngeStatus(needle, angle, vec)
@@ -580,7 +655,7 @@ function drawNeedleLevelStatus(needle, value, min_value, max_value,
                                min_angle, max_angle, length)
   vec = { x = 0, y = length }
   normal = inverseLerp(min_value, max_value, value)
-  angle = lerp(min_angle, max_angle, normal)
+  angle = clamp(lerp(min_angle, max_angle, normal), min_angle,max_angle)
   drawNeedleAngeStatus(needle, angle, vec)
 end
 
@@ -1267,7 +1342,7 @@ end
 
 function applyForces(sim)
   altAdjustment = clamp01(5000 / (ship.pos.z + 5000))
-  thrustAdjustment = lerp(0.4, 1.0, altAdjustment)
+  thrustAdjustment = lerp(0.2, 1.0, altAdjustment)
   ship.env.Atmo = altAdjustment * SEA_LEVEL_AIR_DENSITY
 
   rotor1Xcomp = math.cos(math.rad(90 - ship.com.rotors.one.rotation)) *
