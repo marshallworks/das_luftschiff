@@ -81,10 +81,14 @@ CH4_ACC_PER_TIC = 20
 
 -- Game State
 p = {
-  x = 52,
+  x = 16,
   y = 16,
   vx = 0,
-  vy = 0
+  vy = 0,
+  mapX = 0,
+  mapY = 0,
+  mapOffsetX = 0,
+  mapOffsetY = 0
 }
 
 ship = {
@@ -123,10 +127,22 @@ ship = {
     },
     engine = {
       boiler = {
-        status = 1.0
+        status = 1.0,
+        bb = {
+          min_x = 72,
+          min_y = 72,
+          max_x = 87,
+          max_y = 87
+        }
       },
       turbine = {
-        status = 1.0
+        status = 1.0,
+        bb = {
+          min_x = 48,
+          min_y = 72,
+          max_x = 63,
+          max_y = 87
+        }
       },
     },
     hydraulics = {
@@ -428,8 +444,6 @@ gauges = {
   }
 }
 
-infoW = 40
-cStart = 0
 startScreen = true
 showControls = false
 
@@ -503,32 +517,62 @@ function TIC()
         if ship.con.rotation.props > 360 then ship.con.rotation.props = ship.con.rotation.props - 360 end
       end
     else
-      if btn(2) then
-        p.vx=math.max(p.vx-0.1, -2.0)
-      elseif btn(3) then
-        p.vx=math.min(p.vx+0.1, 2.0)
+      onFloor = false
+      inCeiling = false
+      testX = (p.x + 4) // 8
+      testYD = (p.y + 16) // 8
+      testYU = (p.y) // 8
+      if mget(testX, testYD) == 16 then onFloor = true end
+      if mget(testX, testYU) == 16 then inCeiling = true end
+
+      if btnp(0) and onFloor then
+        p.vy = -2.2
+      elseif p.vy == 0 and onFloor then
+        p.y = testYD * 8 - 16
+        p.vy = math.min(p.vy, 0.0)
+      elseif not onFloor then
+        p.vy = math.min(p.vy + 0.1, 2.0)
       else
-        p.vx=0
+        p.vy = 0.0
       end
 
-      if btnp(4) then p.vy=p.vy-2.4 end
+      if inCeiling and p.vy < 0 then
+        p.vy = -p.vy
+      end
 
-      if mget((p.x+4 - infoW)//8 + cStart,(p.y+16)//8) == 16 then
-        p.vy=math.min(0,p.vy)
+      if btn(2) then
+        p.vx = math.max(p.vx - 0.1, -2.0)
+      elseif btn(3) then
+        p.vx = math.min(p.vx + 0.1, 2.0)
       else
-        p.vy=p.vy+0.1
+        p.vx= 0.0
       end
 
       p.x=p.x+p.vx
       p.y=p.y+p.vy
 
-      if p.x > 240 then
-        cStart=24
-        p.x = infoW + 4
-      elseif p.x < infoW - 4 then
-        cStart=0
-        p.x=239
-      end
+      if p.x < 0 then p.x = 0 end
+      if p.x > 376 then p.x = 376 end
+
+      p.mapX = (p.x + 0.5) / 8 - 15
+      p.mapY = 0 -- (p.y + 0.5) / 8 - 8
+      p.mapOffsetX = p.mapX * 8
+      p.mapOffsetY = p.mapY * 8
+
+      -- if mget((p.x+4 - infoW)//8 + cStart,(p.y+16)//8) == 16 then
+      --   p.vy=math.min(0,p.vy)
+      -- else
+      --   p.vy=p.vy+0.1
+      -- end
+
+
+      -- if p.x > 240 then
+      --   cStart=24
+      --   p.x = infoW + 4
+      -- elseif p.x < infoW - 4 then
+      --   cStart=0
+      --   p.x=239
+      -- end
     end
 
     if btnp(7) then
@@ -551,8 +595,8 @@ end
 
 
 function drawGame()
-  map(cStart, 0, 30, 17, 0, 0)
-  spr(257, p.x, p.y, 0, 1, 0, 0, 1, 2)
+  map(p.mapX, p.mapY, 30, 17, 0, 0)
+  spr(257, p.x - p.mapOffsetX, p.y - p.mapOffsetY, 0, 1, 0, 0, 1, 2)
 
   if showControls then
     map(0, 125, 30, 11, 0, 48)
@@ -643,6 +687,15 @@ function drawGame()
     elseif controlType == 4 then
       rectb(159, 63, 34, 34, 14)
     end
+  else
+    print(string.format("%f:%f", p.x + 4, p.y + 8), 2, 2, 6, false, 1, true)
+
+    testPos = { x = p.x + 4, y = p.y + 8}
+    if contains(ship.com.engine.boiler.bb, testPos) then
+      print("Boiler", 2, 12, 6, false, 1, true)
+    elseif contains(ship.com.engine.turbine.bb, testPos) then
+      print("Turbine", 2, 12, 6, false, 1, true)
+    end
   end
 end
 
@@ -689,19 +742,6 @@ end
 
 function drawRotorThrustStatus(bar, thrust)
   drawBarStatus(bar, thrust, ROTOR_MAX_THRUST_KN)
-end
-
-function drawStatus()
-  rect(0, 0, infoW, 136, 0)
-  print("Luftschiff", 1, 1, 15, false, 1, true)
-  print(string.format("Spd %d", ship.speed//1), 1, 10, 14, false, 1, true)
-  print(string.format("Acc %d", ship.acceleration//1), 1, 20, 14, false, 1, true)
-  print(string.format("Hdg %d", ship.heading//1), 1, 30, 14, false, 1, true)
-  print(string.format("Alt %d", ship.pos.z//1), 1, 40, 14, false, 1, true)
-  print(string.sub(string.format("VSI %f", ship.vsi), 1, -5), 1, 50, 14, false, 1, true)
-  print(string.format("X %d", (ship.pos.x * 0.001)//1), 1, 60, 14, false, 1, true)
-  print(string.format("Y %d", (ship.pos.y * 0.001)//1), 1, 70, 14, false, 1, true)
-  print(string.format("R %d", ship.com.rotors.one.rotation//1), 1, 80, 14, false, 1, true)
 end
 
 function simulate()
@@ -1498,6 +1538,10 @@ function rotateV2(vec, angle)
     x = vec.x * aCos - vec.y * aSin,
     y = vec.y * aCos + vec.x * aSin
   }
+end
+
+function contains(bb, pos)
+  return pos.x >= bb.min_x and pos.y >= bb.min_y and pos.x <= bb.max_x and pos.y <= bb.max_y
 end
 
 function drawShipDebugOne(s)
