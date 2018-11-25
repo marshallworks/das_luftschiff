@@ -86,7 +86,7 @@ start={
   y= 42
 }
 
-camera={
+cam={
   t=0,
   x=0,
   y=0,
@@ -106,7 +106,7 @@ s={
   speed=20,
   acceleration=0,
   heading=0,
-  rotation=0,
+  rot=0,
   vsi=0,
   set_vsi=0,
   pos={
@@ -117,11 +117,11 @@ s={
   con={
     alt=1000,
     vsi=0.0,
-    throttle={
+    thrt={
       props=0.1,
       rotors=0.7
     },
-    rotation={
+    rot={
       props=0,
       rotors=0
     }
@@ -132,10 +132,10 @@ s={
     CH4=0.4
   },
   com={
-    displays={
+    disps={
       st=1.0,
       active=true,
-      id="display",
+      id="disp",
       bb={
         min_x=55,
         min_y=23,
@@ -144,9 +144,9 @@ s={
       }
     },
     engine={
-      boiler={
+      bilr={
         st=1.0,
-        id="boiler",
+        id="bilr",
         bb={
           min_x=48,
           min_y=27,
@@ -154,9 +154,9 @@ s={
           max_y=28
         }
       },
-      turbine={
+      turb={
         st=1.0,
-        id="turbine",
+        id="turb",
         bb={
           min_x=46,
           min_y=27,
@@ -201,7 +201,7 @@ s={
     rotors={
       one={
         st=1.0,
-        rotation=0,
+        rot=0,
         thrust=0,
         id="rotor_lower",
         bb={
@@ -213,7 +213,7 @@ s={
       },
       two={
         st=1.0,
-        rotation=0,
+        rot=0,
         thrust=0,
         id="rotor_lower",
         bb={
@@ -225,7 +225,7 @@ s={
       },
       three={
         st=1.0,
-        rotation=0,
+        rot=0,
         thrust=0,
         id="rotor_lower",
         bb={
@@ -237,7 +237,7 @@ s={
       },
       four={
         st=1.0,
-        rotation=0,
+        rot=0,
         thrust=0,
         id="rotor_lower",
         bb={
@@ -251,7 +251,7 @@ s={
     props={
       one={
         st=1.0,
-        rotation=0,
+        rot=0,
         thrust=0,
         id="prop",
         bb={
@@ -263,7 +263,7 @@ s={
       },
       two={
         st=1.0,
-        rotation=0,
+        rot=0,
         thrust=0,
         id="prop",
         bb={
@@ -296,7 +296,7 @@ s={
         }
       },
     },
-    cells={
+    clls={
       one={
         st=1.0,
         level=BLADDER_MAX_M3,
@@ -342,10 +342,10 @@ s={
         }
       }
     },
-    battery={
+    btry={
       st=1.0,
       level=BATTERY_MAX_CHARGE_KW,
-      id="battery",
+      id="btry",
       bb={
         min_x=42,
         min_y=23,
@@ -424,7 +424,7 @@ gauges={
       y=79,
       c=6
     },
-    rotation={
+    rot={
       x=76,
       y=74,
       c=6
@@ -439,7 +439,7 @@ gauges={
       y=80,
       c=8
     },
-    con_rotation={
+    con_rot={
       x=77,
       y=75,
       c=8
@@ -487,7 +487,7 @@ gauges={
       h=24,
       c=8
     },
-    con_throttle={
+    con_thrt={
       x=138,
       y=68,
       w=4,
@@ -556,7 +556,7 @@ gauges={
         c=6
       }
     },
-    cells={
+    clls={
       one={
         x=202,
         y=108,
@@ -626,7 +626,7 @@ drawables={
     w=6,
     h=1
   },
-  display={
+  disp={
     s=424,
     w=4,
     h=2
@@ -641,7 +641,7 @@ drawables={
     w=2,
     h=2
   },
-  battery={
+  btry={
     s=448,
     w=3,
     h=2
@@ -656,12 +656,12 @@ drawables={
     w=4,
     h=2
   },
-  turbine={
+  turb={
     s=457,
     w=2,
     h=2
   },
-  boiler={
+  bilr={
     s=459,
     w=3,
     h=2
@@ -710,21 +710,57 @@ drawables={
 
 startScreen=true
 showControls=false
+showMap=false
 
 debugType=0
 controlType=0
 
+RES_PT_COUNT=8000
+MAP_DIM=1000
+mapVls={}
+CH4pts={}
+H2Opts={}
+
 function init()
   -- Background color
   poke(0x03FF8, 3)
+  math.randomseed(8778)
 
-  camera.x=p.x - 120
-  camera.y=p.y - 64
-  camera.cellX=camera.x / 8
-  camera.cellY=camera.y / 8
+  buildMap()
+
+  cam.x=p.x - 120
+  cam.y=p.y - 64
+  cam.cellX=cam.x / 8
+  cam.cellY=cam.y / 8
 end
 
-init()
+function buildMap()
+  for i=1, RES_PT_COUNT do
+    CH4pts[i]={x=math.random(-MAP_DIM,MAP_DIM),y=math.random(-MAP_DIM,MAP_DIM)}
+    H2Opts[i]={x=math.random(-MAP_DIM,MAP_DIM),y=math.random(-MAP_DIM,MAP_DIM)}
+  end
+
+  -- for pY=-MAP_DIM,MAP_DIM do
+  --   mapVls[pY]={}
+  --   for pX=-MAP_DIM,MAP_DIM do
+  --     CH4cnt=0
+  --     H2Ocnt=0
+  --     tp={x=pX,y=pY}
+  --     for i=1, RES_PT_COUNT do
+  --       CH4pt=CH4pts[i]
+  --       H2Opt=H2Opts[i]
+  --       CH4dis=144-sqrDistance(tp,CH4pt)
+  --       H2Odis=144-sqrDistance(tp,H2Opt)
+  --       CH4cnt=CH4cnt+math.max(0,CH4dis)
+  --       H2Ocnt=H2Ocnt+math.max(0,H2Odis)
+  --     end
+  --     mapVls[pY][pX]={
+  --       CH4=math.min(1,inverseLerp(0,288,CH4cnt)),
+  --       H2O=math.min(1,inverseLerp(0,288,H2Ocnt))
+  --     }
+  --   end
+  -- end
+end
 
 function TIC()
 
@@ -737,7 +773,7 @@ function TIC()
 
     cls(0)
     sprId=0
-    if (start.t%60)//30 == 0 then
+    if (start.t%60)//30==0 then
       sprId=1
     else
       sprId=49
@@ -749,13 +785,15 @@ function TIC()
     start.t=start.t+1
   else
 
+    if btnp(5) then showMap=not showMap end
+
     testPos={x=p.x,y=p.y}
-    if mapContains(s.com.displays.bb, testPos) then
+    if mapContains(s.com.disps.bb, testPos) then
       if btnp(6) then showControls=not showControls end
-    elseif mapContains(s.com.engine.boiler.bb, testPos) then
-      if btn(6) then s.com.engine.boiler.st=math.min(s.com.engine.boiler.st+0.01,1.0) end
-    elseif mapContains(s.com.engine.turbine.bb, testPos) then
-      if btn(6) then s.com.engine.turbine.st=math.min(s.com.engine.turbine.st+0.01,1.0) end
+    elseif mapContains(s.com.engine.bilr.bb, testPos) then
+      if btn(6) then s.com.engine.bilr.st=math.min(s.com.engine.bilr.st+0.01,1.0) end
+    elseif mapContains(s.com.engine.turb.bb, testPos) then
+      if btn(6) then s.com.engine.turb.st=math.min(s.com.engine.turb.st+0.01,1.0) end
     elseif mapContains(s.com.hyd.res.bb, testPos) then
       if btn(6) then s.com.hyd.res.st=math.min(s.com.hyd.res.st+0.01,1.0) end
     elseif mapContains(s.com.hyd.pump.bb, testPos) then
@@ -778,16 +816,16 @@ function TIC()
       if btn(6) then s.com.acc.H2O.st=math.min(s.com.acc.H2O.st+0.01,1.0) end
     elseif mapContains(s.com.acc.CH4.bb, testPos) then
       if btn(6) then s.com.acc.CH4.st=math.min(s.com.acc.CH4.st+0.01,1.0) end
-    elseif mapContains(s.com.cells.one.bb, testPos) then
-      if btn(6) then s.com.cells.one.st=math.min(s.com.cells.one.st+0.01,1.0) end
-    elseif mapContains(s.com.cells.two.bb, testPos) then
-      if btn(6) then s.com.cells.two.st=math.min(s.com.cells.two.st+0.01,1.0) end
-    elseif mapContains(s.com.cells.three.bb, testPos) then
-      if btn(6) then s.com.cells.three.st=math.min(s.com.cells.three.st+0.01,1.0) end
-    elseif mapContains(s.com.cells.four.bb, testPos) then
-      if btn(6) then s.com.cells.four.st=math.min(s.com.cells.four.st+0.01,1.0) end
-    elseif mapContains(s.com.battery.bb, testPos) then
-      if btn(6) then s.com.battery.st=math.min(s.com.battery.st+0.01,1.0) end
+    elseif mapContains(s.com.clls.one.bb, testPos) then
+      if btn(6) then s.com.clls.one.st=math.min(s.com.clls.one.st+0.01,1.0) end
+    elseif mapContains(s.com.clls.two.bb, testPos) then
+      if btn(6) then s.com.clls.two.st=math.min(s.com.clls.two.st+0.01,1.0) end
+    elseif mapContains(s.com.clls.three.bb, testPos) then
+      if btn(6) then s.com.clls.three.st=math.min(s.com.clls.three.st+0.01,1.0) end
+    elseif mapContains(s.com.clls.four.bb, testPos) then
+      if btn(6) then s.com.clls.four.st=math.min(s.com.clls.four.st+0.01,1.0) end
+    elseif mapContains(s.com.btry.bb, testPos) then
+      if btn(6) then s.com.btry.st=math.min(s.com.btry.st+0.01,1.0) end
     elseif mapContains(s.com.splitter.bb, testPos) then
       if btn(6) then s.com.splitter.st=math.min(s.com.splitter.st+0.01,1.0) end
     elseif mapContains(s.com.tanks.H.bb, testPos) then
@@ -807,31 +845,31 @@ function TIC()
       if controlType < 0 then controlType=4 end
       if controlType > 4 then controlType=0 end
 
-      if controlType == 0 then
-        if btn(0) then s.con.rotation.rotors=s.con.rotation.rotors + 1 end
-        if btn(1) then s.con.rotation.rotors=s.con.rotation.rotors - 1 end
-        if s.con.rotation.rotors < 0 then s.con.rotation.rotors=0 end
-        if s.con.rotation.rotors > 90 then s.con.rotation.rotors=90 end
-      elseif controlType == 1 then
+      if controlType==0 then
+        if btn(0) then s.con.rot.rotors=s.con.rot.rotors + 1 end
+        if btn(1) then s.con.rot.rotors=s.con.rot.rotors - 1 end
+        if s.con.rot.rotors < 0 then s.con.rot.rotors=0 end
+        if s.con.rot.rotors > 90 then s.con.rot.rotors=90 end
+      elseif controlType==1 then
         if btn(0) then s.con.vsi=s.con.vsi + 0.02 end
         if btn(1) then s.con.vsi=s.con.vsi - 0.02 end
         if s.con.vsi < -1.2 then s.con.vsi=-1.2 end
         if s.con.vsi > 1.2 then s.con.vsi=1.2 end
-      elseif controlType == 2 then
+      elseif controlType==2 then
         if btn(0) then s.con.alt=s.con.alt + 10 end
         if btn(1) then s.con.alt=s.con.alt - 10 end
         if s.con.alt < 0 then s.con.alt=0 end
         if s.con.alt > SHIP_MAX_ALT then s.con.alt=SHIP_MAX_ALT end
-      elseif controlType == 3 then
-        if btn(0) then s.con.throttle.props=s.con.throttle.props + 0.01 end
-        if btn(1) then s.con.throttle.props=s.con.throttle.props - 0.01 end
-        if s.con.throttle.props < 0.0 then s.con.throttle.props=0.0 end
-        if s.con.throttle.props > 1.0 then s.con.throttle.props=1.0 end
-      elseif controlType == 4 then
-        if btn(0) then s.con.rotation.props=s.con.rotation.props - 1 end
-        if btn(1) then s.con.rotation.props=s.con.rotation.props + 1 end
-        if s.con.rotation.props < 0 then s.con.rotation.props=360 end
-        if s.con.rotation.props > 360 then s.con.rotation.props=s.con.rotation.props - 360 end
+      elseif controlType==3 then
+        if btn(0) then s.con.thrt.props=s.con.thrt.props + 0.01 end
+        if btn(1) then s.con.thrt.props=s.con.thrt.props - 0.01 end
+        if s.con.thrt.props < 0.0 then s.con.thrt.props=0.0 end
+        if s.con.thrt.props > 1.0 then s.con.thrt.props=1.0 end
+      elseif controlType==4 then
+        if btn(0) then s.con.rot.props=s.con.rot.props - 1 end
+        if btn(1) then s.con.rot.props=s.con.rot.props + 1 end
+        if s.con.rot.props < 0 then s.con.rot.props=360 end
+        if s.con.rot.props > 360 then s.con.rot.props=s.con.rot.props - 360 end
       end
     else
       onFloor=false
@@ -841,9 +879,9 @@ function TIC()
       testY=p.y // 8
       testYD=(p.y // 8) + 1
       testYU=(p.y // 8) - 1
-      if mget(testX, testYD) == 16 then onFloor=true end
-      if mget(testX, testYU) == 16 then inCeiling=true end
-      if mget(testX, testY) == 32 or mget(testX, testYD) == 32 then onLadder=true end
+      if mget(testX, testYD)==16 then onFloor=true end
+      if mget(testX, testYU)==16 then inCeiling=true end
+      if mget(testX, testY)==32 or mget(testX, testYD)==32 then onLadder=true end
 
       if btn(0) and onLadder then
         p.vy=math.max(p.vy - 0.1, -1.5)
@@ -853,7 +891,7 @@ function TIC()
         p.vy=0.0
       elseif btn(0) and onFloor then
         p.vy=-1.5
-      elseif p.vy == 0 and onFloor then
+      elseif p.vy==0 and onFloor then
         p.y=testY * 8 + 1
         p.vy=math.min(p.vy, 0.0)
       elseif not onFloor then
@@ -877,10 +915,10 @@ function TIC()
       p.x=p.x+p.vx
       p.y=p.y+p.vy
 
-      camera.x=lerp(camera.x, p.x - 120, 0.15)
-      camera.y=lerp(camera.y, 137, 0.15) -- p.y - 64
-      camera.cellX=camera.x / 8
-      camera.cellY=camera.y / 8
+      cam.x=lerp(cam.x, p.x - 120, 0.15)
+      cam.y=lerp(cam.y, 137, 0.15) -- p.y - 64
+      cam.cellX=cam.x / 8
+      cam.cellY=cam.y / 8
 
       if p.y > 234 then
         if p.x < 294 then p.x=294 end
@@ -904,9 +942,9 @@ function TIC()
     cls(0)
     simulate()
 
-    s.com.engine.boiler.st=s.com.engine.boiler.st-0.00001
-    s.com.engine.boiler.st=s.com.engine.boiler.st-0.000001
-    s.com.engine.turbine.st=s.com.engine.turbine.st-0.00001
+    s.com.engine.bilr.st=s.com.engine.bilr.st-0.00001
+    s.com.engine.bilr.st=s.com.engine.bilr.st-0.000001
+    s.com.engine.turb.st=s.com.engine.turb.st-0.00001
     s.com.hyd.res.st=s.com.hyd.res.st-0.000001
     s.com.hyd.pump.st=s.com.hyd.pump.st-0.00001
     s.com.gen.st=s.com.gen.st-0.00001
@@ -918,28 +956,78 @@ function TIC()
     s.com.props.two.st=s.com.props.two.st-0.00001
     s.com.acc.H2O.st=s.com.acc.H2O.st-0.00001
     s.com.acc.CH4.st=s.com.acc.CH4.st-0.00001
-    s.com.cells.one.st=s.com.cells.one.st-0.00001
-    s.com.cells.two.st=s.com.cells.two.st-0.00001
-    s.com.cells.three.st=s.com.cells.three.st-0.00001
-    s.com.cells.four.st=s.com.cells.four.st-0.00001
-    s.com.battery.st=s.com.battery.st-0.000001
+    s.com.clls.one.st=s.com.clls.one.st-0.00001
+    s.com.clls.two.st=s.com.clls.two.st-0.00001
+    s.com.clls.three.st=s.com.clls.three.st-0.00001
+    s.com.clls.four.st=s.com.clls.four.st-0.00001
+    s.com.btry.st=s.com.btry.st-0.000001
     s.com.splitter.st=s.com.splitter.st-0.00001
     s.com.tanks.H.st=s.com.tanks.H.st-0.000001
     s.com.tanks.O.st=s.com.tanks.O.st-0.000001
     s.com.tanks.H2O.st=s.com.tanks.H2O.st-0.000001
     s.com.tanks.CH4.st=s.com.tanks.CH4.st-0.000001
 
-    if debugType == 0 then
+    if debugType==0 and not showMap then
       drawGame()
-    elseif debugType == 1 then
+    elseif debugType==1 then
       drawShipDebugOne(s)
-    elseif debugType == 2 then
+    elseif debugType==2 then
       drawShipDebugTwo(s)
+    end
+
+    if showMap then
+      drawMap(30,17)
     end
   end
 
 end
 
+function genMapTile(pX,pY)
+  if mapVls[pY]==nil then
+    mapVls[pY]={}
+  end
+
+  CH4cnt=0
+  H2Ocnt=0
+  tp={x=pX,y=pY}
+  for i=1, RES_PT_COUNT do
+    CH4pt=CH4pts[i]
+    H2Opt=H2Opts[i]
+    CH4dis=64-sqrDistance(tp,CH4pt)
+    H2Odis=64-sqrDistance(tp,H2Opt)
+    CH4cnt=CH4cnt+math.max(0,CH4dis)
+    H2Ocnt=H2Ocnt+math.max(0,H2Odis)
+  end
+  mapVls[pY][pX]={
+    CH4=math.min(1,inverseLerp(0,72,CH4cnt)),
+    H2O=math.min(1,inverseLerp(0,72,H2Ocnt))
+  }
+
+  return mapVls[pY][pX]
+end
+
+function drawMap(xSize,ySize)
+  cYOffset=(s.pos.y/1000-0.5*ySize)//1
+  cXOffset=(s.pos.x/1000-0.5*xSize)//1
+  print(string.format("%d:%d", cXOffset, cYOffset), 2, 2, 10, false, 1, true)
+  print(string.format("%d:%d", s.pos.x//1, s.pos.y//1), 2, 10, 10, false, 1, true)
+  for cY=cYOffset, ySize do
+    for cX=cXOffset, xSize do
+      mapVl=nil
+      if mapVls[cY]==nil then
+        mapVl=genMapTile(cX,cY)
+      elseif mapVls[cY][cX]==nil then
+        mapVl=genMapTile(cX,cY)
+      else
+        mapVl=mapVls[cY][cX]
+      end
+      if mapVl~=nil then
+        spr(lerp(144,148,mapVl.CH4),(cX-cXOffset-1)*8,(cY-cYOffset-1)*8,0)
+        spr(lerp(149,153,mapVl.H2O),(cX-cXOffset-1)*8,(cY-cYOffset-1)*8,0)
+      end
+    end
+  end
+end
 
 function drawGame()
   maxMapHeight=18
@@ -949,13 +1037,13 @@ function drawGame()
     mapYAdjust=3
   end
 
-  camXCellAdd=camera.x % 8 == 0 and -1 or 0
-  camYCellAdd=camera.y % 8 == 0 and -1 or 0
-  camXCor=-camera.x % 8 - 8
-  camYCor=-camera.y % 8 - 8
-  map(camera.cellX + camXCellAdd, camera.cellY + camYCellAdd + mapYAdjust, 31,
+  camXCellAdd=cam.x % 8==0 and -1 or 0
+  camYCellAdd=cam.y % 8==0 and -1 or 0
+  camXCor=-cam.x % 8 - 8
+  camYCor=-cam.y % 8 - 8
+  map(cam.cellX + camXCellAdd, cam.cellY + camYCellAdd + mapYAdjust, 31,
       maxMapHeight, camXCor, camYCor)
-  spr(p.s, p.x - camera.x - 4, p.y - camera.y - 8, 0, 1, 0, 0, 1, 2)
+  spr(p.s, p.x - cam.x - 4, p.y - cam.y - 8, 0, 1, 0, 0, 1, 2)
 
   if showControls then
     map(0, 125, 30, 11, 0, 48)
@@ -974,10 +1062,10 @@ function drawGame()
     drawNeedleLevelStatus(gauges.needles.con_vsi, s.con.vsi, -1.2, 1.2, 0, 180, 10)
 
     drawNeedleAngeStatus(gauges.needles.heading, s.heading, { x=0, y=-8 })
-    drawNeedleAngeStatus(gauges.needles.rotation, s.rotation, { x=0, y=15 })
-    drawNeedleAngeStatus(gauges.needles.con_heading, s.con.rotation.props,
+    drawNeedleAngeStatus(gauges.needles.rot, s.rot, { x=0, y=15 })
+    drawNeedleAngeStatus(gauges.needles.con_heading, s.con.rot.props,
                      { x=0, y=-10 })
-    drawNeedleAngeStatus(gauges.needles.con_rotation, s.con.rotation.rotors,
+    drawNeedleAngeStatus(gauges.needles.con_rot, s.con.rot.rotors,
                      { x=0, y=17 })
 
     drawBarStatus(gauges.bars.alt, s.pos.z, SHIP_MAX_ALT)
@@ -996,15 +1084,15 @@ function drawGame()
     end
 
     drawLevelStatus(gauges.levels.con_alt, s.con.alt, SHIP_MAX_ALT)
-    drawLevelStatus(gauges.levels.con_throttle, s.con.throttle.props, 1.0)
+    drawLevelStatus(gauges.levels.con_thrt, s.con.thrt.props, 1.0)
 
     print("PRP1", 152, 100, 5, false, 1, true)
     print("PRP2", 176, 100, 5, false, 1, true)
 
     drawPropRotationStatus(gauges.needles.props.one,
-                           s.com.props.one.rotation)
+                           s.com.props.one.rot)
     drawPropRotationStatus(gauges.needles.props.two,
-                           s.com.props.two.rotation)
+                           s.com.props.two.rot)
 
     drawPropThrustStatus(gauges.bars.props.one, s.com.props.one.thrust)
     drawPropThrustStatus(gauges.bars.props.two, s.com.props.two.thrust)
@@ -1015,13 +1103,13 @@ function drawGame()
     print("RTR4", 128, 100, 5, false, 1, true)
 
     drawRotorRotationStatus(gauges.needles.rotors.one,
-                            s.com.rotors.one.rotation)
+                            s.com.rotors.one.rot)
     drawRotorRotationStatus(gauges.needles.rotors.two,
-                            s.com.rotors.two.rotation)
+                            s.com.rotors.two.rot)
     drawRotorRotationStatus(gauges.needles.rotors.three,
-                            s.com.rotors.three.rotation)
+                            s.com.rotors.three.rot)
     drawRotorRotationStatus(gauges.needles.rotors.four,
-                            s.com.rotors.four.rotation)
+                            s.com.rotors.four.rot)
 
     drawRotorThrustStatus(gauges.bars.rotors.one, s.com.rotors.one.thrust)
     drawRotorThrustStatus(gauges.bars.rotors.two, s.com.rotors.two.thrust)
@@ -1030,75 +1118,75 @@ function drawGame()
 
     print("Hyd Cells", 200, 100, 5, false, 1, true)
 
-    drawBarStatus(gauges.bars.cells.one, s.com.cells.one.level, BLADDER_MAX_M3)
-    drawBarStatus(gauges.bars.cells.two, s.com.cells.two.level, BLADDER_MAX_M3)
-    drawBarStatus(gauges.bars.cells.three, s.com.cells.three.level, BLADDER_MAX_M3)
-    drawBarStatus(gauges.bars.cells.four, s.com.cells.four.level, BLADDER_MAX_M3)
+    drawBarStatus(gauges.bars.clls.one, s.com.clls.one.level, BLADDER_MAX_M3)
+    drawBarStatus(gauges.bars.clls.two, s.com.clls.two.level, BLADDER_MAX_M3)
+    drawBarStatus(gauges.bars.clls.three, s.com.clls.three.level, BLADDER_MAX_M3)
+    drawBarStatus(gauges.bars.clls.four, s.com.clls.four.level, BLADDER_MAX_M3)
 
-    if controlType == 0 then
+    if controlType==0 then
       rectb(55, 63, 26, 34, 14)
-    elseif controlType == 1 then
+    elseif controlType==1 then
       rectb(87, 63, 18, 34, 14)
-    elseif controlType == 2 then
+    elseif controlType==2 then
       rectb(111, 63, 24, 34, 14)
-    elseif controlType == 3 then
+    elseif controlType==3 then
       rectb(135, 63, 24, 34, 14)
-    elseif controlType == 4 then
+    elseif controlType==4 then
       rectb(159, 63, 34, 34, 14)
     end
   else
-    drawComponent(s.com.displays.bb, s.com.displays.id)
+    drawCom(s.com.disps.bb, s.com.disps.id)
 
-    drawComponent(s.com.engine.boiler.bb, s.com.engine.boiler.id, s.com.engine.boiler.st)
-    drawComponent(s.com.engine.turbine.bb, s.com.engine.turbine.id, s.com.engine.turbine.st)
+    drawCom(s.com.engine.bilr.bb, s.com.engine.bilr.id, s.com.engine.bilr.st)
+    drawCom(s.com.engine.turb.bb, s.com.engine.turb.id, s.com.engine.turb.st)
 
-    drawComponent(s.com.hyd.res.bb, s.com.hyd.res.id, s.com.hyd.res.st)
-    drawComponent(s.com.hyd.pump.bb, s.com.hyd.pump.id, s.com.hyd.pump.st)
+    drawCom(s.com.hyd.res.bb, s.com.hyd.res.id, s.com.hyd.res.st)
+    drawCom(s.com.hyd.pump.bb, s.com.hyd.pump.id, s.com.hyd.pump.st)
 
-    drawComponent(s.com.gen.bb, s.com.gen.id, s.com.gen.st)
+    drawCom(s.com.gen.bb, s.com.gen.id, s.com.gen.st)
 
-    drawComponent(s.com.rotors.one.bb, s.com.rotors.one.id, s.com.rotors.one.st)
-    drawComponent(s.com.rotors.two.bb, s.com.rotors.two.id, s.com.rotors.two.st)
-    drawComponent(s.com.rotors.three.bb, s.com.rotors.three.id, s.com.rotors.three.st)
-    drawComponent(s.com.rotors.four.bb, s.com.rotors.four.id, s.com.rotors.four.st)
+    drawCom(s.com.rotors.one.bb, s.com.rotors.one.id, s.com.rotors.one.st)
+    drawCom(s.com.rotors.two.bb, s.com.rotors.two.id, s.com.rotors.two.st)
+    drawCom(s.com.rotors.three.bb, s.com.rotors.three.id, s.com.rotors.three.st)
+    drawCom(s.com.rotors.four.bb, s.com.rotors.four.id, s.com.rotors.four.st)
 
-    drawComponent(s.com.props.one.bb, s.com.props.one.id, s.com.props.one.st)
-    drawComponent(s.com.props.two.bb, s.com.props.two.id, s.com.props.two.st)
+    drawCom(s.com.props.one.bb, s.com.props.one.id, s.com.props.one.st)
+    drawCom(s.com.props.two.bb, s.com.props.two.id, s.com.props.two.st)
 
-    drawComponent(s.com.acc.H2O.bb, s.com.acc.H2O.id, s.com.acc.H2O.st)
-    drawComponent(s.com.acc.CH4.bb, s.com.acc.CH4.id, s.com.acc.CH4.st)
+    drawCom(s.com.acc.H2O.bb, s.com.acc.H2O.id, s.com.acc.H2O.st)
+    drawCom(s.com.acc.CH4.bb, s.com.acc.CH4.id, s.com.acc.CH4.st)
 
-    drawComponent(s.com.cells.one.bb, s.com.cells.one.id, s.com.cells.one.st)
-    drawComponent(s.com.cells.two.bb, s.com.cells.two.id, s.com.cells.two.st)
-    drawComponent(s.com.cells.three.bb, s.com.cells.three.id, s.com.cells.three.st)
-    drawComponent(s.com.cells.four.bb, s.com.cells.four.id, s.com.cells.four.st)
+    drawCom(s.com.clls.one.bb, s.com.clls.one.id, s.com.clls.one.st)
+    drawCom(s.com.clls.two.bb, s.com.clls.two.id, s.com.clls.two.st)
+    drawCom(s.com.clls.three.bb, s.com.clls.three.id, s.com.clls.three.st)
+    drawCom(s.com.clls.four.bb, s.com.clls.four.id, s.com.clls.four.st)
 
-    drawComponent(s.com.battery.bb, s.com.battery.id, s.com.battery.st)
-    drawComponent(s.com.splitter.bb, s.com.splitter.id, s.com.splitter.st)
+    drawCom(s.com.btry.bb, s.com.btry.id, s.com.btry.st)
+    drawCom(s.com.splitter.bb, s.com.splitter.id, s.com.splitter.st)
 
-    drawComponent(s.com.tanks.H.bb, s.com.tanks.H.id, s.com.tanks.H.st)
-    drawComponent(s.com.tanks.O.bb, s.com.tanks.O.id, s.com.tanks.O.st)
-    drawComponent(s.com.tanks.H2O.bb, s.com.tanks.H2O.id, s.com.tanks.H2O.st)
-    drawComponent(s.com.tanks.CH4.bb, s.com.tanks.CH4.id, s.com.tanks.CH4.st)
+    drawCom(s.com.tanks.H.bb, s.com.tanks.H.id, s.com.tanks.H.st)
+    drawCom(s.com.tanks.O.bb, s.com.tanks.O.id, s.com.tanks.O.st)
+    drawCom(s.com.tanks.H2O.bb, s.com.tanks.H2O.id, s.com.tanks.H2O.st)
+    drawCom(s.com.tanks.CH4.bb, s.com.tanks.CH4.id, s.com.tanks.CH4.st)
 
-    drawComponent({ min_x=39, min_y=27, max_x=39, max_y=27 }, "pto_upper")
-    drawComponent({ min_x=39, min_y=28, max_x=39, max_y=28 }, "pto_lower")
-    drawComponent({ min_x=44, min_y=27, max_x=44, max_y=27 }, "pto_upper")
-    drawComponent({ min_x=44, min_y=28, max_x=44, max_y=28 }, "pto_lower")
-    drawComponent({ min_x=45, min_y=27, max_x=45, max_y=27 }, "pto_upper")
-    drawComponent({ min_x=45, min_y=28, max_x=45, max_y=28 }, "pto_lower")
+    drawCom({ min_x=39, min_y=27, max_x=39, max_y=27 }, "pto_upper")
+    drawCom({ min_x=39, min_y=28, max_x=39, max_y=28 }, "pto_lower")
+    drawCom({ min_x=44, min_y=27, max_x=44, max_y=27 }, "pto_upper")
+    drawCom({ min_x=44, min_y=28, max_x=44, max_y=28 }, "pto_lower")
+    drawCom({ min_x=45, min_y=27, max_x=45, max_y=27 }, "pto_upper")
+    drawCom({ min_x=45, min_y=28, max_x=45, max_y=28 }, "pto_lower")
   end
 end
 
-function drawComponent(bb, drawableId, st)
+function drawCom(bb, drawableId, st)
   drawable=drawables[drawableId]
-  posX=(bb.min_x * 8 - camera.x) // 1 + 1
-  posY=(bb.min_y * 8 - camera.y) // 1 + 1
+  posX=(bb.min_x * 8 - cam.x) // 1 + 1
+  posY=(bb.min_y * 8 - cam.y) // 1 + 1
 
   requestedX=bb.max_x + 1 - bb.min_x
   requestedY=bb.max_y + 1 - bb.min_y
 
-  if requestedX > drawable.w and drawable.w == 5 then
+  if requestedX > drawable.w and drawable.w==5 then
     for y=1, requestedY do
       adjYPos=(y - 1) * 8 + posY
       yOffset=(y - 1) * 16
@@ -1114,14 +1202,14 @@ function drawComponent(bb, drawableId, st)
         end
       end
     end
-  elseif requestedX > drawable.w and drawable.w == 3 then
+  elseif requestedX > drawable.w and drawable.w==3 then
     for y=1, requestedY do
       adjYPos=(y - 1) * 8 + posY
       yOffset=(y - 1) * 16
       for x=1, requestedX do
         adjXPos=(x - 1) * 8 + posX
         xOffset=x - 1
-        if x == 1 then
+        if x==1 then
           spr(drawable.s + yOffset + xOffset, adjXPos, adjYPos, 0)
         elseif x < requestedX then
           spr(drawable.s + yOffset + 1, adjXPos, adjYPos, 0)
@@ -1130,7 +1218,7 @@ function drawComponent(bb, drawableId, st)
         end
       end
     end
-  elseif requestedX > drawable.w and drawable.w == 2 then
+  elseif requestedX > drawable.w and drawable.w==2 then
     for y=1, requestedY do
       adjYPos=(y - 1) * 8 + posY
       yOffset=(y - 1) * 16
@@ -1200,7 +1288,7 @@ function simulate()
   sim={
     demand={
       kW={
-        displays=0,
+        disps=0,
         rotors={
           one=0,
           two=0,
@@ -1214,10 +1302,10 @@ function simulate()
         splitter=0,
         H2OAcc=0,
         CH4Acc=0,
-        battery=0
+        btry=0
       },
       kNSM={
-        hydraulicReservoir=0,
+        hydRes=0,
         rotors={
           one=0,
           two=0,
@@ -1230,23 +1318,23 @@ function simulate()
         }
       },
       NM={
-        hydraulicPump=0,
+        hydPump=0,
         gen=0
       },
       H2O={
         tank=0,
-        boiler=0,
+        bilr=0,
         splitter=0
       },
       CH4={
         tank=0,
-        boiler=0
+        bilr=0
       },
       H_M={
         tank=0
       },
       H_V={
-        cells={
+        clls={
           one=0,
           two=0,
           three=0,
@@ -1255,13 +1343,13 @@ function simulate()
       },
       O={
         tank=0,
-        boiler=0
+        bilr=0
       },
       steam=0
     },
     supply={
       kW={
-        displays=0,
+        disps=0,
         rotors={
           one=0,
           two=0,
@@ -1275,10 +1363,10 @@ function simulate()
         splitter=0,
         H2OAcc=0,
         CH4Acc=0,
-        battery=0
+        btry=0
       },
       kNSM={
-        hydraulicReservoir=0,
+        hydRes=0,
         rotors={
           one=0,
           two=0,
@@ -1291,23 +1379,23 @@ function simulate()
         }
       },
       NM={
-        hydraulicPump=0,
+        hydPump=0,
         gen=0
       },
       H2O={
         tank=0,
-        boiler=0,
+        bilr=0,
         splitter=0
       },
       CH4={
         tank=0,
-        boiler=0
+        bilr=0
       },
       H_M={
         tank=0
       },
       H_V={
-        cells={
+        clls={
           one=0,
           two=0,
           three=0,
@@ -1316,12 +1404,12 @@ function simulate()
       },
       O={
         tank=0,
-        boiler=0
+        bilr=0
       },
       steam=0
     },
     availableForUse={
-      kW=s.com.battery.level,
+      kW=s.com.btry.level,
       kNSM=s.com.hyd.res.level,
       H2O=s.com.tanks.H2O.level,
       CH4=s.com.tanks.CH4.level,
@@ -1344,13 +1432,13 @@ function simulate()
   sim=controlsHydraulicDemand(sim)
   sim=storageTanksDemand(sim)
   sim=cellDemand(sim)
-  sim=batteryDemand(sim)
-  sim=hydraulicReservoirDemand(sim)
+  sim=btryDemand(sim)
+  sim=hydResDemand(sim)
   sim=splitterAccDemand(sim)
-  sim=hydraulicPumpDemand(sim)
+  sim=hydPumpDemand(sim)
   sim=genDemand(sim)
-  sim=turbineDemand(sim)
-  sim=boilerDemand(sim)
+  sim=turbDemand(sim)
+  sim=bilrDemand(sim)
 
   sim=elementSupply(sim)
   sim=steamSupply(sim)
@@ -1366,62 +1454,62 @@ function simulate()
   applyThrust(sim)
   applyForces(sim)
 
-  if debugType == 3 then
+  if debugType==3 then
     drawSimDebug(sim)
-  elseif debugType == 4 then
+  elseif debugType==4 then
     drawStorageDebug(sim)
   end
 end
 
 function controlsPowerDemand(sim)
-  sim.demand.kW.displays=DISPLAYS_POWER_DEMAND_KW
+  sim.demand.kW.disps=DISPLAYS_POWER_DEMAND_KW
 
   sim.demand.kW.rotors.one=ROTOR_MAX_POWER_DEMAND_KW *
-      s.com.rotors.one.st * s.con.throttle.rotors
+      s.com.rotors.one.st * s.con.thrt.rotors
   sim.demand.kW.rotors.two=ROTOR_MAX_POWER_DEMAND_KW *
-      s.com.rotors.two.st * s.con.throttle.rotors
+      s.com.rotors.two.st * s.con.thrt.rotors
   sim.demand.kW.rotors.three=ROTOR_MAX_POWER_DEMAND_KW *
-      s.com.rotors.three.st * s.con.throttle.rotors
+      s.com.rotors.three.st * s.con.thrt.rotors
   sim.demand.kW.rotors.four=ROTOR_MAX_POWER_DEMAND_KW *
-      s.com.rotors.four.st * s.con.throttle.rotors
+      s.com.rotors.four.st * s.con.thrt.rotors
 
   sim.demand.kW.props.one=PROP_MAX_POWER_DEMAND_KW *
-      s.com.props.one.st * s.con.throttle.props
+      s.com.props.one.st * s.con.thrt.props
   sim.demand.kW.props.two=PROP_MAX_POWER_DEMAND_KW *
-      s.com.props.two.st * s.con.throttle.props
+      s.com.props.two.st * s.con.thrt.props
 
   return sim
 end
 
 function controlsHydraulicDemand(sim)
-  sim.demand.kNSM.rotors.one=calcHydDemand(s.com.rotors.one.rotation,
-                                             s.con.rotation.rotors,
+  sim.demand.kNSM.rotors.one=calcHydDemand(s.com.rotors.one.rot,
+                                             s.con.rot.rotors,
                                              s.com.rotors.one.st,
                                              ROTOR_MAX_ROTATE_SPEED_D,
                                              ROTOR_MAX_HYDRAULIC_DEMAND_KNSM)
-  sim.demand.kNSM.rotors.two=calcHydDemand(s.com.rotors.two.rotation,
-                                             s.con.rotation.rotors,
+  sim.demand.kNSM.rotors.two=calcHydDemand(s.com.rotors.two.rot,
+                                             s.con.rot.rotors,
                                              s.com.rotors.two.st,
                                              ROTOR_MAX_ROTATE_SPEED_D,
                                              ROTOR_MAX_HYDRAULIC_DEMAND_KNSM)
-  sim.demand.kNSM.rotors.three=calcHydDemand(s.com.rotors.three.rotation,
-                                               s.con.rotation.rotors,
+  sim.demand.kNSM.rotors.three=calcHydDemand(s.com.rotors.three.rot,
+                                               s.con.rot.rotors,
                                                s.com.rotors.three.st,
                                                ROTOR_MAX_ROTATE_SPEED_D,
                                                ROTOR_MAX_HYDRAULIC_DEMAND_KNSM)
-  sim.demand.kNSM.rotors.four=calcHydDemand(s.com.rotors.four.rotation,
-                                              s.con.rotation.rotors,
+  sim.demand.kNSM.rotors.four=calcHydDemand(s.com.rotors.four.rot,
+                                              s.con.rot.rotors,
                                               s.com.rotors.four.st,
                                               ROTOR_MAX_ROTATE_SPEED_D,
                                               ROTOR_MAX_HYDRAULIC_DEMAND_KNSM)
 
-  sim.demand.kNSM.props.one=calcHydDemand(s.com.props.one.rotation,
-                                            s.con.rotation.props,
+  sim.demand.kNSM.props.one=calcHydDemand(s.com.props.one.rot,
+                                            s.con.rot.props,
                                             s.com.props.one.st,
                                             PROP_MAX_ROTATE_SPEED_D,
                                             PROP_MAX_HYDRAULIC_DEMAND_KNSM)
-  sim.demand.kNSM.props.two=calcHydDemand(s.com.props.two.rotation,
-                                            s.con.rotation.props,
+  sim.demand.kNSM.props.two=calcHydDemand(s.com.props.two.rot,
+                                            s.con.rot.props,
                                             s.com.props.two.st,
                                             PROP_MAX_ROTATE_SPEED_D,
                                             PROP_MAX_HYDRAULIC_DEMAND_KNSM)
@@ -1443,28 +1531,28 @@ function storageTanksDemand(sim)
 end
 
 function cellDemand(sim)
-  sim.demand.H_V.cells.one=math.min(
-      BLADDER_MAX_M3 - s.com.cells.one.level, BLADDER_MAX_M3F)
-  sim.demand.H_V.cells.two=math.min(
-      BLADDER_MAX_M3 - s.com.cells.two.level, BLADDER_MAX_M3F)
-  sim.demand.H_V.cells.three=math.min(
-      BLADDER_MAX_M3 - s.com.cells.three.level, BLADDER_MAX_M3F)
-  sim.demand.H_V.cells.four=math.min(
-      BLADDER_MAX_M3 - s.com.cells.four.level, BLADDER_MAX_M3F)
+  sim.demand.H_V.clls.one=math.min(
+      BLADDER_MAX_M3 - s.com.clls.one.level, BLADDER_MAX_M3F)
+  sim.demand.H_V.clls.two=math.min(
+      BLADDER_MAX_M3 - s.com.clls.two.level, BLADDER_MAX_M3F)
+  sim.demand.H_V.clls.three=math.min(
+      BLADDER_MAX_M3 - s.com.clls.three.level, BLADDER_MAX_M3F)
+  sim.demand.H_V.clls.four=math.min(
+      BLADDER_MAX_M3 - s.com.clls.four.level, BLADDER_MAX_M3F)
 
   return sim
 end
 
-function batteryDemand(sim)
-  batteryStateDemand=math.min(BATTERY_MAX_CHARGE_RATE_KW,
-      BATTERY_MAX_CHARGE_KW * s.com.battery.st - s.com.battery.level)
-  sim.demand.kW.battery=math.max(batteryStateDemand, 0)
+function btryDemand(sim)
+  btryStateDemand=math.min(BATTERY_MAX_CHARGE_RATE_KW,
+      BATTERY_MAX_CHARGE_KW * s.com.btry.st - s.com.btry.level)
+  sim.demand.kW.btry=math.max(btryStateDemand, 0)
 
   return sim
 end
 
-function hydraulicReservoirDemand(sim)
-  sim.demand.kNSM.hydraulicReservoir=HYDRAULIC_MAX_KNSM - s.com.hyd.res.level
+function hydResDemand(sim)
+  sim.demand.kNSM.hydRes=HYDRAULIC_MAX_KNSM - s.com.hyd.res.level
 
   return sim
 end
@@ -1486,95 +1574,95 @@ function splitterAccDemand(sim)
   return sim
 end
 
-function hydraulicPumpDemand(sim)
-  sim.demand.NM.hydraulicPump=math.min(HYDRAULIC_PUMP_MAX_NM,
-      sim.demand.kNSM.hydraulicReservoir * HYDRAULIC_PUMP_NM_PER_KNSM)
+function hydPumpDemand(sim)
+  sim.demand.NM.hydPump=math.min(HYDRAULIC_PUMP_MAX_NM,
+      sim.demand.kNSM.hydRes * HYDRAULIC_PUMP_NM_PER_KNSM)
 
   return sim
 end
 
 function genDemand(sim)
   totalPowerDemand=math.min(GEN_MAX_KW * s.com.gen.st,
-      sim.demand.kW.displays + sim.demand.kW.rotors.one +
+      sim.demand.kW.disps + sim.demand.kW.rotors.one +
       sim.demand.kW.rotors.two + sim.demand.kW.rotors.three +
       sim.demand.kW.rotors.four + sim.demand.kW.props.one +
       sim.demand.kW.props.two + sim.demand.kW.splitter +
-      sim.demand.kW.H2OAcc + sim.demand.kW.CH4Acc + sim.demand.kW.battery)
+      sim.demand.kW.H2OAcc + sim.demand.kW.CH4Acc + sim.demand.kW.btry)
   sim.demand.NM.gen=(totalPowerDemand / GEN_MAX_KW) * GEN_MAX_NM
 
   return sim
 end
 
-function turbineDemand(sim)
-  totalTorqueDemand=math.min(TURBINE_MAX_NM * s.com.engine.turbine.st,
-      sim.demand.NM.gen + sim.demand.NM.hydraulicPump)
+function turbDemand(sim)
+  totalTorqueDemand=math.min(TURBINE_MAX_NM * s.com.engine.turb.st,
+      sim.demand.NM.gen + sim.demand.NM.hydPump)
   sim.demand.steam=(totalTorqueDemand / TURBINE_MAX_NM) * TURBINE_MAX_STEAM_KNSM
 
   return sim
 end
 
-function boilerDemand(sim)
+function bilrDemand(sim)
   superSteamDemand=0
   if sim.demand.steam >= BOILER_MAX_REG_STEAM_KNSM then
-    superSteamDemand=(sim.demand.steam-BOILER_MAX_REG_STEAM_KNSM)*s.com.engine.boiler.st
+    superSteamDemand=(sim.demand.steam-BOILER_MAX_REG_STEAM_KNSM)*s.com.engine.bilr.st
   end
-  steamDemand=math.min(BOILER_MAX_STEAM_KNSM*s.com.engine.boiler.st,
+  steamDemand=math.min(BOILER_MAX_STEAM_KNSM*s.com.engine.bilr.st,
                        sim.demand.steam)
-  sim.demand.H2O.boiler=steamDemand * BOILER_H2O_KG_PER_KNSM
-  sim.demand.CH4.boiler=steamDemand * BOILER_CH4_KG_PER_KNSM
-  sim.demand.O.boiler=superSteamDemand * BOILER_O_KG_PER_KNSM
+  sim.demand.H2O.bilr=steamDemand * BOILER_H2O_KG_PER_KNSM
+  sim.demand.CH4.bilr=steamDemand * BOILER_CH4_KG_PER_KNSM
+  sim.demand.O.bilr=superSteamDemand * BOILER_O_KG_PER_KNSM
 
   return sim
 end
 
 function elementSupply(sim)
-  sim.supply.O.boiler=math.min(sim.demand.O.boiler, sim.availableForUse.O)
-  sim.supply.CH4.boiler=math.min(sim.demand.CH4.boiler,
+  sim.supply.O.bilr=math.min(sim.demand.O.bilr, sim.availableForUse.O)
+  sim.supply.CH4.bilr=math.min(sim.demand.CH4.bilr,
                                    sim.availableForUse.CH4)
 
-  totalH2ODemand=sim.demand.H2O.boiler + sim.demand.H2O.splitter
+  totalH2ODemand=sim.demand.H2O.bilr + sim.demand.H2O.splitter
   if sim.availableForUse.H2O > totalH2ODemand then
-    sim.supply.H2O.boiler=sim.demand.H2O.boiler
+    sim.supply.H2O.bilr=sim.demand.H2O.bilr
     sim.supply.H2O.splitter=sim.demand.H2O.splitter
   elseif sim.availableForUse.H2O > 0 then
-    boilerPercent=sim.demand.H2O.boiler / totalH2ODemand
+    bilrPercent=sim.demand.H2O.bilr / totalH2ODemand
     splitterPercent=sim.demand.H2O.splitter / totalH2ODemand
-    sim.supply.H2O.boiler=boilerPercent * sim.availableForUse.H2O
+    sim.supply.H2O.bilr=bilrPercent * sim.availableForUse.H2O
     sim.supply.H2O.splitter=splitterPercent * sim.availableForUse.H2O
   end
 
-  totalH_VDemand=sim.demand.H_V.cells.one + sim.demand.H_V.cells.two +
-      sim.demand.H_V.cells.three + sim.demand.H_V.cells.four
+  totalH_VDemand=sim.demand.H_V.clls.one + sim.demand.H_V.clls.two +
+      sim.demand.H_V.clls.three + sim.demand.H_V.clls.four
   if sim.availableForUse.H_V > totalH_VDemand then
-    sim.supply.H_V.cells.one=sim.demand.H_V.cells.one
-    sim.supply.H_V.cells.two=sim.demand.H_V.cells.two
-    sim.supply.H_V.cells.three=sim.demand.H_V.cells.three
-    sim.supply.H_V.cells.four=sim.demand.H_V.cells.four
+    sim.supply.H_V.clls.one=sim.demand.H_V.clls.one
+    sim.supply.H_V.clls.two=sim.demand.H_V.clls.two
+    sim.supply.H_V.clls.three=sim.demand.H_V.clls.three
+    sim.supply.H_V.clls.four=sim.demand.H_V.clls.four
   elseif sim.availableForUse.H_V > 0 then
-    bOnePercent=sim.demand.H_V.cells.one / totalH_VDemand
-    bTwoPercent=sim.demand.H_V.cells.two / totalH_VDemand
-    bThreePercent=sim.demand.H_V.cells.three / totalH_VDemand
-    bFourPercent=sim.demand.H_V.cells.four / totalH_VDemand
-    sim.supply.H_V.cells.one=bOnePercent * sim.availableForUse.H_V
-    sim.supply.H_V.cells.two=bTwoPercent * sim.availableForUse.H_V
-    sim.supply.H_V.cells.three=bThreePercent * sim.availableForUse.H_V
-    sim.supply.H_V.cells.four=bFourPercent * sim.availableForUse.H_V
+    bOnePercent=sim.demand.H_V.clls.one / totalH_VDemand
+    bTwoPercent=sim.demand.H_V.clls.two / totalH_VDemand
+    bThreePercent=sim.demand.H_V.clls.three / totalH_VDemand
+    bFourPercent=sim.demand.H_V.clls.four / totalH_VDemand
+    sim.supply.H_V.clls.one=bOnePercent * sim.availableForUse.H_V
+    sim.supply.H_V.clls.two=bTwoPercent * sim.availableForUse.H_V
+    sim.supply.H_V.clls.three=bThreePercent * sim.availableForUse.H_V
+    sim.supply.H_V.clls.four=bFourPercent * sim.availableForUse.H_V
   end
 
   return sim
 end
 
 function steamSupply(sim)
-  suppliedH2O_KNSM=sim.supply.H2O.boiler / BOILER_H2O_KG_PER_KNSM
-  suppliedCH4_KNSM=sim.supply.CH4.boiler / BOILER_CH4_KG_PER_KNSM
-  suppliedO_KNSM=sim.supply.O.boiler / BOILER_O_KG_PER_KNSM
+  suppliedH2O_KNSM=sim.supply.H2O.bilr / BOILER_H2O_KG_PER_KNSM
+  suppliedCH4_KNSM=sim.supply.CH4.bilr / BOILER_CH4_KG_PER_KNSM
+  suppliedO_KNSM=sim.supply.O.bilr / BOILER_O_KG_PER_KNSM
 
   if suppliedH2O_KNSM < suppliedCH4_KNSM then
     suppliedCH4_KNSM=suppliedH2O_KNSM
-    sim.supply.CH4.boiler=suppliedCH4_KNSM * BOILER_CH4_KG_PER_KNSM
+    sim.supply.CH4.bilr=suppliedCH4_KNSM * BOILER_CH4_KG_PER_KNSM
   elseif suppliedCH4_KNSM < suppliedH2O_KNSM then
     suppliedH2O_KNSM=suppliedCH4_KNSM
-    sim.supply.H2O.boiler=suppliedH2O_KNSM * BOILER_H2O_KG_PER_KNSM
+    sim.supply.H2O.bilr=suppliedH2O_KNSM * BOILER_H2O_KG_PER_KNSM
   end
 
   suppliedKNSM=suppliedCH4_KNSM
@@ -1582,12 +1670,12 @@ function steamSupply(sim)
   if suppliedKNSM > BOILER_MAX_REG_STEAM_KNSM then
     superSteam=suppliedKNSM - BOILER_MAX_REG_STEAM_KNSM
     if suppliedO_KNSM >= superSteam then
-      sim.supply.O.boiler=superSteam * BOILER_O_KG_PER_KNSM
+      sim.supply.O.bilr=superSteam * BOILER_O_KG_PER_KNSM
     else
       missing=superSteam - suppliedO_KNSM
       suppliedKNSM=suppliedKNSM - missing
-      sim.supply.CH4.boiler=suppliedKNSM * BOILER_CH4_KG_PER_KNSM
-      sim.supply.H2O.boiler=suppliedKNSM * BOILER_H2O_KG_PER_KNSM
+      sim.supply.CH4.bilr=suppliedKNSM * BOILER_CH4_KG_PER_KNSM
+      sim.supply.H2O.bilr=suppliedKNSM * BOILER_H2O_KG_PER_KNSM
     end
   end
 
@@ -1598,23 +1686,23 @@ end
 
 function torqueSupply(sim)
   torqueSupplied=TURBINE_MAX_NM * (sim.supply.steam / TURBINE_MAX_STEAM_KNSM)
-  torqueDemand=sim.demand.NM.gen + sim.demand.NM.hydraulicPump
+  torqueDemand=sim.demand.NM.gen + sim.demand.NM.hydPump
 
   if torqueSupplied >= torqueDemand then
     sim.supply.NM.gen=sim.demand.NM.gen
-    sim.supply.NM.hydraulicPump=sim.demand.NM.hydraulicPump
+    sim.supply.NM.hydPump=sim.demand.NM.hydPump
   else
     genPercent=sim.demand.NM.gen / torqueDemand
-    pumpPercent=sim.demand.NM.hydraulicPump / torqueDemand
+    pumpPercent=sim.demand.NM.hydPump / torqueDemand
     sim.supply.NM.gen=torqueSupplied * genPercent
-    sim.supply.NM.hydraulicPump=torqueSupplied * pumpPercent
+    sim.supply.NM.hydPump=torqueSupplied * pumpPercent
   end
 
   return sim
 end
 
 function hydraulicSupply(sim)
-  sim.supply.kNSM.hydraulicReservoir=sim.supply.NM.hydraulicPump * HYDRAULIC_PUMP_NM_PER_KNSM
+  sim.supply.kNSM.hydRes=sim.supply.NM.hydPump * HYDRAULIC_PUMP_NM_PER_KNSM
 
   totalPressureDemand=sim.demand.kNSM.rotors.one +
       sim.demand.kNSM.rotors.two + sim.demand.kNSM.rotors.three +
@@ -1649,15 +1737,15 @@ end
 
 function powerSupply(sim)
   genPower=GEN_MAX_KW * (sim.supply.NM.gen / GEN_MAX_NM)
-  batteryPower=sim.availableForUse.kW
-  totalPowerDemand=sim.demand.kW.displays + sim.demand.kW.battery +
+  btryPower=sim.availableForUse.kW
+  totalPowerDemand=sim.demand.kW.disps + sim.demand.kW.btry +
       sim.demand.kW.rotors.one + sim.demand.kW.rotors.two +
       sim.demand.kW.rotors.three + sim.demand.kW.rotors.four +
       sim.demand.kW.props.one + sim.demand.kW.props.two +
       sim.demand.kW.splitter + sim.demand.kW.H2OAcc + sim.demand.kW.CH4Acc
 
   if totalPowerDemand <= genPower then
-    sim.supply.kW.displays=sim.demand.kW.displays
+    sim.supply.kW.disps=sim.demand.kW.disps
     sim.supply.kW.rotors.one=sim.demand.kW.rotors.one
     sim.supply.kW.rotors.two=sim.demand.kW.rotors.two
     sim.supply.kW.rotors.three=sim.demand.kW.rotors.three
@@ -1667,9 +1755,9 @@ function powerSupply(sim)
     sim.supply.kW.splitter=sim.demand.kW.splitter
     sim.supply.kW.H2OAcc=sim.demand.kW.H2OAcc
     sim.supply.kW.CH4Acc=sim.demand.kW.CH4Acc
-    sim.supply.kW.battery=sim.demand.kW.battery
-  elseif totalPowerDemand <= (genPower + batteryPower) then
-    sim.supply.kW.displays= sim.demand.kW.displays
+    sim.supply.kW.btry=sim.demand.kW.btry
+  elseif totalPowerDemand <= (genPower + btryPower) then
+    sim.supply.kW.disps= sim.demand.kW.disps
     sim.supply.kW.rotors.one=sim.demand.kW.rotors.one
     sim.supply.kW.rotors.two=sim.demand.kW.rotors.two
     sim.supply.kW.rotors.three=sim.demand.kW.rotors.three
@@ -1679,12 +1767,12 @@ function powerSupply(sim)
     sim.supply.kW.splitter=sim.demand.kW.splitter
     sim.supply.kW.H2OAcc=sim.demand.kW.H2OAcc
     sim.supply.kW.CH4Acc=sim.demand.kW.CH4Acc
-    sim.supply.kW.battery=sim.demand.kW.battery
+    sim.supply.kW.btry=sim.demand.kW.btry
 
-    batteryUse=totalPowerDemand - genPower
-    sim.availableForStorage.kW=sim.availableForStorage.kW - batteryUse
+    btryUse=totalPowerDemand - genPower
+    sim.availableForStorage.kW=sim.availableForStorage.kW - btryUse
   else
-    displaysPercent=sim.demand.kW.displays / totalPowerDemand
+    dispsPercent=sim.demand.kW.disps / totalPowerDemand
     rotorsOnePercent=sim.demand.kW.rotors.one / totalPowerDemand
     rotorsTwoPercent=sim.demand.kW.rotors.two / totalPowerDemand
     rotorsThreePercent=sim.demand.kW.rotors.three / totalPowerDemand
@@ -1694,11 +1782,11 @@ function powerSupply(sim)
     splitterPercent=sim.demand.kW.splitter / totalPowerDemand
     H2OAccPercent=sim.demand.kW.H2OAcc / totalPowerDemand
     CH4AccPercent=sim.demand.kW.CH4Acc / totalPowerDemand
-    batteryPercent=sim.demand.kW.battery / totalPowerDemand
+    btryPercent=sim.demand.kW.btry / totalPowerDemand
 
-    totalPowerAvailable=genPower + batteryPower
+    totalPowerAvailable=genPower + btryPower
 
-    sim.supply.kW.displays=displaysPercent * totalPowerAvailable
+    sim.supply.kW.disps=dispsPercent * totalPowerAvailable
     sim.supply.kW.rotors.one=rotorsOnePercent * totalPowerAvailable
     sim.supply.kW.rotors.two=rotorsTwoPercent * totalPowerAvailable
     sim.supply.kW.rotors.three=rotorsThreePercent * totalPowerAvailable
@@ -1708,9 +1796,9 @@ function powerSupply(sim)
     sim.supply.kW.splitter=splitterPercent * totalPowerAvailable
     sim.supply.kW.H2OAcc=H2OAccPercent * totalPowerAvailable
     sim.supply.kW.CH4Acc=CH4AccPercent * totalPowerAvailable
-    sim.supply.kW.battery=batteryPercent * totalPowerAvailable
+    sim.supply.kW.btry=btryPercent * totalPowerAvailable
 
-    sim.availableForStorage.kW=sim.availableForStorage.kW - batteryPower
+    sim.availableForStorage.kW=sim.availableForStorage.kW - btryPower
   end
 
   return sim
@@ -1733,7 +1821,7 @@ function distributePower(sim)
   speedAdjustment=clamp(nroot(6.6, s.speed) - 1.0, 0.2, 1.2)
   intakeAdjustment=altAdjustment * speedAdjustment
 
-  s.com.displays.active=(sim.supply.kW.displays >= sim.demand.kW.displays)
+  s.com.disps.active=(sim.supply.kW.disps >= sim.demand.kW.disps)
 
   if sim.supply.kW.splitter > 0 then
     powerPercent=sim.supply.kW.splitter / SPLITTER_POWER_DEMAND_KW
@@ -1758,33 +1846,33 @@ function distributePower(sim)
         CH4_ACC_PER_TIC * s.env.CH4 * intakeAdjustment
   end
 
-  if sim.supply.kW.battery > 0 then
+  if sim.supply.kW.btry > 0 then
     sim.availableForStorage.kW=sim.availableForStorage.kW +
-        sim.supply.kW.battery
+        sim.supply.kW.btry
   end
 
   return sim
 end
 
 function drainTanks(sim)
-  s.com.cells.one.level=s.com.cells.one.level -
-      math.max(0.01, 1.0 - s.com.cells.one.st) * BLADDER_MAX_VENT_M3F
-  s.com.cells.two.level=s.com.cells.two.level -
-      math.max(0.01, 1.0 - s.com.cells.two.st) * BLADDER_MAX_VENT_M3F
-  s.com.cells.three.level=s.com.cells.three.level -
-      math.max(0.01, 1.0 - s.com.cells.three.st) * BLADDER_MAX_VENT_M3F
-  s.com.cells.four.level=s.com.cells.four.level -
-      math.max(0.01, 1.0 - s.com.cells.four.st) * BLADDER_MAX_VENT_M3F
+  s.com.clls.one.level=s.com.clls.one.level -
+      math.max(0.01, 1.0 - s.com.clls.one.st) * BLADDER_MAX_VENT_M3F
+  s.com.clls.two.level=s.com.clls.two.level -
+      math.max(0.01, 1.0 - s.com.clls.two.st) * BLADDER_MAX_VENT_M3F
+  s.com.clls.three.level=s.com.clls.three.level -
+      math.max(0.01, 1.0 - s.com.clls.three.st) * BLADDER_MAX_VENT_M3F
+  s.com.clls.four.level=s.com.clls.four.level -
+      math.max(0.01, 1.0 - s.com.clls.four.st) * BLADDER_MAX_VENT_M3F
 
   s.com.tanks.H.level=s.com.tanks.H.level -
-      sim.supply.H_V.cells.one / H_MASS_TO_VOLUME -
-      sim.supply.H_V.cells.two / H_MASS_TO_VOLUME -
-      sim.supply.H_V.cells.three / H_MASS_TO_VOLUME -
-      sim.supply.H_V.cells.four / H_MASS_TO_VOLUME
-  s.com.tanks.O.level=s.com.tanks.O.level - sim.supply.O.boiler
-  s.com.tanks.H2O.level=s.com.tanks.H2O.level - sim.supply.H2O.boiler -
+      sim.supply.H_V.clls.one / H_MASS_TO_VOLUME -
+      sim.supply.H_V.clls.two / H_MASS_TO_VOLUME -
+      sim.supply.H_V.clls.three / H_MASS_TO_VOLUME -
+      sim.supply.H_V.clls.four / H_MASS_TO_VOLUME
+  s.com.tanks.O.level=s.com.tanks.O.level - sim.supply.O.bilr
+  s.com.tanks.H2O.level=s.com.tanks.H2O.level - sim.supply.H2O.bilr -
       sim.supply.H2O.splitter
-  s.com.tanks.CH4.level=s.com.tanks.CH4.level - sim.supply.CH4.boiler
+  s.com.tanks.CH4.level=s.com.tanks.CH4.level - sim.supply.CH4.bilr
 
   s.com.hyd.res.level=s.com.hyd.res.level -
       sim.supply.kNSM.rotors.one - sim.supply.kNSM.rotors.two -
@@ -1793,14 +1881,14 @@ function drainTanks(sim)
 end
 
 function fillTanks(sim)
-  s.com.cells.one.level=math.min(BLADDER_MAX_M3,
-      s.com.cells.one.level + sim.supply.H_V.cells.one)
-  s.com.cells.two.level=math.min(BLADDER_MAX_M3,
-      s.com.cells.two.level + sim.supply.H_V.cells.two)
-  s.com.cells.three.level=math.min(BLADDER_MAX_M3,
-      s.com.cells.three.level + sim.supply.H_V.cells.three)
-  s.com.cells.four.level=math.min(BLADDER_MAX_M3,
-      s.com.cells.four.level + sim.supply.H_V.cells.four)
+  s.com.clls.one.level=math.min(BLADDER_MAX_M3,
+      s.com.clls.one.level + sim.supply.H_V.clls.one)
+  s.com.clls.two.level=math.min(BLADDER_MAX_M3,
+      s.com.clls.two.level + sim.supply.H_V.clls.two)
+  s.com.clls.three.level=math.min(BLADDER_MAX_M3,
+      s.com.clls.three.level + sim.supply.H_V.clls.three)
+  s.com.clls.four.level=math.min(BLADDER_MAX_M3,
+      s.com.clls.four.level + sim.supply.H_V.clls.four)
 
   s.com.tanks.H.level=math.min(H_TANK_MAX_KG,
       s.com.tanks.H.level + sim.supply.H_M.tank)
@@ -1812,10 +1900,10 @@ function fillTanks(sim)
       s.com.tanks.CH4.level + sim.supply.CH4.tank)
 
   s.com.hyd.res.level=math.min(HYDRAULIC_MAX_KNSM,
-      s.com.hyd.res.level + sim.supply.kNSM.hydraulicReservoir)
+      s.com.hyd.res.level + sim.supply.kNSM.hydRes)
 
-  s.com.battery.level=math.min(BATTERY_MAX_CHARGE_KW,
-      s.com.battery.level + sim.availableForStorage.kW)
+  s.com.btry.level=math.min(BATTERY_MAX_CHARGE_KW,
+      s.com.btry.level + sim.availableForStorage.kW)
 end
 
 function applyThrust(sim)
@@ -1839,26 +1927,26 @@ function applyForces(sim)
   thrustAdjustment=lerp(0.2, 1.0, altAdjustment)
   s.env.Atmo=altAdjustment * SEA_LEVEL_AIR_DENSITY
 
-  rotor1Xcomp=math.cos(math.rad(90 - s.com.rotors.one.rotation)) *
+  rotor1Xcomp=math.cos(math.rad(90 - s.com.rotors.one.rot)) *
       thrustAdjustment
-  rotor1Ycomp=math.sin(math.rad(90 - s.com.rotors.one.rotation)) *
+  rotor1Ycomp=math.sin(math.rad(90 - s.com.rotors.one.rot)) *
       thrustAdjustment
-  rotor2Xcomp=math.cos(math.rad(90 - s.com.rotors.two.rotation)) *
+  rotor2Xcomp=math.cos(math.rad(90 - s.com.rotors.two.rot)) *
       thrustAdjustment
-  rotor2Ycomp=math.sin(math.rad(90 - s.com.rotors.two.rotation)) *
+  rotor2Ycomp=math.sin(math.rad(90 - s.com.rotors.two.rot)) *
       thrustAdjustment
-  rotor3Xcomp=math.cos(math.rad(90 - s.com.rotors.three.rotation)) *
+  rotor3Xcomp=math.cos(math.rad(90 - s.com.rotors.three.rot)) *
       thrustAdjustment
-  rotor3Ycomp=math.sin(math.rad(90 - s.com.rotors.three.rotation)) *
+  rotor3Ycomp=math.sin(math.rad(90 - s.com.rotors.three.rot)) *
       thrustAdjustment
-  rotor4Xcomp=math.cos(math.rad(90 - s.com.rotors.four.rotation)) *
+  rotor4Xcomp=math.cos(math.rad(90 - s.com.rotors.four.rot)) *
       thrustAdjustment
-  rotor4Ycomp=math.sin(math.rad(90 - s.com.rotors.four.rotation)) *
+  rotor4Ycomp=math.sin(math.rad(90 - s.com.rotors.four.rot)) *
       thrustAdjustment
 
-  totalHydrogenVolume=s.com.cells.one.level +
-      s.com.cells.two.level + s.com.cells.three.level +
-      s.com.cells.four.level
+  totalHydrogenVolume=s.com.clls.one.level +
+      s.com.clls.two.level + s.com.clls.three.level +
+      s.com.clls.four.level
   totalHydrogenWeight=totalHydrogenVolume * HYDROGEN_DENSITY
   totalAirWeight=totalHydrogenVolume * SEA_LEVEL_AIR_DENSITY
 
@@ -1867,7 +1955,7 @@ function applyForces(sim)
       s.com.tanks.H2O.level + s.com.tanks.CH4.level
   totalShipWeightKN=(totalShipWeightKG * KG_TO_N) * 0.001
 
-  s.heading=(s.com.props.one.rotation + s.com.props.two.rotation) / 2
+  s.heading=(s.com.props.one.rot + s.com.props.two.rot) / 2
   drag=DRAG_COEFFICENT * FRONT_DRAG_AREA * 0.5 * s.env.Atmo *
       (s.speed * s.speed)
   s.acceleration=(s.com.props.one.thrust * thrustAdjustment +
@@ -1877,10 +1965,10 @@ function applyForces(sim)
                        s.com.rotors.three.thrust * rotor3Xcomp +
                        s.com.rotors.four.thrust * rotor4Xcomp - drag) /
       totalShipWeightKN
-  -- TODO Remove fudge?
+  -- TODO Remove fudge? Acceleration bump, direction rotation.
   s.speed=s.speed + 0.5 * (s.acceleration * 10 * 0.00027777777)
-  changeX=s.speed * math.cos(math.rad(s.heading))
-  changeY=s.speed * math.sin(math.rad(s.heading))
+  changeX=-s.speed * math.sin(math.rad(s.heading))
+  changeY=-s.speed * math.cos(math.rad(s.heading))
   s.pos.x=s.pos.x + changeX
   s.pos.y=s.pos.y + changeY
 
@@ -1888,9 +1976,9 @@ function applyForces(sim)
       HYDROGEN_LIFT_ADJUST
   totalWingLiftForce=(s.speed * WING_LIFT) * altAdjustment
 
-  s.rotation=(s.com.rotors.one.rotation + s.com.rotors.two.rotation +
-                   s.com.rotors.three.rotation +
-                   s.com.rotors.four.rotation) / 4
+  s.rot=(s.com.rotors.one.rot + s.com.rotors.two.rot +
+                   s.com.rotors.three.rot +
+                   s.com.rotors.four.rot) / 4
   vertDrag=DRAG_COEFFICENT * BOTTOM_DRAG_AREA * 0.5 * s.env.Atmo *
       (s.vsi * s.vsi)
   vForce=((s.com.rotors.one.thrust * rotor1Ycomp +
@@ -1909,9 +1997,9 @@ function applyForces(sim)
 
   -- Auto controls
   if s.vsi < s.set_vsi then
-    s.con.throttle.rotors=math.min(s.con.throttle.rotors + 0.1, 1.0)
+    s.con.thrt.rotors=math.min(s.con.thrt.rotors + 0.1, 1.0)
   elseif s.vsi > s.set_vsi then
-    s.con.throttle.rotors=math.max(s.con.throttle.rotors - 0.1, 0.0)
+    s.con.thrt.rotors=math.max(s.con.thrt.rotors - 0.1, 0.0)
   end
 
   if s.pos.z + 10 < s.con.alt and s.con.vsi > 0 then
@@ -1925,24 +2013,24 @@ end
 
 
 function calcHydDemand(currentAngle, desiredAngle, st, maxSpeed, maxDemand)
-  if currentAngle == desiredAngle then return 0 end
+  if currentAngle==desiredAngle then return 0 end
   rotorAngleChange=math.abs(desiredAngle - currentAngle)
   rotorAngleChange=math.min(rotorAngleChange, maxSpeed * st)
   return (rotorAngleChange / maxSpeed) * maxDemand
 end
 
 function rotateThruster(sim, type, thruster, maxDemand, maxSpeed)
-  if math.abs(s.con.rotation[type] - s.com[type][thruster].rotation) < 0.0001 then
-    s.com[type][thruster].rotation=s.con.rotation[type]
+  if math.abs(s.con.rot[type] - s.com[type][thruster].rot) < 0.0001 then
+    s.com[type][thruster].rot=s.con.rot[type]
   else
     hydAvailable=sim.supply.kNSM[type][thruster] / maxDemand
     availableAngle=hydAvailable * maxSpeed
-    desiredAngle=s.con.rotation[type] - s.com[type][thruster].rotation
+    desiredAngle=s.con.rot[type] - s.com[type][thruster].rot
     moveAngle=math.min(availableAngle, math.abs(desiredAngle))
     if desiredAngle < 0 then
-      s.com[type][thruster].rotation=s.com[type][thruster].rotation - moveAngle
+      s.com[type][thruster].rot=s.com[type][thruster].rot - moveAngle
     else
-      s.com[type][thruster].rotation=s.com[type][thruster].rotation + moveAngle
+      s.com[type][thruster].rot=s.com[type][thruster].rot + moveAngle
     end
   end
 
@@ -1983,6 +2071,16 @@ function inverseLerp(a, b, v)
   return (v - a) / (b - a)
 end
 
+function sqrDistance(ptA, ptB)
+  x=ptA.x-ptB.x
+  y=ptA.y-ptB.y
+  return x*x+y*y
+end
+
+function distance(ptA, ptB)
+  return math.sqrt(sqrDistance(ptA,ptB))
+end
+
 function rotateV2(vec, angle)
   r=math.rad(angle)
   aSin=math.sin(r)
@@ -2007,129 +2105,4 @@ function mapContains(bb, pos)
       }, pos)
 end
 
-function drawShipDebugOne(s)
-  lines={}
-
-  lines[1]="Ship Status Page 1"
-  lines[2]=string.format("Alt: %f", s.pos.z)
-  lines[3]=string.format("VSI: %f", s.vsi)
-  lines[4]=string.format("Con TP: %f", s.con.throttle.props)
-  lines[5]=string.format("Con TR: %f", s.con.throttle.rotors)
-  lines[6]=string.format("Con RP: %f", s.con.rotation.props)
-  lines[7]=string.format("Con RR: %f", s.con.rotation.rotors)
-  lines[8]=string.format("Env H2O: %f", s.env.H2O)
-  lines[9]=string.format("Env CH4: %f", s.env.CH4)
-  lines[10]="COMPONENTS"
-  lines[11]=string.format("Displays S: %f", s.com.displays.st)
-  lines[12]=string.format("Boiler S: %f", s.com.engine.boiler.st)
-  lines[13]=string.format("Turbine S: %f", s.com.engine.turbine.st)
-  lines[14]=string.format("Hyd Res S: %f", s.com.hyd.res.st)
-  lines[15]=string.format("Hyd Res L: %f", s.com.hyd.res.level)
-  lines[16]=string.format("Hyd Pum S: %f", s.com.hyd.pump.st)
-  lines[17]=string.format("Gen S: %f", s.com.gen.st)
-  lines[18]=string.format("R1S: %f", s.com.rotors.one.st)
-  lines[19]=string.format("R1R: %f", s.com.rotors.one.rotation)
-  lines[20]=string.format("R1T: %f", s.com.rotors.one.thrust)
-  lines[21]=string.format("P1S: %f", s.com.props.one.st)
-  lines[22]=string.format("P1R: %f", s.com.props.one.rotation)
-  lines[23]=string.format("P1T: %f", s.com.props.one.thrust)
-  lines[24]=string.format("AccH2O S: %f", s.com.acc.H2O.st)
-  lines[25]=string.format("AccCH4 S: %f", s.com.acc.CH4.st)
-  lines[26]=string.format("BLAD1 S: %f", s.com.cells.one.st)
-  lines[27]=string.format("BLAD1 L: %f", s.com.cells.one.level)
-  lines[28]=string.format("Batt S: %f", s.com.battery.st)
-  lines[29]=string.format("Batt L: %f", s.com.battery.level)
-  lines[30]=string.format("Split S: %f", s.com.splitter.st)
-
-  drawDebugLines(lines, 30)
-end
-
-function drawShipDebugTwo(s)
-  lines={}
-
-  lines[1]="Ship Status Page 2"
-  lines[2]=string.format("T H S: %f", s.com.tanks.H.st)
-  lines[3]=string.format("T H L: %f", s.com.tanks.H.level)
-  lines[4]=string.format("T O S: %f", s.com.tanks.O.st)
-  lines[5]=string.format("T O L: %f", s.com.tanks.O.level)
-  lines[6]=string.format("T H2O S: %f", s.com.tanks.H2O.st)
-  lines[7]=string.format("T H2O L: %f", s.com.tanks.H2O.level)
-  lines[8]=string.format("T CH4 S: %f", s.com.tanks.CH4.st)
-  lines[9]=string.format("T CH4 L: %f", s.com.tanks.CH4.level)
-
-  drawDebugLines(lines, 9)
-end
-
-function drawSimDebug()
-  lines={}
-
-  lines[1]="Power"
-  lines[2]=string.format("Displays: D%f S%f", sim.demand.kW.displays, sim.supply.kW.displays)
-  lines[3]=string.format("Rotors: D%f S%f", sim.demand.kW.rotors.one, sim.supply.kW.rotors.one)
-  lines[4]=string.format("Props: D%f S%f", sim.demand.kW.props.one, sim.supply.kW.props.one)
-  lines[5]=string.format("Splitter: D%f S%f", sim.demand.kW.splitter, sim.supply.kW.splitter)
-  lines[6]=string.format("H2OAcc: D%f S%f", sim.demand.kW.H2OAcc, sim.supply.kW.H2OAcc)
-  lines[7]=string.format("CH4Acc: D%f S%f", sim.demand.kW.CH4Acc, sim.supply.kW.CH4Acc)
-  lines[8]=string.format("Battery: D%f S%f", sim.demand.kW.battery, sim.supply.kW.battery)
-  lines[9]="KNSM"
-  lines[10]=string.format("Hyd Res: D%f S%f", sim.demand.kNSM.hydraulicReservoir, sim.supply.kNSM.hydraulicReservoir)
-  lines[11]=string.format("Rotors: D%f S%f", sim.demand.kNSM.rotors.one, sim.supply.kNSM.rotors.one)
-  lines[12]=string.format("Props: D%f S%f", sim.demand.kNSM.props.one, sim.supply.kNSM.props.one)
-  lines[13]="NM"
-  lines[14]=string.format("Hyd Pum: D%f S%f", sim.demand.NM.hydraulicPump, sim.supply.NM.hydraulicPump)
-  lines[15]=string.format("Gen: D%f S%f", sim.demand.NM.gen, sim.supply.NM.gen)
-  lines[16]="H2O"
-  lines[17]=string.format("Tank: D%f S%f", sim.demand.H2O.tank, sim.supply.H2O.tank)
-  lines[18]=string.format("Boiler: D%f S%f", sim.demand.H2O.boiler, sim.supply.H2O.boiler)
-  lines[19]=string.format("Splitter: D%f S%f", sim.demand.H2O.splitter, sim.supply.H2O.splitter)
-  lines[20]="CH4"
-  lines[21]=string.format("Tank: D%f S%f", sim.demand.CH4.tank, sim.supply.CH4.tank)
-  lines[22]=string.format("Boiler: D%f S%f", sim.demand.CH4.boiler, sim.supply.CH4.boiler)
-  lines[23]="H"
-  lines[24]=string.format("Tank: D%f S%f", sim.demand.H_M.tank, sim.supply.H_M.tank)
-  lines[25]=string.format("Cells: D%f S%f", sim.demand.H_V.cells.one, sim.supply.H_V.cells.one)
-  lines[26]="O"
-  lines[27]=string.format("Tank: D%f S%f", sim.demand.O.tank, sim.supply.O.tank)
-  lines[28]=string.format("Boiler: D%f S%f", sim.demand.O.boiler, sim.supply.O.boiler)
-  lines[29]="Steam"
-  lines[30]=string.format("Steam: D%f S%f", sim.demand.steam, sim.supply.steam)
-
-  drawDebugLines(lines, 30)
-end
-
-
-function drawStorageDebug(sim)
-  lines={}
-
-  lines[1]="kW"
-  lines[2]=string.format("In Storage: %f, Available for Storage: %f",
-                           sim.availableForUse.kW, sim.availableForStorage.kW)
-  lines[3]="KNSM"
-  lines[4]=string.format("In Storage: %f, Available for Storage: %f",
-                           sim.availableForUse.kNSM, sim.availableForStorage.kNSM)
-  lines[5]="H2O"
-  lines[6]=string.format("In Storage: %f, Available for Storage: %f",
-                           sim.availableForUse.H2O, sim.availableForStorage.H2O)
-  lines[7]="CH4"
-  lines[8]=string.format("In Storage: %f, Available for Storage: %f",
-                           sim.availableForUse.CH4, sim.availableForStorage.CH4)
-  lines[9]="H"
-  lines[10]=string.format("In Storage: %f, Available for Storage: %f",
-                            sim.availableForUse.H_M, sim.availableForStorage.H_M)
-  lines[11]="O"
-  lines[12]=string.format("In Storage: %f, Available for Storage: %f",
-                            sim.availableForUse.O, sim.availableForStorage.O)
-
-  drawDebugLines(lines, 12)
-end
-
-
-function drawDebugLines(lines, count)
-  for i=1, count do
-    if i < 16 then
-      print(lines[i], 1, i*9-8, 15, false, 1, true)
-    else
-      print(lines[i], 120, i*9-143, 15, false, 1, true)
-    end
-  end
-end
+init()
