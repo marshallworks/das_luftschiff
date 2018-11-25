@@ -80,15 +80,26 @@ H2O_ACC_PER_TIC = 12
 CH4_ACC_PER_TIC = 20
 
 -- Game State
+start = {
+  t= 0,
+  x= 60,
+  y= 42
+}
+
+camera = {
+  t = 0,
+  x = 0,
+  y = 0,
+  cellX = 0,
+  cellY = 0
+}
+
 p = {
-  x = 248,
-  y = 48,
+  s = 257,
+  x = 476,
+  y = 190,
   vx = 0,
-  vy = 0,
-  mapX = 0,
-  mapY = 0,
-  mapOffsetX = 0,
-  mapOffsetY = 0
+  vy = 0
 }
 
 ship = {
@@ -126,10 +137,10 @@ ship = {
       active = true,
       drawable = "display",
       bb = {
-        min_x = 25,
-        min_y = 6,
-        max_x = 28,
-        max_y = 7
+        min_x = 55,
+        min_y = 23,
+        max_x = 58,
+        max_y = 24
       }
     },
     engine = {
@@ -137,20 +148,20 @@ ship = {
         status = 1.0,
         drawable = "boiler",
         bb = {
-          min_x = 18,
-          min_y = 10,
-          max_x = 21,
-          max_y = 11
+          min_x = 48,
+          min_y = 27,
+          max_x = 51,
+          max_y = 28
         }
       },
       turbine = {
         status = 1.0,
         drawable = "turbine",
         bb = {
-          min_x = 15,
-          min_y = 10,
-          max_x = 16,
-          max_y = 11
+          min_x = 46,
+          min_y = 27,
+          max_x = 47,
+          max_y = 28
         }
       },
     },
@@ -160,20 +171,20 @@ ship = {
         level = HYDRAULIC_MAX_KNSM,
         drawable = "hyd_acc",
         bb = {
-          min_x = 7,
-          min_y = 6,
-          max_x = 8,
-          max_y = 7
+          min_x = 37,
+          min_y = 23,
+          max_x = 38,
+          max_y = 24
         }
       },
       pump = {
         status = 1.0,
         drawable = "hyd_pump",
         bb = {
-          min_x = 7,
-          min_y = 10,
-          max_x = 8,
-          max_y = 11
+          min_x = 37,
+          min_y = 27,
+          max_x = 38,
+          max_y = 28
         }
       }
     },
@@ -181,10 +192,10 @@ ship = {
       status = 1.0,
       drawable = "generator",
       bb = {
-        min_x = 10,
-        min_y = 10,
-        max_x = 13,
-        max_y = 11
+        min_x = 40,
+        min_y = 27,
+        max_x = 43,
+        max_y = 28
       }
     },
     rotors = {
@@ -194,10 +205,10 @@ ship = {
         thrust = 0,
         drawable = "rotor_lower",
         bb = {
-          min_x = 46,
-          min_y = 15,
-          max_x = 51,
-          max_y = 15
+          min_x = 76,
+          min_y = 32,
+          max_x = 81,
+          max_y = 32
         }
       },
       two = {
@@ -206,10 +217,10 @@ ship = {
         thrust = 0,
         drawable = "rotor_lower",
         bb = {
-          min_x = 36,
-          min_y = 15,
-          max_x = 41,
-          max_y = 15
+          min_x = 66,
+          min_y = 32,
+          max_x = 71,
+          max_y = 32
         }
       },
       three = {
@@ -218,10 +229,10 @@ ship = {
         thrust = 0,
         drawable = "rotor_lower",
         bb = {
-          min_x = 18,
-          min_y = 15,
-          max_x = 23,
-          max_y = 15
+          min_x = 48,
+          min_y = 32,
+          max_x = 53,
+          max_y = 32
         }
       },
       four = {
@@ -230,10 +241,10 @@ ship = {
         thrust = 0,
         drawable = "rotor_lower",
         bb = {
-          min_x = 8,
-          min_y = 15,
-          max_x = 13,
-          max_y = 15
+          min_x = 38,
+          min_y = 32,
+          max_x = 33,
+          max_y = 32
         }
       }
     },
@@ -244,10 +255,10 @@ ship = {
         thrust = 0,
         drawable = "prop",
         bb = {
-          min_x = 3,
-          min_y = 5,
-          max_x = 4,
-          max_y = 7
+          min_x = 33,
+          min_y = 22,
+          max_x = 34,
+          max_y = 24
         }
       },
       two = {
@@ -256,10 +267,10 @@ ship = {
         thrust = 0,
         drawable = "prop",
         bb = {
-          min_x = 3,
-          min_y = 9,
-          max_x = 4,
-          max_y = 11
+          min_x = 33,
+          min_y = 26,
+          max_x = 34,
+          max_y = 28
         }
       }
     },
@@ -268,20 +279,20 @@ ship = {
         status = 1.0,
         drawable = "H2Oacc",
         bb = {
-          min_x = 55,
-          min_y = 6,
-          max_x = 56,
-          max_y = 7
+          min_x = 85,
+          min_y = 23,
+          max_x = 86,
+          max_y = 24
         }
       },
       CH4 = {
         status = 1.0,
         drawable = "CH4acc",
         bb = {
-          min_x = 53,
-          min_y = 10,
-          max_x = 54,
-          max_y = 11
+          min_x = 83,
+          min_y = 27,
+          max_x = 84,
+          max_y = 28
         }
       },
     },
@@ -291,10 +302,10 @@ ship = {
         level = BLADDER_MAX_M3,
         drawable = "Hcell",
         bb = {
-          min_x = 47,
-          min_y = 4,
-          max_x = 54,
-          max_y = 5
+          min_x = 77,
+          min_y = 21,
+          max_x = 84,
+          max_y = 22
         }
       },
       two = {
@@ -302,10 +313,10 @@ ship = {
         level = BLADDER_MAX_M3,
         drawable = "Hcell",
         bb = {
-          min_x = 38,
-          min_y = 4,
-          max_x = 45,
-          max_y = 5
+          min_x = 68,
+          min_y = 21,
+          max_x = 75,
+          max_y = 22
         }
       },
       three = {
@@ -313,10 +324,10 @@ ship = {
         level = BLADDER_MAX_M3,
         drawable = "Hcell",
         bb = {
-          min_x = 14,
-          min_y = 4,
-          max_x = 21,
-          max_y = 5
+          min_x = 44,
+          min_y = 21,
+          max_x = 51,
+          max_y = 22
         }
       },
       four = {
@@ -324,10 +335,10 @@ ship = {
         level = BLADDER_MAX_M3,
         drawable = "Hcell",
         bb = {
-          min_x = 5,
-          min_y = 4,
-          max_x = 12,
-          max_y = 5
+          min_x = 35,
+          min_y = 21,
+          max_x = 42,
+          max_y = 22
         }
       }
     },
@@ -336,20 +347,20 @@ ship = {
       level = BATTERY_MAX_CHARGE_KW,
       drawable = "battery",
       bb = {
-        min_x = 12,
-        min_y = 6,
-        max_x = 17,
-        max_y = 7
+        min_x = 42,
+        min_y = 23,
+        max_x = 47,
+        max_y = 24
       }
     },
     splitter = {
       status = 1.0,
       drawable = "splitter",
       bb = {
-        min_x = 34,
-        min_y = 11,
-        max_x = 35,
-        max_y = 11
+        min_x = 64,
+        min_y = 28,
+        max_x = 65,
+        max_y = 28
       }
     },
     tanks = {
@@ -358,10 +369,10 @@ ship = {
         level = H_TANK_MAX_KG,
         drawable = "Htank",
         bb = {
-          min_x = 28,
-          min_y = 9,
-          max_x = 31,
-          max_y = 12
+          min_x = 58,
+          min_y = 26,
+          max_x = 61,
+          max_y = 29
         }
       },
       O = {
@@ -369,10 +380,10 @@ ship = {
         level = O_TANK_MAX_KG,
         drawable = "Otank",
         bb = {
-          min_x = 28,
-          min_y = 14,
-          max_x = 31,
-          max_y = 15
+          min_x = 58,
+          min_y = 31,
+          max_x = 61,
+          max_y = 32
         }
       },
       H2O = {
@@ -380,10 +391,10 @@ ship = {
         level = H2O_TANK_MAX_KG,
         drawable = "H2Otank",
         bb = {
-          min_x = 38,
-          min_y = 10,
-          max_x = 43,
-          max_y = 11
+          min_x = 68,
+          min_y = 27,
+          max_x = 73,
+          max_y = 28
         }
       },
       CH4 = {
@@ -391,10 +402,10 @@ ship = {
         level = CH4_TANK_MAX_KG,
         drawable = "CH4tank",
         bb = {
-          min_x = 45,
-          min_y = 10,
-          max_x = 50,
-          max_y = 11
+          min_x = 75,
+          min_y = 27,
+          max_x = 80,
+          max_y = 28
         }
       }
     },
@@ -697,12 +708,6 @@ drawables = {
   }
 }
 
-start = {
-  t= 0,
-  x= 60,
-  y= 42
-}
-
 startScreen = true
 showControls = false
 
@@ -710,7 +715,13 @@ debugType = 0
 controlType = 0
 
 function init()
+  -- Background color
   poke(0x03FF8, 3)
+
+  camera.x = p.x - 120
+  camera.y = p.y - 64
+  camera.cellX = camera.x / 8
+  camera.cellY = camera.y / 8
 end
 
 init()
@@ -738,7 +749,60 @@ function TIC()
     start.t=start.t+1
   else
 
-    if btnp(6) then
+    testPos = { x = p.x, y = p.y}
+    onDisplay = false
+    if mapContains(ship.com.displays.bb, testPos) then
+      print("Display", 2, 12, 6, false, 1, true)
+      onDisplay = true
+    elseif mapContains(ship.com.engine.boiler.bb, testPos) then
+      print("Boiler", 2, 12, 6, false, 1, true)
+    elseif mapContains(ship.com.engine.turbine.bb, testPos) then
+      print("Turbine", 2, 12, 6, false, 1, true)
+    elseif mapContains(ship.com.hydraulics.reservoir.bb, testPos) then
+      print("Hyd Reservoir", 2, 12, 6, false, 1, true)
+    elseif mapContains(ship.com.hydraulics.pump.bb, testPos) then
+      print("Hyd Pump", 2, 12, 6, false, 1, true)
+    elseif mapContains(ship.com.generator.bb, testPos) then
+      print("Generator", 2, 12, 6, false, 1, true)
+    elseif mapContains(ship.com.rotors.one.bb, testPos) then
+      print("Rotor 1", 2, 12, 6, false, 1, true)
+    elseif mapContains(ship.com.rotors.two.bb, testPos) then
+      print("Rotor 2", 2, 12, 6, false, 1, true)
+    elseif mapContains(ship.com.rotors.three.bb, testPos) then
+      print("Rotor 3", 2, 12, 6, false, 1, true)
+    elseif mapContains(ship.com.rotors.four.bb, testPos) then
+      print("Rotor 4", 2, 12, 6, false, 1, true)
+    elseif mapContains(ship.com.props.one.bb, testPos) then
+      print("Prop 1", 2, 12, 6, false, 1, true)
+    elseif mapContains(ship.com.props.two.bb, testPos) then
+      print("Prop 2", 2, 12, 6, false, 1, true)
+    elseif mapContains(ship.com.acc.H2O.bb, testPos) then
+      print("H2O Acc", 2, 12, 6, false, 1, true)
+    elseif mapContains(ship.com.acc.CH4.bb, testPos) then
+      print("CH4 Acc", 2, 12, 6, false, 1, true)
+    elseif mapContains(ship.com.cells.one.bb, testPos) then
+      print("H Cell 1", 2, 12, 6, false, 1, true)
+    elseif mapContains(ship.com.cells.two.bb, testPos) then
+      print("H Cell 2", 2, 12, 6, false, 1, true)
+    elseif mapContains(ship.com.cells.three.bb, testPos) then
+      print("H Cell 3", 2, 12, 6, false, 1, true)
+    elseif mapContains(ship.com.cells.four.bb, testPos) then
+      print("H Cell 4", 2, 12, 6, false, 1, true)
+    elseif mapContains(ship.com.battery.bb, testPos) then
+      print("Battery", 2, 12, 6, false, 1, true)
+    elseif mapContains(ship.com.splitter.bb, testPos) then
+      print("Splitter", 2, 12, 6, false, 1, true)
+    elseif mapContains(ship.com.tanks.H.bb, testPos) then
+      print("H Tank", 2, 12, 6, false, 1, true)
+    elseif mapContains(ship.com.tanks.O.bb, testPos) then
+      print("O Tank", 2, 12, 6, false, 1, true)
+    elseif mapContains(ship.com.tanks.H2O.bb, testPos) then
+      print("H2O Tank", 2, 12, 6, false, 1, true)
+    elseif mapContains(ship.com.tanks.CH4.bb, testPos) then
+      print("CH4 Tank", 2, 12, 6, false, 1, true)
+    end
+
+    if btnp(6) and onDisplay then
       showControls = not showControls
     end
 
@@ -779,21 +843,22 @@ function TIC()
       onFloor = false
       inCeiling = false
       onLadder = false
-      testX = (p.x + 4) // 8
-      testYD = (p.y + 16) // 8
-      testYU = (p.y) // 8
+      testX = p.x // 8
+      testY = p.y // 8
+      testYD = (p.y // 8) + 1
+      testYU = (p.y // 8) - 1
       if mget(testX, testYD) == 16 then onFloor = true end
       if mget(testX, testYU) == 16 then inCeiling = true end
-      if mget(testX, testYD - 1) == 32 then onLadder = true end
+      if mget(testX, testY) == 32 then onLadder = true end
 
       if btn(0) and onLadder then
         p.vy = math.max(p.vy - 0.1, -1.5)
-      elseif btn(1) and onLadder then
+      elseif btn(1) and onLadder and not onFloor then
         p.vy = math.max(p.vy + 0.1, 1.5)
       elseif onLadder then
         p.vy = 0.0
       elseif p.vy == 0 and onFloor then
-        p.y = testYD * 8 - 16
+        p.y = testY * 8 + 1
         p.vy = math.min(p.vy, 0.0)
       elseif not onFloor then
         p.vy = math.min(p.vy + 0.1, 2.0)
@@ -816,21 +881,24 @@ function TIC()
       p.x=p.x+p.vx
       p.y=p.y+p.vy
 
-      if p.y > 92 then
-        if p.x < 40 then p.x = 40 end
-        if p.x > 408 then p.x = 408 end
-      elseif p.y > 60 then
-        if p.x < 24 then p.x = 24 end
-        if p.x > 432 then p.x = 432 end
+      camera.x = lerp(camera.x, p.x - 120, 0.15)
+      camera.y = lerp(camera.y, 137, 0.15) -- p.y - 64
+      camera.cellX = camera.x / 8
+      camera.cellY = camera.y / 8
+
+      if p.y > 234 then
+        if p.x < 294 then p.x = 294 end
+        if p.x > 652 then p.x = 652 end
+      elseif p.y > 202 then
+        if p.x < 270 then p.x = 270 end
+        if p.x > 676 then p.x = 676 end
       else
-        if p.x < 24 then p.x = 24 end
-        if p.x > 448 then p.x = 448 end
+        if p.x < 270 then p.x = 270 end
+        if p.x > 692 then p.x = 692 end
       end
 
-      p.mapX = (p.x + 0.5) / 8 - 15
-      p.mapY = 0 -- (p.y + 0.5) / 8 - 8
-      p.mapOffsetX = p.mapX * 8
-      p.mapOffsetY = p.mapY * 8
+      if p.y > 257 then p.y = 257 end
+      if p.y < 170 then p.y = 170 end
 
       -- if mget((p.x+4 - infoW)//8 + cStart,(p.y+16)//8) == 16 then
       --   p.vy=math.min(0,p.vy)
@@ -868,13 +936,20 @@ end
 
 
 function drawGame()
+  maxMapHeight = 18
+  mapYAdjust = 0
   if showControls then
-    map(p.mapX, 3, 30, 6, 0, 0)
-    spr(257, p.x - p.mapOffsetX, p.y - 3 * 8, 0, 1, 0, 0, 1, 2)
-  else
-    map(p.mapX, p.mapY, 30, 17, 0, 0)
-    spr(257, p.x - p.mapOffsetX, p.y - p.mapOffsetY, 0, 1, 0, 0, 1, 2)
+    maxMapHeight = 6
+    mapYAdjust = 3
   end
+
+  camXCellAdd = camera.x % 8 == 0 and -1 or 0
+  camYCellAdd = camera.y % 8 == 0 and -1 or 0
+  camXCor = -camera.x % 8 - 8
+  camYCor = -camera.y % 8 - 8
+  map(camera.cellX + camXCellAdd, camera.cellY + camYCellAdd + mapYAdjust, 31,
+      maxMapHeight, camXCor, camYCor)
+  spr(p.s, p.x - camera.x - 4, p.y - camera.y - 8, 0, 1, 0, 0, 1, 2)
 
   if showControls then
     map(0, 125, 30, 11, 0, 48)
@@ -966,15 +1041,6 @@ function drawGame()
       rectb(159, 63, 34, 34, 14)
     end
   else
-    print(string.format("%f:%f", p.x + 4, p.y + 8), 2, 2, 6, false, 1, true)
-
-    testPos = { x = p.x + 4, y = p.y + 8}
-    if contains(ship.com.engine.boiler.bb, testPos) then
-      print("Boiler", 2, 12, 6, false, 1, true)
-    elseif contains(ship.com.engine.turbine.bb, testPos) then
-      print("Turbine", 2, 12, 6, false, 1, true)
-    end
-
     drawComponent(ship.com.displays.bb, ship.com.displays.drawable)
 
     drawComponent(ship.com.engine.boiler.bb, ship.com.engine.boiler.drawable)
@@ -1013,8 +1079,8 @@ end
 
 function drawComponent(bb, drawableId)
   drawable = drawables[drawableId]
-  posX = ((bb.min_x * 8 - p.mapOffsetX) // 8) * 8
-  posY = ((bb.min_y * 8 - p.mapOffsetY) // 8) * 8
+  posX = (bb.min_x * 8 - camera.x) // 1 + 1
+  posY = (bb.min_y * 8 - camera.y) // 1 + 1
 
   spr(drawable.s, posX, posY, 0, 1, 0, 0, drawable.w, drawable.h)
 end
@@ -1862,6 +1928,15 @@ end
 
 function contains(bb, pos)
   return pos.x >= bb.min_x and pos.y >= bb.min_y and pos.x <= bb.max_x and pos.y <= bb.max_y
+end
+
+function mapContains(bb, pos)
+  return contains({
+        min_x = bb.min_x * 8,
+        min_y = bb.min_y * 8,
+        max_x = bb.max_x * 8 + 7,
+        max_y = bb.max_y * 8 + 7
+      }, pos)
 end
 
 function drawShipDebugOne(s)
