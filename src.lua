@@ -715,8 +715,8 @@ showMap=false
 debugType=0
 controlType=0
 
-RES_PT_COUNT=8000
-MAP_DIM=1000
+RES_PT_COUNT=6000
+MAP_DIM=500
 mapVls={}
 CH4pts={}
 H2Opts={}
@@ -739,27 +739,6 @@ function buildMap()
     CH4pts[i]={x=math.random(-MAP_DIM,MAP_DIM),y=math.random(-MAP_DIM,MAP_DIM)}
     H2Opts[i]={x=math.random(-MAP_DIM,MAP_DIM),y=math.random(-MAP_DIM,MAP_DIM)}
   end
-
-  -- for pY=-MAP_DIM,MAP_DIM do
-  --   mapVls[pY]={}
-  --   for pX=-MAP_DIM,MAP_DIM do
-  --     CH4cnt=0
-  --     H2Ocnt=0
-  --     tp={x=pX,y=pY}
-  --     for i=1, RES_PT_COUNT do
-  --       CH4pt=CH4pts[i]
-  --       H2Opt=H2Opts[i]
-  --       CH4dis=144-sqrDistance(tp,CH4pt)
-  --       H2Odis=144-sqrDistance(tp,H2Opt)
-  --       CH4cnt=CH4cnt+math.max(0,CH4dis)
-  --       H2Ocnt=H2Ocnt+math.max(0,H2Odis)
-  --     end
-  --     mapVls[pY][pX]={
-  --       CH4=math.min(1,inverseLerp(0,288,CH4cnt)),
-  --       H2O=math.min(1,inverseLerp(0,288,H2Ocnt))
-  --     }
-  --   end
-  -- end
 end
 
 function TIC()
@@ -982,49 +961,56 @@ function TIC()
 
 end
 
-function genMapTile(pX,pY)
+function getShipTilePos()
+  return {x=s.pos.x//10000,y=s.pos.y//10000}
+end
+
+function getMapTile(pX,pY)
   if mapVls[pY]==nil then
     mapVls[pY]={}
   end
 
-  CH4cnt=0
-  H2Ocnt=0
-  tp={x=pX,y=pY}
-  for i=1, RES_PT_COUNT do
-    CH4pt=CH4pts[i]
-    H2Opt=H2Opts[i]
-    CH4dis=64-sqrDistance(tp,CH4pt)
-    H2Odis=64-sqrDistance(tp,H2Opt)
-    CH4cnt=CH4cnt+math.max(0,CH4dis)
-    H2Ocnt=H2Ocnt+math.max(0,H2Odis)
+  if mapVls[pY][pX]==nil then
+    CH4cnt=0
+    H2Ocnt=0
+    tp={x=pX,y=pY}
+    for i=1, RES_PT_COUNT do
+      CH4pt=CH4pts[i]
+      H2Opt=H2Opts[i]
+      CH4dis=64-sqrDistance(tp,CH4pt)
+      H2Odis=64-sqrDistance(tp,H2Opt)
+      CH4cnt=CH4cnt+math.max(0,CH4dis)
+      H2Ocnt=H2Ocnt+math.max(0,H2Odis)
+    end
+    mapVls[pY][pX]={
+      CH4=math.min(1,inverseLerp(0,72,CH4cnt)),
+      H2O=math.min(1,inverseLerp(0,72,H2Ocnt))
+    }
   end
-  mapVls[pY][pX]={
-    CH4=math.min(1,inverseLerp(0,72,CH4cnt)),
-    H2O=math.min(1,inverseLerp(0,72,H2Ocnt))
-  }
 
   return mapVls[pY][pX]
 end
 
-function drawMap(xSize,ySize)
-  cYOffset=(s.pos.y/1000-0.5*ySize)//1
-  cXOffset=(s.pos.x/1000-0.5*xSize)//1
-  print(string.format("%d:%d", cXOffset, cYOffset), 2, 2, 10, false, 1, true)
-  print(string.format("%d:%d", s.pos.x//1, s.pos.y//1), 2, 10, 10, false, 1, true)
-  for cY=cYOffset, ySize do
-    for cX=cXOffset, xSize do
-      mapVl=nil
-      if mapVls[cY]==nil then
-        mapVl=genMapTile(cX,cY)
-      elseif mapVls[cY][cX]==nil then
-        mapVl=genMapTile(cX,cY)
-      else
-        mapVl=mapVls[cY][cX]
-      end
-      if mapVl~=nil then
-        spr(lerp(144,148,mapVl.CH4),(cX-cXOffset-1)*8,(cY-cYOffset-1)*8,0)
-        spr(lerp(149,153,mapVl.H2O),(cX-cXOffset-1)*8,(cY-cYOffset-1)*8,0)
-      end
+function getShipTile()
+  sP=getShipTilePos()
+  return getMapTile(sP.x,sP.y)
+end
+
+function drawMap(xSize,ySize,xOff,yOff)
+  if xOff==nil then xOff=0 end
+  if yOff==nil then yOff=0 end
+  sP=getShipTilePos()
+  cYOffset=sP.y-ySize//2
+  cXOffset=sP.x-xSize//2
+  -- print(string.format("%d:%d", cXOffset, cYOffset), 2, 2, 10, false, 1, true)
+  -- print(string.format("%d:%d", s.pos.x//1, s.pos.y//1), 2, 10, 10, false, 1, true)
+  for cY=cYOffset, ySize+cYOffset do
+    for cX=cXOffset, xSize+cXOffset do
+      mapVl=getMapTile(cX,cY)
+      spr(lerp(144,148,mapVl.CH4),(cX-cXOffset-1)*8+xOff,
+          (cY-cYOffset-1)*8+yOff,0)
+      spr(lerp(149,153,mapVl.H2O),(cX-cXOffset-1)*8+xOff,
+          (cY-cYOffset-1)*8+yOff,0)
     end
   end
 end
@@ -1122,6 +1108,17 @@ function drawGame()
     drawBarStatus(gauges.bars.clls.two, s.com.clls.two.level, BLADDER_MAX_M3)
     drawBarStatus(gauges.bars.clls.three, s.com.clls.three.level, BLADDER_MAX_M3)
     drawBarStatus(gauges.bars.clls.four, s.com.clls.four.level, BLADDER_MAX_M3)
+
+    drawMap(5,7,16,72)
+    sHRot=0
+    if s.heading>=45 and s.heading<135 then
+      sHRot=1
+    elseif s.heading>=135 and s.heading<225 then
+      sHRot=2
+    elseif s.heading>=225 and s.heading<315 then
+      sHRot=3
+    end
+    spr(422,28,92,0,1,0,sHRot)
 
     if controlType==0 then
       rectb(55, 63, 26, 34, 14)
@@ -1967,7 +1964,7 @@ function applyForces(sim)
       totalShipWeightKN
   -- TODO Remove fudge? Acceleration bump, direction rotation.
   s.speed=s.speed + 0.5 * (s.acceleration * 10 * 0.00027777777)
-  changeX=-s.speed * math.sin(math.rad(s.heading))
+  changeX=s.speed * math.sin(math.rad(s.heading))
   changeY=-s.speed * math.cos(math.rad(s.heading))
   s.pos.x=s.pos.x + changeX
   s.pos.y=s.pos.y + changeY
@@ -2009,6 +2006,10 @@ function applyForces(sim)
   else
     s.set_vsi=0.0
   end
+
+  tile=getShipTile()
+  s.env.H2O=tile.H2O
+  s.env.CH4=tile.CH4
 end
 
 
