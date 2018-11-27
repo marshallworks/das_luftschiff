@@ -96,7 +96,7 @@ cam={
 
 p={
   s=257,
-  x=476,
+  x=492,
   y=190,
   vx=0,
   vy=0
@@ -137,9 +137,9 @@ s={
       active=true,
       id="disp",
       bb={
-        min_x=55,
+        min_x=56,
         min_y=23,
-        max_x=58,
+        max_x=59,
         max_y=24
       }
     },
