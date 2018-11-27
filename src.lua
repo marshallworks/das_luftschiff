@@ -51,7 +51,7 @@ TURBINE_MAX_STEAM_KNSM=160
 BOILER_MAX_STEAM_KNSM=172
 BOILER_MAX_REG_STEAM_KNSM=104
 BOILER_H2O_KG_PER_KNSM=0.0008
-BOILER_CH4_KG_PER_KNSM=0.0197
+BOILER_CH4_KG_PER_KNSM=0.0394
 BOILER_O_KG_PER_KNSM=0.0152
 
 BATTERY_MAX_CHARGE_KW=350
@@ -64,8 +64,8 @@ HYDRAULIC_PUMP_NM_PER_KNSM=2
 BLADDER_MAX_M3=12000
 H_TANK_MAX_KG=220
 O_TANK_MAX_KG=2800
-H2O_TANK_MAX_KG=4200
-CH4_TANK_MAX_KG=51000
+H2O_TANK_MAX_KG=16800
+CH4_TANK_MAX_KG=16800
 
 BLADDER_MAX_VENT_M3F=7
 BLADDER_MAX_M3F=3.2
@@ -104,7 +104,7 @@ p={
 
 s={
   speed=20,
-  acceleration=0,
+  accl=0,
   heading=0,
   rot=0,
   vsi=0,
@@ -116,9 +116,9 @@ s={
   },
   con={
     alt=1000,
-    vsi=0.0,
+    vsi=0.2,
     thrt={
-      props=0.1,
+      props=0.3,
       rotors=0.7
     },
     rot={
@@ -128,12 +128,12 @@ s={
   },
   env={
     Atmo=SEA_LEVEL_AIR_DENSITY,
-    H2O=0.4,
-    CH4=0.4
+    H2O=0.0,
+    CH4=0.0
   },
   com={
     disps={
-      st=1.0,
+      st=1,
       active=true,
       id="disp",
       bb={
@@ -145,7 +145,7 @@ s={
     },
     engine={
       bilr={
-        st=1.0,
+        st=1,
         id="bilr",
         bb={
           min_x=48,
@@ -155,7 +155,7 @@ s={
         }
       },
       turb={
-        st=1.0,
+        st=1,
         id="turb",
         bb={
           min_x=46,
@@ -167,7 +167,7 @@ s={
     },
     hyd={
       res={
-        st=1.0,
+        st=1,
         level=HYDRAULIC_MAX_KNSM,
         id="hyd_acc",
         bb={
@@ -178,7 +178,7 @@ s={
         }
       },
       pump={
-        st=1.0,
+        st=1,
         id="hyd_pump",
         bb={
           min_x=37,
@@ -189,7 +189,7 @@ s={
       }
     },
     gen={
-      st=1.0,
+      st=1,
       id="gen",
       bb={
         min_x=40,
@@ -200,7 +200,7 @@ s={
     },
     rotors={
       one={
-        st=1.0,
+        st=1,
         rot=0,
         thrust=0,
         id="rotor_lower",
@@ -212,7 +212,7 @@ s={
         }
       },
       two={
-        st=1.0,
+        st=1,
         rot=0,
         thrust=0,
         id="rotor_lower",
@@ -224,7 +224,7 @@ s={
         }
       },
       three={
-        st=1.0,
+        st=1,
         rot=0,
         thrust=0,
         id="rotor_lower",
@@ -236,7 +236,7 @@ s={
         }
       },
       four={
-        st=1.0,
+        st=1,
         rot=0,
         thrust=0,
         id="rotor_lower",
@@ -250,7 +250,7 @@ s={
     },
     props={
       one={
-        st=1.0,
+        st=1,
         rot=0,
         thrust=0,
         id="prop",
@@ -262,7 +262,7 @@ s={
         }
       },
       two={
-        st=1.0,
+        st=1,
         rot=0,
         thrust=0,
         id="prop",
@@ -276,7 +276,7 @@ s={
     },
     acc={
       H2O={
-        st=1.0,
+        st=1,
         id="H2Oacc",
         bb={
           min_x=85,
@@ -286,7 +286,7 @@ s={
         }
       },
       CH4={
-        st=1.0,
+        st=1,
         id="CH4acc",
         bb={
           min_x=83,
@@ -298,8 +298,9 @@ s={
     },
     clls={
       one={
-        st=1.0,
+        st=1,
         level=BLADDER_MAX_M3,
+        vent=0.0,
         id="Hcell",
         bb={
           min_x=77,
@@ -309,8 +310,9 @@ s={
         }
       },
       two={
-        st=1.0,
+        st=1,
         level=BLADDER_MAX_M3,
+        vent=0.0,
         id="Hcell",
         bb={
           min_x=68,
@@ -320,8 +322,9 @@ s={
         }
       },
       three={
-        st=1.0,
+        st=1,
         level=BLADDER_MAX_M3,
+        vent=0.0,
         id="Hcell",
         bb={
           min_x=44,
@@ -331,8 +334,9 @@ s={
         }
       },
       four={
-        st=1.0,
+        st=1,
         level=BLADDER_MAX_M3,
+        vent=0.0,
         id="Hcell",
         bb={
           min_x=35,
@@ -343,7 +347,7 @@ s={
       }
     },
     btry={
-      st=1.0,
+      st=1,
       level=BATTERY_MAX_CHARGE_KW,
       id="btry",
       bb={
@@ -354,7 +358,7 @@ s={
       }
     },
     splitter={
-      st=1.0,
+      st=1,
       id="splitter",
       bb={
         min_x=64,
@@ -365,7 +369,7 @@ s={
     },
     tanks={
       H={
-        st=1.0,
+        st=1,
         level=H_TANK_MAX_KG,
         id="Htank",
         bb={
@@ -376,7 +380,7 @@ s={
         }
       },
       O={
-        st=1.0,
+        st=1,
         level=O_TANK_MAX_KG,
         id="Otank",
         bb={
@@ -387,7 +391,7 @@ s={
         }
       },
       H2O={
-        st=1.0,
+        st=1,
         level=H2O_TANK_MAX_KG,
         id="H2Otank",
         bb={
@@ -398,7 +402,7 @@ s={
         }
       },
       CH4={
-        st=1.0,
+        st=1,
         level=CH4_TANK_MAX_KG,
         id="CH4tank",
         bb={
@@ -770,51 +774,51 @@ function TIC()
     if mapContains(s.com.disps.bb, testPos) then
       if btnp(6) then showControls=not showControls end
     elseif mapContains(s.com.engine.bilr.bb, testPos) then
-      if btn(6) then s.com.engine.bilr.st=math.min(s.com.engine.bilr.st+0.01,1.0) end
+      if btn(6) then s.com.engine.bilr.st=math.min(s.com.engine.bilr.st+0.01,1) end
     elseif mapContains(s.com.engine.turb.bb, testPos) then
-      if btn(6) then s.com.engine.turb.st=math.min(s.com.engine.turb.st+0.01,1.0) end
+      if btn(6) then s.com.engine.turb.st=math.min(s.com.engine.turb.st+0.01,1) end
     elseif mapContains(s.com.hyd.res.bb, testPos) then
-      if btn(6) then s.com.hyd.res.st=math.min(s.com.hyd.res.st+0.01,1.0) end
+      if btn(6) then s.com.hyd.res.st=math.min(s.com.hyd.res.st+0.01,1) end
     elseif mapContains(s.com.hyd.pump.bb, testPos) then
-      if btn(6) then s.com.hyd.pump.st=math.min(s.com.hyd.pump.st+0.01,1.0) end
+      if btn(6) then s.com.hyd.pump.st=math.min(s.com.hyd.pump.st+0.01,1) end
     elseif mapContains(s.com.gen.bb, testPos) then
-      if btn(6) then s.com.gen.st=math.min(s.com.gen.st+0.01,1.0) end
+      if btn(6) then s.com.gen.st=math.min(s.com.gen.st+0.01,1) end
     elseif mapContains(s.com.rotors.one.bb, testPos) then
-      if btn(6) then s.com.rotors.one.st=math.min(s.com.rotors.one.st+0.01,1.0) end
+      if btn(6) then s.com.rotors.one.st=math.min(s.com.rotors.one.st+0.01,1) end
     elseif mapContains(s.com.rotors.two.bb, testPos) then
-      if btn(6) then s.com.rotors.two.st=math.min(s.com.rotors.two.st+0.01,1.0) end
+      if btn(6) then s.com.rotors.two.st=math.min(s.com.rotors.two.st+0.01,1) end
     elseif mapContains(s.com.rotors.three.bb, testPos) then
-      if btn(6) then s.com.rotors.three.st=math.min(s.com.rotors.three.st+0.01,1.0) end
+      if btn(6) then s.com.rotors.three.st=math.min(s.com.rotors.three.st+0.01,1) end
     elseif mapContains(s.com.rotors.four.bb, testPos) then
-      if btn(6) then s.com.rotors.four.st=math.min(s.com.rotors.four.st+0.01,1.0) end
+      if btn(6) then s.com.rotors.four.st=math.min(s.com.rotors.four.st+0.01,1) end
     elseif mapContains(s.com.props.one.bb, testPos) then
-      if btn(6) then s.com.props.one.st=math.min(s.com.props.one.st+0.01,1.0) end
+      if btn(6) then s.com.props.one.st=math.min(s.com.props.one.st+0.01,1) end
     elseif mapContains(s.com.props.two.bb, testPos) then
-      if btn(6) then s.com.props.two.st=math.min(s.com.props.two.st+0.01,1.0) end
+      if btn(6) then s.com.props.two.st=math.min(s.com.props.two.st+0.01,1) end
     elseif mapContains(s.com.acc.H2O.bb, testPos) then
-      if btn(6) then s.com.acc.H2O.st=math.min(s.com.acc.H2O.st+0.01,1.0) end
+      if btn(6) then s.com.acc.H2O.st=math.min(s.com.acc.H2O.st+0.01,1) end
     elseif mapContains(s.com.acc.CH4.bb, testPos) then
-      if btn(6) then s.com.acc.CH4.st=math.min(s.com.acc.CH4.st+0.01,1.0) end
+      if btn(6) then s.com.acc.CH4.st=math.min(s.com.acc.CH4.st+0.01,1) end
     elseif mapContains(s.com.clls.one.bb, testPos) then
-      if btn(6) then s.com.clls.one.st=math.min(s.com.clls.one.st+0.01,1.0) end
+      if btn(6) then s.com.clls.one.st=math.min(s.com.clls.one.st+0.01,1) end
     elseif mapContains(s.com.clls.two.bb, testPos) then
-      if btn(6) then s.com.clls.two.st=math.min(s.com.clls.two.st+0.01,1.0) end
+      if btn(6) then s.com.clls.two.st=math.min(s.com.clls.two.st+0.01,1) end
     elseif mapContains(s.com.clls.three.bb, testPos) then
-      if btn(6) then s.com.clls.three.st=math.min(s.com.clls.three.st+0.01,1.0) end
+      if btn(6) then s.com.clls.three.st=math.min(s.com.clls.three.st+0.01,1) end
     elseif mapContains(s.com.clls.four.bb, testPos) then
-      if btn(6) then s.com.clls.four.st=math.min(s.com.clls.four.st+0.01,1.0) end
+      if btn(6) then s.com.clls.four.st=math.min(s.com.clls.four.st+0.01,1) end
     elseif mapContains(s.com.btry.bb, testPos) then
-      if btn(6) then s.com.btry.st=math.min(s.com.btry.st+0.01,1.0) end
+      if btn(6) then s.com.btry.st=math.min(s.com.btry.st+0.01,1) end
     elseif mapContains(s.com.splitter.bb, testPos) then
-      if btn(6) then s.com.splitter.st=math.min(s.com.splitter.st+0.01,1.0) end
+      if btn(6) then s.com.splitter.st=math.min(s.com.splitter.st+0.01,1) end
     elseif mapContains(s.com.tanks.H.bb, testPos) then
-      if btn(6) then s.com.tanks.H.st=math.min(s.com.tanks.H.st+0.01,1.0) end
+      if btn(6) then s.com.tanks.H.st=math.min(s.com.tanks.H.st+0.01,1) end
     elseif mapContains(s.com.tanks.O.bb, testPos) then
-      if btn(6) then s.com.tanks.O.st=math.min(s.com.tanks.O.st+0.01,1.0) end
+      if btn(6) then s.com.tanks.O.st=math.min(s.com.tanks.O.st+0.01,1) end
     elseif mapContains(s.com.tanks.H2O.bb, testPos) then
-      if btn(6) then s.com.tanks.H2O.st=math.min(s.com.tanks.H2O.st+0.01,1.0) end
+      if btn(6) then s.com.tanks.H2O.st=math.min(s.com.tanks.H2O.st+0.01,1) end
     elseif mapContains(s.com.tanks.CH4.bb, testPos) then
-      if btn(6) then s.com.tanks.CH4.st=math.min(s.com.tanks.CH4.st+0.01,1.0) end
+      if btn(6) then s.com.tanks.CH4.st=math.min(s.com.tanks.CH4.st+0.01,1) end
     end
 
     if showControls then
@@ -843,7 +847,7 @@ function TIC()
         if btn(0) then s.con.thrt.props=s.con.thrt.props + 0.01 end
         if btn(1) then s.con.thrt.props=s.con.thrt.props - 0.01 end
         if s.con.thrt.props < 0.0 then s.con.thrt.props=0.0 end
-        if s.con.thrt.props > 1.0 then s.con.thrt.props=1.0 end
+        if s.con.thrt.props > 1 then s.con.thrt.props=1 end
       elseif controlType==4 then
         if btn(0) then s.con.rot.props=s.con.rot.props - 1 end
         if btn(1) then s.con.rot.props=s.con.rot.props + 1 end
@@ -1070,7 +1074,7 @@ function drawGame()
     end
 
     drawLevelStatus(gauges.levels.con_alt, s.con.alt, SHIP_MAX_ALT)
-    drawLevelStatus(gauges.levels.con_thrt, s.con.thrt.props, 1.0)
+    drawLevelStatus(gauges.levels.con_thrt, s.con.thrt.props, 1)
 
     print("PRP1", 152, 100, 5, false, 1, true)
     print("PRP2", 176, 100, 5, false, 1, true)
@@ -1528,14 +1532,22 @@ function storageTanksDemand(sim)
 end
 
 function cellDemand(sim)
-  sim.demand.H_V.clls.one=math.min(
-      BLADDER_MAX_M3 - s.com.clls.one.level, BLADDER_MAX_M3F)
-  sim.demand.H_V.clls.two=math.min(
-      BLADDER_MAX_M3 - s.com.clls.two.level, BLADDER_MAX_M3F)
-  sim.demand.H_V.clls.three=math.min(
-      BLADDER_MAX_M3 - s.com.clls.three.level, BLADDER_MAX_M3F)
-  sim.demand.H_V.clls.four=math.min(
-      BLADDER_MAX_M3 - s.com.clls.four.level, BLADDER_MAX_M3F)
+  if s.com.clls.one.vent <= 0 then
+    sim.demand.H_V.clls.one=math.min(
+        BLADDER_MAX_M3 - s.com.clls.one.level, BLADDER_MAX_M3F)
+  end
+  if s.com.clls.two.vent <= 0 then
+    sim.demand.H_V.clls.two=math.min(
+        BLADDER_MAX_M3 - s.com.clls.two.level, BLADDER_MAX_M3F)
+  end
+  if s.com.clls.three.vent <= 0 then
+    sim.demand.H_V.clls.three=math.min(
+        BLADDER_MAX_M3 - s.com.clls.three.level, BLADDER_MAX_M3F)
+  end
+  if s.com.clls.four.vent <= 0 then
+    sim.demand.H_V.clls.four=math.min(
+        BLADDER_MAX_M3 - s.com.clls.four.level, BLADDER_MAX_M3F)
+  end
 
   return sim
 end
@@ -1815,7 +1827,7 @@ end
 
 function distributePower(sim)
   altAdjustment=clamp01(5000 / (s.pos.z + 5000))
-  speedAdjustment=clamp(nroot(6.6, s.speed) - 1.0, 0.2, 1.2)
+  speedAdjustment=clamp(nroot(6.6, s.speed) - 1, 0.2, 1.2)
   intakeAdjustment=altAdjustment * speedAdjustment
 
   s.com.disps.active=(sim.supply.kW.disps >= sim.demand.kW.disps)
@@ -1852,14 +1864,18 @@ function distributePower(sim)
 end
 
 function drainTanks(sim)
-  s.com.clls.one.level=s.com.clls.one.level -
-      math.max(0.01, 1.0 - s.com.clls.one.st) * BLADDER_MAX_VENT_M3F
-  s.com.clls.two.level=s.com.clls.two.level -
-      math.max(0.01, 1.0 - s.com.clls.two.st) * BLADDER_MAX_VENT_M3F
-  s.com.clls.three.level=s.com.clls.three.level -
-      math.max(0.01, 1.0 - s.com.clls.three.st) * BLADDER_MAX_VENT_M3F
-  s.com.clls.four.level=s.com.clls.four.level -
-      math.max(0.01, 1.0 - s.com.clls.four.st) * BLADDER_MAX_VENT_M3F
+  s.com.clls.one.level=s.com.clls.one.level - math.max(
+      math.max(0.01, 1 - s.com.clls.one.st) * BLADDER_MAX_VENT_M3F,
+      s.com.clls.one.vent)
+  s.com.clls.two.level=s.com.clls.two.level - math.max(
+      math.max(0.01, 1 - s.com.clls.two.st) * BLADDER_MAX_VENT_M3F,
+      s.com.clls.one.vent)
+  s.com.clls.three.level=s.com.clls.three.level - math.max(
+      math.max(0.01, 1 - s.com.clls.three.st) * BLADDER_MAX_VENT_M3F,
+      s.com.clls.one.vent)
+  s.com.clls.four.level=s.com.clls.four.level - math.max(
+      math.max(0.01, 1 - s.com.clls.four.st) * BLADDER_MAX_VENT_M3F,
+      s.com.clls.one.vent)
 
   s.com.tanks.H.level=s.com.tanks.H.level -
       sim.supply.H_V.clls.one / H_MASS_TO_VOLUME -
@@ -1921,7 +1937,7 @@ end
 
 function applyForces(sim)
   altAdjustment=clamp01(5000 / (s.pos.z + 5000))
-  thrustAdjustment=lerp(0.2, 1.0, altAdjustment)
+  thrustAdjustment=lerp(0.2, 1, altAdjustment)
   s.env.Atmo=altAdjustment * SEA_LEVEL_AIR_DENSITY
 
   rotor1Xcomp=math.cos(math.rad(90 - s.com.rotors.one.rot)) *
@@ -1955,15 +1971,15 @@ function applyForces(sim)
   s.heading=(s.com.props.one.rot + s.com.props.two.rot) / 2
   drag=DRAG_COEFFICENT * FRONT_DRAG_AREA * 0.5 * s.env.Atmo *
       (s.speed * s.speed)
-  s.acceleration=(s.com.props.one.thrust * thrustAdjustment +
-                       s.com.props.two.thrust * thrustAdjustment +
-                       s.com.rotors.one.thrust * rotor1Xcomp +
-                       s.com.rotors.two.thrust * rotor2Xcomp +
-                       s.com.rotors.three.thrust * rotor3Xcomp +
-                       s.com.rotors.four.thrust * rotor4Xcomp - drag) /
+  s.accl=(s.com.props.one.thrust * thrustAdjustment +
+                  s.com.props.two.thrust * thrustAdjustment +
+                  s.com.rotors.one.thrust * rotor1Xcomp +
+                  s.com.rotors.two.thrust * rotor2Xcomp +
+                  s.com.rotors.three.thrust * rotor3Xcomp +
+                  s.com.rotors.four.thrust * rotor4Xcomp - drag) /
       totalShipWeightKN
   -- TODO Remove fudge? Acceleration bump, direction rotation.
-  s.speed=s.speed + 0.5 * (s.acceleration * 10 * 0.00027777777)
+  s.speed=s.speed + 0.5 * (s.accl * 10 * 0.00027777777)
   changeX=s.speed * math.sin(math.rad(s.heading))
   changeY=-s.speed * math.cos(math.rad(s.heading))
   s.pos.x=s.pos.x + changeX
@@ -1994,9 +2010,21 @@ function applyForces(sim)
 
   -- Auto controls
   if s.vsi < s.set_vsi then
-    s.con.thrt.rotors=math.min(s.con.thrt.rotors + 0.1, 1.0)
+    s.con.thrt.rotors=math.min(s.con.thrt.rotors + 0.1, 1)
   elseif s.vsi > s.set_vsi then
     s.con.thrt.rotors=math.max(s.con.thrt.rotors - 0.1, 0.0)
+  end
+
+  if s.pos.z + 40 > s.con.alt and s.vsi > -0.1 then
+    s.com.clls.one.vent = 6
+    s.com.clls.two.vent = 6
+    s.com.clls.three.vent = 6
+    s.com.clls.four.vent = 6
+  else
+    s.com.clls.one.vent = 0
+    s.com.clls.two.vent = 0
+    s.com.clls.three.vent = 0
+    s.com.clls.four.vent = 0
   end
 
   if s.pos.z + 10 < s.con.alt and s.con.vsi > 0 then
@@ -2005,6 +2033,11 @@ function applyForces(sim)
     s.set_vsi=s.con.vsi
   else
     s.set_vsi=0.0
+  end
+
+  if s.pos.z < 0 then
+    s.pos.z=0
+    s.speed=0
   end
 
   tile=getShipTile()
@@ -2057,7 +2090,7 @@ function clamp(val, low, high)
 end
 
 function clamp01(val)
-  return clamp(val, 0.0, 1.0)
+  return clamp(val, 0.0, 1)
 end
 
 function nroot(root, num)
