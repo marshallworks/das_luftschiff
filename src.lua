@@ -24,7 +24,7 @@ HYDROGEN_LIFT_ADJUST=5.95
 --   NM: newton per meter (torque)
 --   KNSM: kilo newton per square meter (pressure)
 SHIP_MAX_SPEED=300
-SHIP_MAX_ALT=6000
+SHIP_MAX_ALT=10000
 SHIP_DRY_WEIGHT_KG=120000
 
 DISPLAYS_POWER_DEMAND_KW=0.017
@@ -36,12 +36,12 @@ SPLITTER_PER_TIC_O=2.128
 
 ROTOR_MAX_THRUST_KN=70000
 ROTOR_MAX_POWER_DEMAND_KW=46.4
-ROTOR_MAX_ROTATE_SPEED_D=0.04
+ROTOR_MAX_ROTATE_SPEED_D=0.08
 ROTOR_MAX_HYDRAULIC_DEMAND_KNSM=6.4
 
 PROP_MAX_THRUST_KN=47600
 PROP_MAX_POWER_DEMAND_KW=18.5
-PROP_MAX_ROTATE_SPEED_D=0.06
+PROP_MAX_ROTATE_SPEED_D=0.12
 PROP_MAX_HYDRAULIC_DEMAND_KNSM=5.2
 
 GEN_MAX_KW=225
@@ -68,7 +68,7 @@ H2O_TANK_MAX_KG=16800
 CH4_TANK_MAX_KG=16800
 
 BLADDER_MAX_VENT_M3F=7
-BLADDER_MAX_M3F=3.2
+BLADDER_MAX_M3F=12.4
 H_TANK_MAX_KGF=0.3
 O_TANK_MAX_KGF=2.3
 H2O_TANK_MAX_KGF=2.6
@@ -299,7 +299,7 @@ s={
     clls={
       one={
         st=1,
-        level=BLADDER_MAX_M3,
+        level=BLADDER_MAX_M3*.8,
         vent=0.0,
         id="Hcell",
         bb={
@@ -311,7 +311,7 @@ s={
       },
       two={
         st=1,
-        level=BLADDER_MAX_M3,
+        level=BLADDER_MAX_M3*.8,
         vent=0.0,
         id="Hcell",
         bb={
@@ -323,7 +323,7 @@ s={
       },
       three={
         st=1,
-        level=BLADDER_MAX_M3,
+        level=BLADDER_MAX_M3*.8,
         vent=0.0,
         id="Hcell",
         bb={
@@ -335,7 +335,7 @@ s={
       },
       four={
         st=1,
-        level=BLADDER_MAX_M3,
+        level=BLADDER_MAX_M3*.8,
         vent=0.0,
         id="Hcell",
         bb={
@@ -419,67 +419,67 @@ s={
 gauges={
   needles={
     vsi={
-      x=101,
+      x=109,
       y=79,
-      c=6
+      c=5
     },
     heading={
       x=175,
       y=79,
-      c=6
+      c=5
     },
     rot={
-      x=76,
+      x=92,
       y=74,
-      c=6
+      c=5
     },
     con_vsi={
-      x=101,
+      x=109,
       y=80,
-      c=8
+      c=15
     },
     con_heading={
       x=176,
       y=80,
-      c=8
+      c=15
     },
     con_rot={
-      x=77,
+      x=93,
       y=75,
-      c=8
+      c=15
     },
     props={
       one={
-        x=161,
+        x=169,
         y=113,
-        c=6
+        c=5
       },
       two={
         x=185,
         y=113,
-        c=6
+        c=5
       }
     },
     rotors={
       one={
-        x=69,
+        x=85,
         y=110,
-        c=6
+        c=5
       },
       two={
-        x=93,
+        x=101,
         y=110,
-        c=6
+        c=5
       },
       three={
-        x=117,
+        x=133,
         y=110,
-        c=6
+        c=5
       },
       four={
-        x=141,
+        x=149,
         y=110,
-        c=6
+        c=5
       }
     }
   },
@@ -489,14 +489,14 @@ gauges={
       y=68,
       w=4,
       h=24,
-      c=8
+      c=15
     },
     con_thrt={
       x=138,
       y=68,
       w=4,
       h=24,
-      c=8
+      c=15
     }
   },
   bars={
@@ -505,59 +505,59 @@ gauges={
       y=68,
       w=4,
       h=24,
-      c=6
+      c=5
     },
     speed={
       x=138,
       y=68,
       w=4,
       h=24,
-      c=6
+      c=5
     },
     props={
       one={
-        x=153,
+        x=161,
         y=108,
         w=2,
         h=11,
-        c=6
+        c=5
       },
       two={
         x=177,
         y=108,
         w=2,
         h=11,
-        c=6
+        c=5
       }
     },
     rotors={
       one={
-        x=57,
+        x=73,
         y=108,
         w=2,
         h=11,
-        c=6
+        c=5
       },
       two={
-        x=81,
+        x=89,
         y=108,
         w=2,
         h=11,
-        c=6
+        c=5
       },
       three={
-        x=105,
+        x=121,
         y=108,
         w=2,
         h=11,
-        c=6
+        c=5
       },
       four={
-        x=129,
+        x=137,
         y=108,
         w=2,
         h=11,
-        c=6
+        c=5
       }
     },
     clls={
@@ -566,28 +566,28 @@ gauges={
         y=108,
         w=4,
         h=16,
-        c=6
+        c=5
       },
       two={
         x=210,
         y=108,
         w=4,
         h=16,
-        c=6
+        c=5
       },
       three={
         x=218,
         y=108,
         w=4,
         h=16,
-        c=6
+        c=5
       },
       four={
         x=226,
         y=108,
         w=4,
         h=16,
-        c=6
+        c=5
       }
     },
     tanks={
@@ -596,14 +596,14 @@ gauges={
         y=68,
         w=4,
         h=24,
-        c=6
+        c=5
       },
       CH4={
         x=218,
         y=68,
         w=4,
         h=24,
-        c=6
+        c=5
       }
     }
   }
@@ -961,8 +961,27 @@ function TIC()
     if showMap then
       drawMap(30,17)
     end
+
+    drawShipStatus()
   end
 
+end
+
+function drawShipStatus()
+  c=s.com
+  repair = (math.min(c.disps.st,c.engine.bilr.st,c.engine.turb.st,c.hyd.res.st,
+      c.hyd.pump.st,c.gen.st,c.rotors.one.st,c.rotors.two.st,
+      c.rotors.three.st,c.rotors.four.st,c.props.one.st,
+      c.props.two.st,c.acc.H2O.st,c.acc.CH4.st,c.clls.one.st,
+      c.clls.two.st,c.clls.three.st,c.clls.four.st,c.btry.st,
+      c.splitter.st,c.tanks.H.st,c.tanks.O.st,c.tanks.H2O.st,
+      c.tanks.CH4.st) * 100)//1
+  rect(0, 0, 92, 8, 8)
+  rect(127, 0, 113, 8, 8)
+  print(string.format("Speed: %d", s.speed//1), 1, 1, 6, false, 1, true)
+  print(string.format("Altitude: %dk", s.pos.z//1000), 48, 1, 6, false, 1, true)
+  print(string.format("Repair: %d%%", repair), 128, 1, 6, false, 1, true)
+  print(string.format("Resources: %d%%", 100), 180, 1, 6, false, 1, true)
 end
 
 function getShipTilePos()
@@ -1038,15 +1057,15 @@ function drawGame()
   if showControls then
     map(0, 125, 30, 11, 0, 48)
 
-    print("DLS Radar", 8, 57, 5, false, 1, true)
-    print("RTR", 62, 57, 5, false, 1, true)
-    print("Angle", 58, 65, 5, false, 1, true)
-    print("VS", 94, 57, 5, false, 1, true)
-    print("Alt", 111, 57, 5, false, 1, true)
-    print("Spd", 135, 57, 5, false, 1, true)
-    print("Heading", 163, 57, 5, false, 1, true)
-    print("H2O", 199, 57, 5, false, 1, true)
-    print("CH4", 215, 57, 5, false, 1, true)
+    print("DLS Radar", 8, 57, 15, false, 1, true)
+    print("RTR", 78, 57, 6, false, 1, true)
+    print("Angle", 74, 65, 6, false, 1, true)
+    print("VS", 100, 57, 6, false, 1, true)
+    print("Alt", 111, 57, 6, false, 1, true)
+    print("Spd", 135, 57, 6, false, 1, true)
+    print("Heading", 163, 57, 6, false, 1, true)
+    print("H2O", 199, 57, 6, false, 1, true)
+    print("CH4", 215, 57, 6, false, 1, true)
 
     drawNeedleLevelStatus(gauges.needles.vsi, s.vsi, -1.2, 1.2, 0, 180, 8)
     drawNeedleLevelStatus(gauges.needles.con_vsi, s.con.vsi, -1.2, 1.2, 0, 180, 10)
@@ -1066,18 +1085,18 @@ function drawGame()
 
     altY=lerp(91, 67, inverseLerp(0, SHIP_MAX_ALT, s.pos.z)) - 2.5
     spdY=lerp(91, 67, inverseLerp(0, SHIP_MAX_SPEED, s.speed)) - 2.5
-    print(string.sub(string.format("%f", s.pos.z/1000.0), 1, -6).."k", 120, altY, 6, false, 1, true)
+    print(string.sub(string.format("%f", s.pos.z/1000.0), 1, -6).."k", 120, altY, 5, false, 1, true)
     if s.speed < 100 then
-      print(string.sub(string.format("%f", s.speed), 1, -6), 144, spdY, 6, false, 1, true)
+      print(string.sub(string.format("%f", s.speed), 1, -6), 144, spdY, 5, false, 1, true)
     else
-      print(string.format("%d", s.speed//1), 144, spdY, 6, false, 1, true)
+      print(string.format("%d", s.speed//1), 144, spdY, 5, false, 1, true)
     end
 
     drawLevelStatus(gauges.levels.con_alt, s.con.alt, SHIP_MAX_ALT)
     drawLevelStatus(gauges.levels.con_thrt, s.con.thrt.props, 1)
 
-    print("PRP1", 152, 100, 5, false, 1, true)
-    print("PRP2", 176, 100, 5, false, 1, true)
+    print("PRP1", 159, 100, 6, false, 1, true)
+    print("PRP2", 178, 100, 6, false, 1, true)
 
     drawPropRotationStatus(gauges.needles.props.one,
                            s.com.props.one.rot)
@@ -1087,10 +1106,10 @@ function drawGame()
     drawPropThrustStatus(gauges.bars.props.one, s.com.props.one.thrust)
     drawPropThrustStatus(gauges.bars.props.two, s.com.props.two.thrust)
 
-    print("RTR1", 56, 100, 5, false, 1, true)
-    print("RTR2", 80, 100, 5, false, 1, true)
-    print("RTR3", 104, 100, 5, false, 1, true)
-    print("RTR4", 128, 100, 5, false, 1, true)
+    print("RTR1", 71, 100, 6, false, 1, true)
+    print("RTR2", 90, 100, 6, false, 1, true)
+    print("RTR3", 119, 100, 6, false, 1, true)
+    print("RTR4", 138, 100, 6, false, 1, true)
 
     drawRotorRotationStatus(gauges.needles.rotors.one,
                             s.com.rotors.one.rot)
@@ -1106,7 +1125,7 @@ function drawGame()
     drawRotorThrustStatus(gauges.bars.rotors.three, s.com.rotors.three.thrust)
     drawRotorThrustStatus(gauges.bars.rotors.four, s.com.rotors.four.thrust)
 
-    print("Hyd Cells", 200, 100, 5, false, 1, true)
+    print("Hyd Cells", 199, 100, 6, false, 1, true)
 
     drawBarStatus(gauges.bars.clls.one, s.com.clls.one.level, BLADDER_MAX_M3)
     drawBarStatus(gauges.bars.clls.two, s.com.clls.two.level, BLADDER_MAX_M3)
@@ -1125,15 +1144,15 @@ function drawGame()
     spr(422,28,92,0,1,0,sHRot)
 
     if controlType==0 then
-      rectb(55, 63, 26, 34, 14)
+      rectb(71, 63, 26, 34, 7)
     elseif controlType==1 then
-      rectb(87, 63, 18, 34, 14)
+      rectb(95, 63, 18, 34, 7)
     elseif controlType==2 then
-      rectb(111, 63, 24, 34, 14)
+      rectb(111, 63, 24, 34, 7)
     elseif controlType==3 then
-      rectb(135, 63, 24, 34, 14)
+      rectb(135, 63, 24, 34, 7)
     elseif controlType==4 then
-      rectb(159, 63, 34, 34, 14)
+      rectb(159, 63, 34, 34, 7)
     end
   else
     drawCom(s.com.disps.bb, s.com.disps.id)
@@ -2015,11 +2034,12 @@ function applyForces(sim)
     s.con.thrt.rotors=math.max(s.con.thrt.rotors - 0.1, 0.0)
   end
 
-  if s.pos.z + 40 > s.con.alt and s.vsi > -0.1 then
-    s.com.clls.one.vent = 6
-    s.com.clls.two.vent = 6
-    s.com.clls.three.vent = 6
-    s.com.clls.four.vent = 6
+  if s.pos.z + 40 > s.con.alt and s.vsi > -0.2 then
+    altDiff=math.min((s.pos.z+40-s.con.alt)/100,4)
+    s.com.clls.one.vent=altDiff
+    s.com.clls.two.vent=altDiff
+    s.com.clls.three.vent=altDiff
+    s.com.clls.four.vent=altDiff
   else
     s.com.clls.one.vent = 0
     s.com.clls.two.vent = 0
