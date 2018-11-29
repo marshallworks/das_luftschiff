@@ -109,6 +109,7 @@ s={
   rot=0,
   vsi=0,
   set_vsi=0,
+  isCrash=false,
   pos={
     x=0,
     y=0,
@@ -209,6 +210,13 @@ s={
           min_y=32,
           max_x=81,
           max_y=32
+        },
+        id2="rotor_upper",
+        bb2={
+          min_x=78,
+          min_y=31,
+          max_x=79,
+          max_y=31
         }
       },
       two={
@@ -221,6 +229,13 @@ s={
           min_y=32,
           max_x=71,
           max_y=32
+        },
+        id2="rotor_upper",
+        bb2={
+          min_x=68,
+          min_y=31,
+          max_x=69,
+          max_y=31
         }
       },
       three={
@@ -233,6 +248,13 @@ s={
           min_y=32,
           max_x=53,
           max_y=32
+        },
+        id2="rotor_upper",
+        bb2={
+          min_x=50,
+          min_y=31,
+          max_x=51,
+          max_y=31
         }
       },
       four={
@@ -245,6 +267,13 @@ s={
           min_y=32,
           max_x=43,
           max_y=32
+        },
+        id2="rotor_upper",
+        bb2={
+          min_x=40,
+          min_y=31,
+          max_x=41,
+          max_y=31
         }
       }
     },
@@ -361,9 +390,9 @@ s={
       st=1,
       id="splitter",
       bb={
-        min_x=64,
+        min_x=62,
         min_y=28,
-        max_x=65,
+        max_x=63,
         max_y=28
       }
     },
@@ -1039,20 +1068,7 @@ function drawMap(xSize,ySize,xOff,yOff)
 end
 
 function drawGame()
-  maxMapHeight=18
-  mapYAdjust=0
-  if showControls then
-    maxMapHeight=6
-    mapYAdjust=3
-  end
-
-  camXCellAdd=cam.x % 8==0 and -1 or 0
-  camYCellAdd=cam.y % 8==0 and -1 or 0
-  camXCor=-cam.x % 8 - 8
-  camYCor=-cam.y % 8 - 8
-  map(cam.cellX + camXCellAdd, cam.cellY + camYCellAdd + mapYAdjust, 31,
-      maxMapHeight, camXCor, camYCor)
-  spr(p.s, p.x - cam.x - 4, p.y - cam.y - 8, 0, 1, 0, 0, 1, 2)
+  drawShip()
 
   if showControls then
     map(0, 125, 30, 11, 0, 48)
@@ -1154,59 +1170,99 @@ function drawGame()
     elseif controlType==4 then
       rectb(159, 63, 34, 34, 7)
     end
-  else
-    drawCom(s.com.disps.bb, s.com.disps.id)
-
-    drawCom(s.com.engine.bilr.bb, s.com.engine.bilr.id, s.com.engine.bilr.st)
-    drawCom(s.com.engine.turb.bb, s.com.engine.turb.id, s.com.engine.turb.st)
-
-    drawCom(s.com.hyd.res.bb, s.com.hyd.res.id, s.com.hyd.res.st)
-    drawCom(s.com.hyd.pump.bb, s.com.hyd.pump.id, s.com.hyd.pump.st)
-
-    drawCom(s.com.gen.bb, s.com.gen.id, s.com.gen.st)
-
-    drawCom(s.com.rotors.one.bb, s.com.rotors.one.id, s.com.rotors.one.st)
-    drawCom(s.com.rotors.two.bb, s.com.rotors.two.id, s.com.rotors.two.st)
-    drawCom(s.com.rotors.three.bb, s.com.rotors.three.id, s.com.rotors.three.st)
-    drawCom(s.com.rotors.four.bb, s.com.rotors.four.id, s.com.rotors.four.st)
-
-    drawCom(s.com.props.one.bb, s.com.props.one.id, s.com.props.one.st)
-    drawCom(s.com.props.two.bb, s.com.props.two.id, s.com.props.two.st)
-
-    drawCom(s.com.acc.H2O.bb, s.com.acc.H2O.id, s.com.acc.H2O.st)
-    drawCom(s.com.acc.CH4.bb, s.com.acc.CH4.id, s.com.acc.CH4.st)
-
-    drawCom(s.com.clls.one.bb, s.com.clls.one.id, s.com.clls.one.st)
-    drawCom(s.com.clls.two.bb, s.com.clls.two.id, s.com.clls.two.st)
-    drawCom(s.com.clls.three.bb, s.com.clls.three.id, s.com.clls.three.st)
-    drawCom(s.com.clls.four.bb, s.com.clls.four.id, s.com.clls.four.st)
-
-    drawCom(s.com.btry.bb, s.com.btry.id, s.com.btry.st)
-    drawCom(s.com.splitter.bb, s.com.splitter.id, s.com.splitter.st)
-
-    drawCom(s.com.tanks.H.bb, s.com.tanks.H.id, s.com.tanks.H.st)
-    drawCom(s.com.tanks.O.bb, s.com.tanks.O.id, s.com.tanks.O.st)
-    drawCom(s.com.tanks.H2O.bb, s.com.tanks.H2O.id, s.com.tanks.H2O.st)
-    drawCom(s.com.tanks.CH4.bb, s.com.tanks.CH4.id, s.com.tanks.CH4.st)
-
-    drawCom({ min_x=39, min_y=27, max_x=39, max_y=27 }, "pto_upper")
-    drawCom({ min_x=39, min_y=28, max_x=39, max_y=28 }, "pto_lower")
-    drawCom({ min_x=44, min_y=27, max_x=44, max_y=27 }, "pto_upper")
-    drawCom({ min_x=44, min_y=28, max_x=44, max_y=28 }, "pto_lower")
-    drawCom({ min_x=45, min_y=27, max_x=45, max_y=27 }, "pto_upper")
-    drawCom({ min_x=45, min_y=28, max_x=45, max_y=28 }, "pto_lower")
   end
 end
 
-function drawCom(bb, drawableId, st)
+function drawShip()
+  maxMapHeight=18
+  mapYAdjust=0
+  if showControls then
+    maxMapHeight=6
+    mapYAdjust=3
+  end
+
+  camXCellAdd=cam.x % 8==0 and -1 or 0
+  camYCellAdd=cam.y % 8==0 and -1 or 0
+  camXCor=-cam.x % 8 - 8
+  camYCor=-cam.y % 8 - 8
+  yDown=mapYAdjust*-8
+  map(cam.cellX + camXCellAdd, cam.cellY + camYCellAdd + mapYAdjust, 31,
+      maxMapHeight, camXCor, camYCor)
+
+  drawCom(s.com.disps.bb, s.com.disps.id, yDown)
+
+  drawCom(s.com.engine.bilr.bb, s.com.engine.bilr.id, yDown, s.com.engine.bilr.st)
+  drawCom(s.com.engine.turb.bb, s.com.engine.turb.id, yDown, s.com.engine.turb.st)
+
+  drawCom(s.com.hyd.res.bb, s.com.hyd.res.id, yDown, s.com.hyd.res.st)
+  drawCom(s.com.hyd.pump.bb, s.com.hyd.pump.id, yDown, s.com.hyd.pump.st)
+
+  drawCom(s.com.gen.bb, s.com.gen.id, yDown, s.com.gen.st)
+
+  drawCom(s.com.rotors.one.bb, s.com.rotors.one.id, yDown, s.com.rotors.one.st)
+  drawCom(s.com.rotors.three.bb, s.com.rotors.three.id, yDown, s.com.rotors.three.st)
+
+  drawCom(s.com.rotors.one.bb2, s.com.rotors.one.id2, yDown)
+  drawCom(s.com.rotors.three.bb2, s.com.rotors.three.id2, yDown)
+
+  drawCom(s.com.props.one.bb, s.com.props.one.id, yDown, s.com.props.one.st)
+  drawCom(s.com.props.two.bb, s.com.props.two.id, yDown, s.com.props.two.st)
+
+  drawCom(s.com.acc.H2O.bb, s.com.acc.H2O.id, yDown, s.com.acc.H2O.st)
+  drawCom(s.com.acc.CH4.bb, s.com.acc.CH4.id, yDown, s.com.acc.CH4.st)
+
+  drawCom(s.com.splitter.bb, s.com.splitter.id, yDown, s.com.splitter.st)
+
+  drawCom(s.com.tanks.O.bb, s.com.tanks.O.id, yDown, s.com.tanks.O.st)
+  drawCom(s.com.tanks.H2O.bb, s.com.tanks.H2O.id, yDown, s.com.tanks.H2O.st)
+
+  drawCom({ min_x=39, min_y=27, max_x=39, max_y=27 }, "pto_upper", yDown)
+  drawCom({ min_x=39, min_y=28, max_x=39, max_y=28 }, "pto_lower", yDown)
+  drawCom({ min_x=44, min_y=27, max_x=44, max_y=27 }, "pto_upper", yDown)
+  drawCom({ min_x=44, min_y=28, max_x=44, max_y=28 }, "pto_lower", yDown)
+  drawCom({ min_x=45, min_y=27, max_x=45, max_y=27 }, "pto_upper", yDown)
+  drawCom({ min_x=45, min_y=28, max_x=45, max_y=28 }, "pto_lower", yDown)
+
+  spr(p.s, p.x - cam.x - 4, p.y - cam.y - 8 + yDown, 0, 1, 0, 0, 1, 2)
+
+  drawCom(s.com.clls.one.bb, s.com.clls.one.id, yDown, s.com.clls.one.st)
+  drawCom(s.com.clls.two.bb, s.com.clls.two.id, yDown, s.com.clls.two.st)
+  drawCom(s.com.clls.three.bb, s.com.clls.three.id, yDown, s.com.clls.three.st)
+  drawCom(s.com.clls.four.bb, s.com.clls.four.id, yDown, s.com.clls.four.st)
+  drawCom(s.com.rotors.two.bb, s.com.rotors.two.id, yDown, s.com.rotors.two.st)
+  drawCom(s.com.rotors.four.bb, s.com.rotors.four.id, yDown, s.com.rotors.four.st)
+  drawCom(s.com.rotors.two.bb2, s.com.rotors.two.id2, yDown)
+  drawCom(s.com.rotors.four.bb2, s.com.rotors.four.id2, yDown)
+  drawCom(s.com.tanks.H.bb, s.com.tanks.H.id, yDown, s.com.tanks.H.st)
+  drawCom(s.com.tanks.CH4.bb, s.com.tanks.CH4.id, yDown, s.com.tanks.CH4.st)
+  drawCom(s.com.btry.bb, s.com.btry.id, yDown, s.com.btry.st)
+end
+
+function drawCom(bb, drawableId, yDown, st)
   drawable=drawables[drawableId]
   posX=(bb.min_x * 8 - cam.x) // 1 + 1
-  posY=(bb.min_y * 8 - cam.y) // 1 + 1
+  posY=(bb.min_y * 8 - cam.y) // 1 + 1 + yDown
 
   requestedX=bb.max_x + 1 - bb.min_x
   requestedY=bb.max_y + 1 - bb.min_y
 
-  if requestedX > drawable.w and drawable.w==5 then
+  if requestedY > drawable.h and drawable.h==3 and
+     requestedX > drawable.w and drawable.w==2 then
+    for y=1, requestedY do
+      adjYPos=(y - 1) * 8 + posY
+      yOffset=(y - 1) * 16
+      if y>1 and y<requestedY then
+        yOffset=16
+      elseif y==requestedY then
+        yOffset=32
+      end
+      for x=1, requestedX do
+        adjXPos=(x - 1) * 8 + posX
+        xOffset=(x - 1) % drawable.w
+        spr(drawable.s + yOffset + xOffset, adjXPos, adjYPos, 0)
+      end
+    end
+  elseif requestedX > drawable.w and drawable.w==5 then
     for y=1, requestedY do
       adjYPos=(y - 1) * 8 + posY
       yOffset=(y - 1) * 16
@@ -1302,6 +1358,14 @@ end
 
 function drawRotorThrustStatus(bar, thrust)
   drawBarStatus(bar, thrust, ROTOR_MAX_THRUST_KN)
+end
+
+function damageSystem(com,vSpeed)
+  -- body
+end
+
+function damageSystems(vSpeed)
+  damageSystem(s.com.rotors.one,vSpeed)
 end
 
 function simulate()
@@ -1553,19 +1617,19 @@ end
 function cellDemand(sim)
   if s.com.clls.one.vent <= 0 then
     sim.demand.H_V.clls.one=math.min(
-        BLADDER_MAX_M3 - s.com.clls.one.level, BLADDER_MAX_M3F)
+        BLADDER_MAX_M3 - s.com.clls.one.level, -s.com.clls.one.vent)
   end
   if s.com.clls.two.vent <= 0 then
     sim.demand.H_V.clls.two=math.min(
-        BLADDER_MAX_M3 - s.com.clls.two.level, BLADDER_MAX_M3F)
+        BLADDER_MAX_M3 - s.com.clls.two.level, -s.com.clls.two.vent)
   end
   if s.com.clls.three.vent <= 0 then
     sim.demand.H_V.clls.three=math.min(
-        BLADDER_MAX_M3 - s.com.clls.three.level, BLADDER_MAX_M3F)
+        BLADDER_MAX_M3 - s.com.clls.three.level, -s.com.clls.three.vent)
   end
   if s.com.clls.four.vent <= 0 then
     sim.demand.H_V.clls.four=math.min(
-        BLADDER_MAX_M3 - s.com.clls.four.level, BLADDER_MAX_M3F)
+        BLADDER_MAX_M3 - s.com.clls.four.level, -s.com.clls.four.vent)
   end
 
   return sim
@@ -1888,13 +1952,13 @@ function drainTanks(sim)
       s.com.clls.one.vent)
   s.com.clls.two.level=s.com.clls.two.level - math.max(
       math.max(0.01, 1 - s.com.clls.two.st) * BLADDER_MAX_VENT_M3F,
-      s.com.clls.one.vent)
+      s.com.clls.two.vent)
   s.com.clls.three.level=s.com.clls.three.level - math.max(
       math.max(0.01, 1 - s.com.clls.three.st) * BLADDER_MAX_VENT_M3F,
-      s.com.clls.one.vent)
+      s.com.clls.three.vent)
   s.com.clls.four.level=s.com.clls.four.level - math.max(
       math.max(0.01, 1 - s.com.clls.four.st) * BLADDER_MAX_VENT_M3F,
-      s.com.clls.one.vent)
+      s.com.clls.four.vent)
 
   s.com.tanks.H.level=s.com.tanks.H.level -
       sim.supply.H_V.clls.one / H_MASS_TO_VOLUME -
@@ -2034,17 +2098,23 @@ function applyForces(sim)
     s.con.thrt.rotors=math.max(s.con.thrt.rotors - 0.1, 0.0)
   end
 
-  if s.pos.z + 40 > s.con.alt and s.vsi > -0.2 then
-    altDiff=math.min((s.pos.z+40-s.con.alt)/100,4)
+  if s.pos.z - 100 > s.con.alt and s.vsi > -0.2 then
+    altDiff=math.min((s.pos.z-100-s.con.alt)/100,8)
+    s.com.clls.one.vent=altDiff
+    s.com.clls.two.vent=altDiff
+    s.com.clls.three.vent=altDiff
+    s.com.clls.four.vent=altDiff
+  elseif s.pos.z + 100 < s.con.alt and s.vsi < 0.2 then
+    altDiff=math.max((s.pos.z+100-s.con.alt)/100,-8)
     s.com.clls.one.vent=altDiff
     s.com.clls.two.vent=altDiff
     s.com.clls.three.vent=altDiff
     s.com.clls.four.vent=altDiff
   else
-    s.com.clls.one.vent = 0
-    s.com.clls.two.vent = 0
-    s.com.clls.three.vent = 0
-    s.com.clls.four.vent = 0
+    s.com.clls.one.vent=0
+    s.com.clls.two.vent=0
+    s.com.clls.three.vent=0
+    s.com.clls.four.vent=0
   end
 
   if s.pos.z + 10 < s.con.alt and s.con.vsi > 0 then
@@ -2055,9 +2125,15 @@ function applyForces(sim)
     s.set_vsi=0.0
   end
 
-  if s.pos.z < 0 then
+  if s.pos.z <= 0 then
     s.pos.z=0
     s.speed=0
+    if not s.isCrash then
+      damageSystems(s.vsi)
+      s.isCrash=true
+    end
+  else
+    if s.isCrash then s.isCrash=false end
   end
 
   tile=getShipTile()
