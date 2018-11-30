@@ -850,6 +850,14 @@ function TIC()
       if btn(6) then s.com.tanks.CH4.st=math.min(s.com.tanks.CH4.st+0.01,1) end
     end
 
+    if not showControls and btn(6) then
+      if (start.t%16)==0 then
+        sfx(2,24,4,2,4,2)
+      end
+    end
+
+    sfx(1,"E-3",-1,1,clamp01(inverseLerp(1000,0,sqrDistance({x=p.x,y=p.y},{x=s.com.gen.bb.min_x*8,y=s.com.gen.bb.min_y*8})))*10//1,0)
+
     if showControls then
       if btnp(2) then controlType=controlType - 1 end
       if btnp(3) then controlType=controlType + 1 end
@@ -960,6 +968,9 @@ function TIC()
       elseif isDeAcc then
         p.s=260
       else
+        if (start.t%12)==0 then
+          sfx(2,48,3,3,4,3)
+        end
         if (start.t%12)//6==0 then
           p.s=257
         else
