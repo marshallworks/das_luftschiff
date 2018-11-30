@@ -99,7 +99,8 @@ p={
   x=492,
   y=190,
   vx=0,
-  vy=0
+  vy=0,
+  flip=0,
 }
 
 s={
@@ -794,7 +795,6 @@ function TIC()
     spr(sprId,start.x,start.y,14,2,0,0,8,3)
     print("Das Luftschiff",84,84)
     print("X Start", 84, 94)
-    start.t=start.t+1
   else
 
     if btnp(5) then showMap=not showMap end
@@ -891,18 +891,19 @@ function TIC()
       testY=p.y // 8
       testYD=(p.y // 8) + 1
       testYU=(p.y // 8) - 1
-      if mget(testX, testYD)==16 then onFloor=true end
+      downId=mget(testX,testYD)
+      if downId==16 or downId==189 or downId==158 then onFloor=true end
       if mget(testX, testYU)==16 then inCeiling=true end
       if mget(testX, testY)==32 or mget(testX, testYD)==32 then onLadder=true end
 
       if btn(0) and onLadder then
-        p.vy=math.max(p.vy - 0.1, -1.5)
+        p.vy=math.max(p.vy-0.1,-1)
       elseif btn(1) and onLadder and not onFloor then
-        p.vy=math.max(p.vy + 0.1, 1.5)
+        p.vy=math.max(p.vy+0.1, 1)
       elseif onLadder then
         p.vy=0.0
       elseif btn(0) and onFloor then
-        p.vy=-1.5
+        p.vy=-1.2
       elseif p.vy==0 and onFloor then
         p.y=testY * 8 + 1
         p.vy=math.min(p.vy, 0.0)
@@ -916,12 +917,54 @@ function TIC()
         p.vy=-p.vy
       end
 
+      isAcc=false
+      isDeAcc=false
+
       if btn(2) then
         p.vx=math.max(p.vx - 0.1, -2.0)
+        isAcc=p.vx>-1
       elseif btn(3) then
         p.vx=math.min(p.vx + 0.1, 2.0)
+        isAcc=p.vx<1
       else
-        p.vx= 0.0
+        if p.vx>0 then
+          p.vx=math.max(p.vx-0.2,0)
+        else
+          p.vx=math.min(p.vx+0.2,0)
+        end
+        isDeAcc=p.vx~=0
+      end
+
+      if p.vx>0 then
+        p.flip=0
+      elseif p.vx<0 then
+        p.flip=1
+      end
+
+      if not onLadder and not onFloor then
+        p.s=261
+      elseif p.vx==0 and onLadder and not onFloor then
+        if p.vy==0 then
+          p.s=262
+        else
+          if (start.t%12)//6==0 then
+            p.s=262
+          else
+            p.s=263
+          end
+        end
+      elseif p.vx==0 then
+        p.s=256
+      elseif isAcc then
+        p.s=259
+      elseif isDeAcc then
+        p.s=260
+      else
+        if (start.t%12)//6==0 then
+          p.s=257
+        else
+          p.s=258
+        end
       end
 
       p.x=p.x+p.vx
@@ -933,18 +976,18 @@ function TIC()
       cam.cellY=cam.y / 8
 
       if p.y > 234 then
-        if p.x < 294 then p.x=294 end
-        if p.x > 652 then p.x=652 end
+        if p.x < 292 then p.x=292 end
+        if p.x > 668 then p.x=668 end
       elseif p.y > 202 then
-        if p.x < 270 then p.x=270 end
-        if p.x > 676 then p.x=676 end
+        if p.x < 268 then p.x=268 end
+        if p.x > 684 then p.x=684 end
       else
-        if p.x < 270 then p.x=270 end
-        if p.x > 692 then p.x=692 end
+        if p.x < 268 then p.x=268 end
+        if p.x > 700 then p.x=700 end
       end
 
       if p.y > 257 then p.y=257 end
-      if p.y < 170 then p.y=170 end
+      if p.y < 176 then p.y=176 end
     end
 
     if btnp(7) then
@@ -993,24 +1036,29 @@ function TIC()
 
     drawShipStatus()
   end
-
+  start.t=start.t+1
 end
 
 function drawShipStatus()
   c=s.com
-  repair = (math.min(c.disps.st,c.engine.bilr.st,c.engine.turb.st,c.hyd.res.st,
-      c.hyd.pump.st,c.gen.st,c.rotors.one.st,c.rotors.two.st,
-      c.rotors.three.st,c.rotors.four.st,c.props.one.st,
-      c.props.two.st,c.acc.H2O.st,c.acc.CH4.st,c.clls.one.st,
-      c.clls.two.st,c.clls.three.st,c.clls.four.st,c.btry.st,
-      c.splitter.st,c.tanks.H.st,c.tanks.O.st,c.tanks.H2O.st,
-      c.tanks.CH4.st) * 100)//1
-  rect(0, 0, 92, 8, 8)
+  repair = math.max((math.min(c.disps.st,c.engine.bilr.st,c.engine.turb.st,
+      c.hyd.res.st, c.hyd.pump.st,c.gen.st,c.rotors.one.st,c.rotors.two.st,
+      c.rotors.three.st,c.rotors.four.st,c.props.one.st,c.props.two.st,
+      c.acc.H2O.st,c.acc.CH4.st,c.clls.one.st,c.clls.two.st,c.clls.three.st,
+      c.clls.four.st,c.btry.st,c.splitter.st,c.tanks.H.st,c.tanks.O.st,
+      c.tanks.H2O.st,c.tanks.CH4.st)*100+0.5)//1,0)
+  resources=(math.min((c.tanks.H2O.level/H2O_TANK_MAX_KG)*100+0.5,
+                      (c.tanks.CH4.level/CH4_TANK_MAX_KG)*100+0.5))//1
+  rect(0, 0, 96, 8, 8)
   rect(127, 0, 113, 8, 8)
   print(string.format("Speed: %d", s.speed//1), 1, 1, 6, false, 1, true)
-  print(string.format("Altitude: %dk", s.pos.z//1000), 48, 1, 6, false, 1, true)
+  if s.pos.z >=1000 then
+    print(string.sub(string.format("Altitude: %f", s.pos.z/1000.0), 1, -6).."k", 48, 1, 6, false, 1, true)
+  else
+    print(string.format("Altitude: %d",s.pos.z//1),48,1,6,false,1,true)
+  end
   print(string.format("Repair: %d%%", repair), 128, 1, 6, false, 1, true)
-  print(string.format("Resources: %d%%", 100), 180, 1, 6, false, 1, true)
+  print(string.format("Resources: %d%%", resources), 180, 1, 6, false, 1, true)
 end
 
 function getShipTilePos()
@@ -1223,7 +1271,7 @@ function drawShip()
   drawCom({ min_x=45, min_y=27, max_x=45, max_y=27 }, "pto_upper", yDown)
   drawCom({ min_x=45, min_y=28, max_x=45, max_y=28 }, "pto_lower", yDown)
 
-  spr(p.s, p.x - cam.x - 4, p.y - cam.y - 8 + yDown, 0, 1, 0, 0, 1, 2)
+  spr(p.s, p.x - cam.x - 4, p.y - cam.y - 8 + yDown, 0, 1, p.flip, 0, 1, 2)
 
   drawCom(s.com.clls.one.bb, s.com.clls.one.id, yDown, s.com.clls.one.st)
   drawCom(s.com.clls.two.bb, s.com.clls.two.id, yDown, s.com.clls.two.st)
@@ -1360,12 +1408,36 @@ function drawRotorThrustStatus(bar, thrust)
   drawBarStatus(bar, thrust, ROTOR_MAX_THRUST_KN)
 end
 
-function damageSystem(com,vSpeed)
-  -- body
+function damageSystem(part,vSpeed)
+  if math.random()>clamp01(inverseLerp(-16,0,vSpeed)) then
+    part.st=math.max(part.st-clamp01(inverseLerp(0,-8,vSpeed)),0)
+  end
 end
 
 function damageSystems(vSpeed)
+  damageSystem(s.com.engine.bilr,vSpeed)
+  damageSystem(s.com.engine.turb,vSpeed)
+  damageSystem(s.com.hyd.res,vSpeed)
+  damageSystem(s.com.hyd.pump,vSpeed)
+  damageSystem(s.com.gen,vSpeed)
   damageSystem(s.com.rotors.one,vSpeed)
+  damageSystem(s.com.rotors.two,vSpeed)
+  damageSystem(s.com.rotors.three,vSpeed)
+  damageSystem(s.com.rotors.four,vSpeed)
+  damageSystem(s.com.props.one,vSpeed)
+  damageSystem(s.com.props.two,vSpeed)
+  damageSystem(s.com.acc.H2O,vSpeed)
+  damageSystem(s.com.acc.CH4,vSpeed)
+  damageSystem(s.com.clls.one,vSpeed)
+  damageSystem(s.com.clls.two,vSpeed)
+  damageSystem(s.com.clls.three,vSpeed)
+  damageSystem(s.com.clls.four,vSpeed)
+  damageSystem(s.com.btry,vSpeed)
+  damageSystem(s.com.splitter,vSpeed)
+  damageSystem(s.com.tanks.H,vSpeed)
+  damageSystem(s.com.tanks.O,vSpeed)
+  damageSystem(s.com.tanks.H2O,vSpeed)
+  damageSystem(s.com.tanks.CH4,vSpeed)
 end
 
 function simulate()
