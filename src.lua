@@ -784,6 +784,7 @@ function TIC()
     spr(sprId,str.x,str.y,0,2,0,0,8,3)
     print("Das Luftschiff",4,4)
     print("X Start",84,94)
+    print("A Repair/Activate",84,106)
   elseif endScreen then
     cls()
     print("Game Over",84,70)
@@ -795,7 +796,7 @@ function TIC()
     sfx(-1,"D#1",-1,0,0,0)
   else
 
-    if btnp(5) then showMap=not showMap end
+    --if btnp(5) then showMap=not showMap end
 
     testPos={x=p.x,y=p.y}
     if mapContains(s.com.disps.bb, testPos) then
@@ -1016,10 +1017,6 @@ function TIC()
       if p.y < 176 then p.y=176 end
     end
 
-    if btnp(7) then
-      debugType=(debugType > 3) and 0 or debugType + 1
-    end
-
     cls(0)
     simulate()
 
@@ -1048,12 +1045,8 @@ function TIC()
     s.com.tks.H2O.st=s.com.tks.H2O.st-0.000001
     s.com.tks.CH4.st=s.com.tks.CH4.st-0.000001
 
-    if debugType==0 and not showMap then
+    if not showMap then
       drawGame()
-    elseif debugType==1 then
-      drawShipDebugOne(s)
-    elseif debugType==2 then
-      drawShipDebugTwo(s)
     end
 
     if showMap then

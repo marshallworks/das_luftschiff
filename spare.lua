@@ -11,6 +11,14 @@
 --   NM: newton per meter (torque)
 --   KNSM: kilo newton per square meter (pressure)
 
+    if debugType==0 and not showMap then
+      drawGame()
+    elseif debugType==1 then
+      drawShipDebugOne(s)
+    elseif debugType==2 then
+      drawShipDebugTwo(s)
+    end
+
 
 function drawShipDebugOne(s)
   lines={}
