@@ -1,4 +1,17 @@
 
+-- Balance
+-- All units are in per frame 1/60th of a second.
+-- Units
+--   M3: m^3 (volume)
+--   M3F: m^3 per frame (fill rate)
+--   KG: kilo gram (weight)
+--   KGF: kilo gram per frame (fill rate)
+--   KW: kilo watt (work)
+--   KN: kilo newton (force)
+--   NM: newton per meter (torque)
+--   KNSM: kilo newton per square meter (pressure)
+
+
 function drawShipDebugOne(s)
   lines={}
 
