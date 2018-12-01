@@ -856,7 +856,24 @@ function TIC()
       end
     end
 
-    sfx(1,"E-3",-1,1,clamp01(inverseLerp(1000,0,sqrDistance({x=p.x,y=p.y},{x=s.com.gen.bb.min_x*8,y=s.com.gen.bb.min_y*8})))*10//1,0)
+    sfx(0,"D#1",-1,0,10,0)
+
+    playAmbientChannel(1,{
+      {c=s.com.acc.H2O,id=6,nt="D#3"},
+      {c=s.com.engine.turb,id=5,nt="F-2"},
+      {c=s.com.props.one,id=3,nt="D-2"},
+      {c=s.com.props.two,id=3,nt="D-2"},
+      {c=s.com.rotors.one,id=4,nt="C-1"},
+      {c=s.com.rotors.three,id=4,nt="C-1"},
+      {c=s.com.rotors.four,id=4,nt="C-1"}
+    },7)
+
+    playAmbientChannel(2,{
+      {c=s.com.engine.bilr,id=2,nt="C-1"},
+      {c=s.com.gen,id=1,nt="E-3"},
+      {c=s.com.acc.CH4,id=6,nt="F-4"},
+      {c=s.com.rotors.two,id=4,nt="C-1"}
+    },4)
 
     if showControls then
       if btnp(2) then controlType=controlType - 1 end
@@ -1048,6 +1065,28 @@ function TIC()
     drawShipStatus()
   end
   start.t=start.t+1
+end
+
+function playAmbient(c,dis,channel,id,note)
+  sfx(id,note,-1,channel,clamp01(inverseLerp(2000,0,dis))*12//1,0)
+end
+
+function playAmbientChannel(ch,comps,count)
+  nearDis=1000000
+  nearest=nil
+  for i=1, count do
+    item=comps[i]
+    soundPos=scaleV2(bbCenter(item.c.bb),8)
+    soundDis=sqrDistance({x=p.x,y=p.y},soundPos)
+    if soundDis<nearDis then
+      nearDis=soundDis
+      nearest=item
+    end
+  end
+
+  if nearest ~= nil then
+    playAmbient(nearest.c,nearDis,ch,nearest.id,nearest.nt)
+  end
 end
 
 function drawShipStatus()
@@ -2292,6 +2331,20 @@ end
 
 function distance(ptA, ptB)
   return math.sqrt(sqrDistance(ptA,ptB))
+end
+
+function scaleV2(vec,scalar)
+  return {
+    x=vec.x*scalar,
+    y=vec.y*scalar
+  }
+end
+
+function bbCenter(bb)
+  return {
+    x=(bb.max_x-bb.min_x)/2+bb.min_x,
+    y=(bb.max_y-bb.min_y)/2+bb.min_y
+  }
 end
 
 function rotateV2(vec, angle)
