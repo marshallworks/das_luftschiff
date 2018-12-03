@@ -754,6 +754,8 @@ function init()
   cam.y=p.y-64
   cam.cellX=cam.x / 8
   cam.cellY=cam.y / 8
+
+  music(0)
 end
 
 function buildMap()
@@ -795,7 +797,7 @@ function TIC()
     end
     sfx(-1,"D#1",-1,0,0,0)
   else
-
+    music()
     --if btnp(5) then showMap=not showMap end
 
     testPos={x=p.x,y=p.y}
