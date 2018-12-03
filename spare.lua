@@ -11,6 +11,10 @@
 --   NM: newton per meter (torque)
 --   KNSM: kilo newton per square meter (pressure)
 
+    if btnp(7) then
+      debugType=(debugType > 3) and 0 or debugType + 1
+    end
+
     if debugType==0 and not showMap then
       drawGame()
     elseif debugType==1 then
