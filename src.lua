@@ -800,56 +800,10 @@ function TIC()
     music()
     --if btnp(5) then showMap=not showMap end
 
-    testPos={x=p.x,y=p.y}
-    if mapContains(s.com.disps.bb, testPos) then
+    if mapContains(s.com.disps.bb, {x=p.x,y=p.y}) then
       if btnp(6) then showControls=not showControls end
-    elseif mapContains(s.com.eng.bilr.bb, testPos) then
-      if btn(6) then s.com.eng.bilr.st=math.min(s.com.eng.bilr.st+0.01,1) end
-    elseif mapContains(s.com.eng.turb.bb, testPos) then
-      if btn(6) then s.com.eng.turb.st=math.min(s.com.eng.turb.st+0.01,1) end
-    elseif mapContains(s.com.hyd.res.bb, testPos) then
-      if btn(6) then s.com.hyd.res.st=math.min(s.com.hyd.res.st+0.01,1) end
-    elseif mapContains(s.com.hyd.pump.bb, testPos) then
-      if btn(6) then s.com.hyd.pump.st=math.min(s.com.hyd.pump.st+0.01,1) end
-    elseif mapContains(s.com.gen.bb, testPos) then
-      if btn(6) then s.com.gen.st=math.min(s.com.gen.st+0.01,1) end
-    elseif mapContains(s.com.rtrs.one.bb, testPos) then
-      if btn(6) then s.com.rtrs.one.st=math.min(s.com.rtrs.one.st+0.01,1) end
-    elseif mapContains(s.com.rtrs.two.bb, testPos) then
-      if btn(6) then s.com.rtrs.two.st=math.min(s.com.rtrs.two.st+0.01,1) end
-    elseif mapContains(s.com.rtrs.three.bb, testPos) then
-      if btn(6) then s.com.rtrs.three.st=math.min(s.com.rtrs.three.st+0.01,1) end
-    elseif mapContains(s.com.rtrs.four.bb, testPos) then
-      if btn(6) then s.com.rtrs.four.st=math.min(s.com.rtrs.four.st+0.01,1) end
-    elseif mapContains(s.com.props.one.bb, testPos) then
-      if btn(6) then s.com.props.one.st=math.min(s.com.props.one.st+0.01,1) end
-    elseif mapContains(s.com.props.two.bb, testPos) then
-      if btn(6) then s.com.props.two.st=math.min(s.com.props.two.st+0.01,1) end
-    elseif mapContains(s.com.acc.H2O.bb, testPos) then
-      if btn(6) then s.com.acc.H2O.st=math.min(s.com.acc.H2O.st+0.01,1) end
-    elseif mapContains(s.com.acc.CH4.bb, testPos) then
-      if btn(6) then s.com.acc.CH4.st=math.min(s.com.acc.CH4.st+0.01,1) end
-    elseif mapContains(s.com.clls.one.bb, testPos) then
-      if btn(6) then s.com.clls.one.st=math.min(s.com.clls.one.st+0.01,1) end
-    elseif mapContains(s.com.clls.two.bb, testPos) then
-      if btn(6) then s.com.clls.two.st=math.min(s.com.clls.two.st+0.01,1) end
-    elseif mapContains(s.com.clls.three.bb, testPos) then
-      if btn(6) then s.com.clls.three.st=math.min(s.com.clls.three.st+0.01,1) end
-    elseif mapContains(s.com.clls.four.bb, testPos) then
-      if btn(6) then s.com.clls.four.st=math.min(s.com.clls.four.st+0.01,1) end
-    elseif mapContains(s.com.btry.bb, testPos) then
-      if btn(6) then s.com.btry.st=math.min(s.com.btry.st+0.01,1) end
-    elseif mapContains(s.com.spltr.bb, testPos) then
-      if btn(6) then s.com.spltr.st=math.min(s.com.spltr.st+0.01,1) end
-    elseif mapContains(s.com.tks.H.bb, testPos) then
-      if btn(6) then s.com.tks.H.st=math.min(s.com.tks.H.st+0.01,1) end
-    elseif mapContains(s.com.tks.O.bb, testPos) then
-      if btn(6) then s.com.tks.O.st=math.min(s.com.tks.O.st+0.01,1) end
-    elseif mapContains(s.com.tks.H2O.bb, testPos) then
-      if btn(6) then s.com.tks.H2O.st=math.min(s.com.tks.H2O.st+0.01,1) end
-    elseif mapContains(s.com.tks.CH4.bb, testPos) then
-      if btn(6) then s.com.tks.CH4.st=math.min(s.com.tks.CH4.st+0.01,1) end
     end
+    doRepairs()
 
     if not showControls and btn(6) then
       if (str.t%16)==0 then
@@ -910,142 +864,13 @@ function TIC()
         if s.con.rot.props > 360 then s.con.rot.props=s.con.rot.props-360 end
       end
     else
-      onFloor=false
-      inCeiling=false
-      onLadder=false
-      testX=p.x // 8
-      testY=p.y // 8
-      testYD=(p.y // 8) + 1
-      testYU=(p.y // 8)-1
-      downId=mget(testX,testYD)
-      if downId==16 or downId==189 or downId==158 then onFloor=true end
-      if mget(testX, testYU)==16 then inCeiling=true end
-      if mget(testX, testY)==32 or mget(testX, testYD)==32 then onLadder=true end
-
-      if btn(0) and onLadder then
-        p.vy=math.max(p.vy-0.06,-.3)
-      elseif btn(1) and onLadder and not onFloor then
-        p.vy=math.max(p.vy+0.06, .3)
-      elseif onLadder then
-        p.vy=0.0
-      elseif btn(0) and onFloor then
-        p.vy=-1.2
-      elseif p.vy==0 and onFloor then
-        p.y=testY * 8 + 1
-        p.vy=math.min(p.vy, 0.0)
-      elseif not onFloor then
-        p.vy=math.min(p.vy + 0.1, 2.0)
-      else
-        p.vy=0.0
-      end
-
-      if inCeiling and p.vy < 0 then
-        p.vy=-p.vy
-      end
-
-      isAcc=false
-      isDeAcc=false
-
-      if btn(2) then
-        p.vx=math.max(p.vx-0.06, -0.8)
-        isAcc=p.vx>-.3
-      elseif btn(3) then
-        p.vx=math.min(p.vx + 0.06, 0.8)
-        isAcc=p.vx<.3
-      else
-        if p.vx>0 then
-          p.vx=math.max(p.vx-0.1,0)
-        else
-          p.vx=math.min(p.vx+0.1,0)
-        end
-        isDeAcc=p.vx~=0
-      end
-
-      if p.vx>0 then
-        p.flip=0
-      elseif p.vx<0 then
-        p.flip=1
-      end
-
-      if not onLadder and not onFloor then
-        p.s=261
-      elseif p.vx==0 and onLadder and not onFloor then
-        if p.vy==0 then
-          p.s=262
-        else
-          if (str.t%16)//8==0 then
-            p.s=262
-          else
-            p.s=263
-          end
-        end
-      elseif p.vx==0 then
-        p.s=256
-      elseif isAcc then
-        p.s=259
-      elseif isDeAcc then
-        p.s=260
-      else
-        if (str.t%12)==0 then
-          sfx(2,48,3,3,4,3)
-        end
-        if (str.t%12)//6==0 then
-          p.s=257
-        else
-          p.s=258
-        end
-      end
-
-      p.x=p.x+p.vx
-      p.y=p.y+p.vy
-
-      cam.x=lerp(cam.x, p.x-120, 0.15)
-      cam.y=lerp(cam.y, 137, 0.15) -- p.y-64
-      cam.cellX=cam.x / 8
-      cam.cellY=cam.y / 8
-
-      if p.y > 234 then
-        if p.x < 292 then p.x=292 end
-        if p.x > 668 then p.x=668 end
-      elseif p.y > 202 then
-        if p.x < 268 then p.x=268 end
-        if p.x > 684 then p.x=684 end
-      else
-        if p.x < 268 then p.x=268 end
-        if p.x > 700 then p.x=700 end
-      end
-
-      if p.y > 257 then p.y=257 end
-      if p.y < 176 then p.y=176 end
+      playerMovement()
     end
 
     cls(0)
     simulate()
 
-    s.com.eng.bilr.st=s.com.eng.bilr.st-0.00001
-    s.com.eng.bilr.st=s.com.eng.bilr.st-0.000001
-    s.com.eng.turb.st=s.com.eng.turb.st-0.00001
-    s.com.hyd.res.st=s.com.hyd.res.st-0.000001
-    s.com.hyd.pump.st=s.com.hyd.pump.st-0.00001
-    s.com.gen.st=s.com.gen.st-0.00001
-    s.com.rtrs.one.st=s.com.rtrs.one.st-0.00001
-    s.com.rtrs.two.st=s.com.rtrs.two.st-0.00001
-    s.com.rtrs.three.st=s.com.rtrs.three.st-0.00001
-    s.com.rtrs.four.st=s.com.rtrs.four.st-0.00001
-    s.com.props.one.st=s.com.props.one.st-0.00001
-    s.com.props.two.st=s.com.props.two.st-0.00001
-    s.com.acc.H2O.st=s.com.acc.H2O.st-0.00001
-    s.com.acc.CH4.st=s.com.acc.CH4.st-0.00001
-    s.com.clls.one.st=s.com.clls.one.st-0.00001
-    s.com.clls.two.st=s.com.clls.two.st-0.00001
-    s.com.clls.three.st=s.com.clls.three.st-0.00001
-    s.com.clls.four.st=s.com.clls.four.st-0.00001
-    s.com.btry.st=s.com.btry.st-0.000001
-    s.com.spltr.st=s.com.spltr.st-0.00001
-    s.com.tks.H.st=s.com.tks.H.st-0.000001
-    s.com.tks.O.st=s.com.tks.O.st-0.000001
-    s.com.tks.H2O.st=s.com.tks.H2O.st-0.000001
-    s.com.tks.CH4.st=s.com.tks.CH4.st-0.000001
+    applyWear()
 
     if not showMap then
       drawGame()
@@ -1058,6 +883,176 @@ function TIC()
     drawShipStatus()
   end
   str.t=str.t+1
+end
+
+function playerMovement()
+  onFloor=false
+  inCeiling=false
+  onLadder=false
+  testX=p.x // 8
+  testY=p.y // 8
+  testYD=(p.y // 8) + 1
+  testYU=(p.y // 8)-1
+  downId=mget(testX,testYD)
+  if downId==16 or downId==189 or downId==158 then onFloor=true end
+  if mget(testX, testYU)==16 then inCeiling=true end
+  if mget(testX, testY)==32 or mget(testX, testYD)==32 then onLadder=true end
+
+  if btn(0) and onLadder then
+    p.vy=math.max(p.vy-0.06,-.3)
+  elseif btn(1) and onLadder and not onFloor then
+    p.vy=math.max(p.vy+0.06, .3)
+  elseif onLadder then
+    p.vy=0.0
+  elseif btn(0) and onFloor then
+    p.vy=-1.2
+  elseif p.vy==0 and onFloor then
+    p.y=testY * 8 + 1
+    p.vy=math.min(p.vy, 0.0)
+  elseif not onFloor then
+    p.vy=math.min(p.vy + 0.1, 2.0)
+  else
+    p.vy=0.0
+  end
+
+  if inCeiling and p.vy < 0 then
+    p.vy=-p.vy
+  end
+
+  isAcc=false
+  isDeAcc=false
+
+  if btn(2) then
+    p.vx=math.max(p.vx-0.06, -0.8)
+    isAcc=p.vx>-.3
+  elseif btn(3) then
+    p.vx=math.min(p.vx + 0.06, 0.8)
+    isAcc=p.vx<.3
+  else
+    if p.vx>0 then
+      p.vx=math.max(p.vx-0.1,0)
+    else
+      p.vx=math.min(p.vx+0.1,0)
+    end
+    isDeAcc=p.vx~=0
+  end
+
+  if p.vx>0 then
+    p.flip=0
+  elseif p.vx<0 then
+    p.flip=1
+  end
+
+  if not onLadder and not onFloor then
+    p.s=261
+  elseif p.vx==0 and onLadder and not onFloor then
+    if p.vy==0 then
+      p.s=262
+    else
+      if (str.t%16)//8==0 then
+        p.s=262
+      else
+        p.s=263
+      end
+    end
+  elseif p.vx==0 then
+    p.s=256
+  elseif isAcc then
+    p.s=259
+  elseif isDeAcc then
+    p.s=260
+  else
+    if (str.t%12)==0 then
+      sfx(2,48,3,3,4,3)
+    end
+    if (str.t%12)//6==0 then
+      p.s=257
+    else
+      p.s=258
+    end
+  end
+
+  p.x=p.x+p.vx
+  p.y=p.y+p.vy
+
+  cam.x=lerp(cam.x, p.x-120, 0.15)
+  cam.y=lerp(cam.y, 137, 0.15) -- p.y-64
+  cam.cellX=cam.x / 8
+  cam.cellY=cam.y / 8
+
+  if p.y > 234 then
+    if p.x < 292 then p.x=292 end
+    if p.x > 668 then p.x=668 end
+  elseif p.y > 202 then
+    if p.x < 268 then p.x=268 end
+    if p.x > 684 then p.x=684 end
+  else
+    if p.x < 268 then p.x=268 end
+    if p.x > 700 then p.x=700 end
+  end
+
+  if p.y > 257 then p.y=257 end
+  if p.y < 176 then p.y=176 end
+end
+
+function doRepairs()
+  tP={x=p.x,y=p.y}
+  if btn(6) then
+    maybeDoRepair(s.com.eng.bilr,tP)
+    maybeDoRepair(s.com.eng.turb,tP)
+    maybeDoRepair(s.com.hyd.res,tP)
+    maybeDoRepair(s.com.hyd.pump,tP)
+    maybeDoRepair(s.com.gen,tP)
+    maybeDoRepair(s.com.rtrs.one,tP)
+    maybeDoRepair(s.com.rtrs.two,tP)
+    maybeDoRepair(s.com.rtrs.three,tP)
+    maybeDoRepair(s.com.rtrs.four,tP)
+    maybeDoRepair(s.com.props.one,tP)
+    maybeDoRepair(s.com.props.two,tP)
+    maybeDoRepair(s.com.acc.H2O,tP)
+    maybeDoRepair(s.com.acc.CH4,tP)
+    maybeDoRepair(s.com.clls.one,tP)
+    maybeDoRepair(s.com.clls.two,tP)
+    maybeDoRepair(s.com.clls.three,tP)
+    maybeDoRepair(s.com.clls.four,tP)
+    maybeDoRepair(s.com.btry,tP)
+    maybeDoRepair(s.com.spltr,tP)
+    maybeDoRepair(s.com.tks.H,tP)
+    maybeDoRepair(s.com.tks.O,tP)
+    maybeDoRepair(s.com.tks.H2O,tP)
+    maybeDoRepair(s.com.tks.CH4,tP)
+  end
+end
+
+function applyWear()
+  s.com.eng.bilr.st=s.com.eng.bilr.st-0.00001
+  s.com.eng.bilr.st=s.com.eng.bilr.st-0.000001
+  s.com.eng.turb.st=s.com.eng.turb.st-0.00001
+  s.com.hyd.res.st=s.com.hyd.res.st-0.000001
+  s.com.hyd.pump.st=s.com.hyd.pump.st-0.00001
+  s.com.gen.st=s.com.gen.st-0.00001
+  s.com.rtrs.one.st=s.com.rtrs.one.st-0.00001
+  s.com.rtrs.two.st=s.com.rtrs.two.st-0.00001
+  s.com.rtrs.three.st=s.com.rtrs.three.st-0.00001
+  s.com.rtrs.four.st=s.com.rtrs.four.st-0.00001
+  s.com.props.one.st=s.com.props.one.st-0.00001
+  s.com.props.two.st=s.com.props.two.st-0.00001
+  s.com.acc.H2O.st=s.com.acc.H2O.st-0.00001
+  s.com.acc.CH4.st=s.com.acc.CH4.st-0.00001
+  s.com.clls.one.st=s.com.clls.one.st-0.00001
+  s.com.clls.two.st=s.com.clls.two.st-0.00001
+  s.com.clls.three.st=s.com.clls.three.st-0.00001
+  s.com.clls.four.st=s.com.clls.four.st-0.00001
+  s.com.btry.st=s.com.btry.st-0.000001
+  s.com.spltr.st=s.com.spltr.st-0.00001
+  s.com.tks.H.st=s.com.tks.H.st-0.000001
+  s.com.tks.O.st=s.com.tks.O.st-0.000001
+  s.com.tks.H2O.st=s.com.tks.H2O.st-0.000001
+  s.com.tks.CH4.st=s.com.tks.CH4.st-0.000001
+end
+
+function maybeDoRepair(c,p)
+  if mapContains(c.bb,p) then c.st=math.min(c.st+0.01,1) end
 end
 
 function playAmbient(c,dis,channel,id,note)
