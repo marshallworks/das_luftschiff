@@ -2178,27 +2178,23 @@ function applyForces(sim)
                   s.com.rtrs.four.thrust * rotor4Xcomp-drag) /
       totalShipWeightKN
   -- TODO Remove fudge? Acceleration bump, direction rotation.
-  s.speed=s.speed + 0.5 * (s.accl * 10 * 0.00027777777)
-  changeX=s.speed * math.sin(math.rad(s.heading))
-  changeY=-s.speed * math.cos(math.rad(s.heading))
-  s.pos.x=s.pos.x + changeX
-  s.pos.y=s.pos.y + changeY
+  s.speed=s.speed+0.5*s.accl*10*0.00027777777
+  changeX=s.speed*math.sin(math.rad(s.heading))
+  changeY=-s.speed*math.cos(math.rad(s.heading))
+  s.pos.x=s.pos.x+changeX
+  s.pos.y=s.pos.y+changeY
   s.dis=s.dis+math.sqrt(changeX*changeX+changeY*changeY)
 
-  totalHydrogenLiftForce=(totalAirWeight-totalHydrogenWeight) * KG_TO_N *
-      HYDROGEN_LIFT_ADJUST
-  totalWingLiftForce=(s.speed * WING_LIFT) * altAdjustment
+  totalHydrogenLiftForce=(totalAirWeight-totalHydrogenWeight)*KG_TO_N*HYDROGEN_LIFT_ADJUST
+  totalWingLiftForce=s.speed*WING_LIFT*altAdjustment
 
-  s.rot=(s.com.rtrs.one.rot + s.com.rtrs.two.rot +
-                   s.com.rtrs.three.rot +
-                   s.com.rtrs.four.rot) / 4
-  vertDrag=DRAG_COEFFICENT * BOTTOM_DRAG_AREA * 0.5 * s.env.Atmo *
-      (s.vsi * s.vsi)
-  vForce=((s.com.rtrs.one.thrust * rotor1Ycomp +
-             s.com.rtrs.two.thrust * rotor2Ycomp +
-             s.com.rtrs.three.thrust * rotor3Ycomp +
-             s.com.rtrs.four.thrust * rotor4Ycomp) +
-      totalHydrogenLiftForce + totalWingLiftForce) / totalShipWeightKN
+  s.rot=(s.com.rtrs.one.rot+s.com.rtrs.two.rot+s.com.rtrs.three.rot+s.com.rtrs.four.rot)/4
+  vertDrag=DRAG_COEFFICENT*BOTTOM_DRAG_AREA*0.5*s.env.Atmo*s.vsi*s.vsi
+  vForce=((s.com.rtrs.one.thrust*rotor1Ycomp+
+           s.com.rtrs.two.thrust*rotor2Ycomp+
+           s.com.rtrs.three.thrust*rotor3Ycomp+
+           s.com.rtrs.four.thrust*rotor4Ycomp)+
+      totalHydrogenLiftForce+totalWingLiftForce)/totalShipWeightKN
   if s.vsi > 0 then
     vForce=vForce-vertDrag
   elseif s.vsi < 0 then
@@ -2259,22 +2255,22 @@ function applyForces(sim)
 end
 
 
-function calcHydDemand(currentAngle, desiredAngle, st, maxSpeed, maxDemand)
-  if currentAngle==desiredAngle then return 0 end
-  rotorAngleChange=math.abs(desiredAngle-currentAngle)
-  rotorAngleChange=math.min(rotorAngleChange, maxSpeed * st)
-  return (rotorAngleChange / maxSpeed) * maxDemand
+function calcHydDemand(curAngle, dsrdAgl, st, maxSpd, maxDmnd)
+  if curAngle==dsrdAgl then return 0 end
+  rotorAngleChange=math.abs(dsrdAgl-curAngle)
+  rotorAngleChange=math.min(rotorAngleChange, maxSpd*st)
+  return (rotorAngleChange/maxSpd)*maxDmnd
 end
 
-function rotateThruster(sim, type, thruster, maxDemand, maxSpeed)
-  if math.abs(s.con.rot[type]-s.com[type][thruster].rot) < 0.0001 then
+function rotateThruster(sim, type, thruster, maxDmnd, maxSpd)
+  if math.abs(s.con.rot[type]-s.com[type][thruster].rot)<0.0001 then
     s.com[type][thruster].rot=s.con.rot[type]
   else
-    hydAvailable=sim.sply.kNSM[type][thruster] / maxDemand
-    availableAngle=hydAvailable * maxSpeed
-    desiredAngle=s.con.rot[type]-s.com[type][thruster].rot
-    moveAngle=math.min(availableAngle, math.abs(desiredAngle))
-    if desiredAngle < 0 then
+    hydAvl=sim.sply.kNSM[type][thruster]/maxDmnd
+    aglAvl=hydAvl*maxSpd
+    dsrdAgl=s.con.rot[type]-s.com[type][thruster].rot
+    moveAngle=math.min(aglAvl,math.abs(dsrdAgl))
+    if dsrdAgl<0 then
       s.com[type][thruster].rot=s.com[type][thruster].rot-moveAngle
     else
       s.com[type][thruster].rot=s.com[type][thruster].rot + moveAngle
@@ -2285,61 +2281,55 @@ function rotateThruster(sim, type, thruster, maxDemand, maxSpeed)
 end
 
 function rotateRotor(sim, rotor)
-  return rotateThruster(sim, 'rtrs', rotor, RTR_MAX_HYD_DEMAND_KNSM,
+  return rotateThruster(sim,'rtrs',rotor,RTR_MAX_HYD_DEMAND_KNSM,
                         RTR_MAX_ROTATE_SPEED_D)
 end
 
-function rotateProp(sim, prop)
-  return rotateThruster(sim, 'props', prop, PROP_MAX_HYD_DEMAND_KNSM,
+function rotateProp(sim,prop)
+  return rotateThruster(sim,'props',prop,PROP_MAX_HYD_DEMAND_KNSM,
                         PROP_MAX_ROTATE_SPEED_D)
 end
 
-function safeDivide(num, den)
-  return (den > 0) and num / den or 0
+function safeDivide(num,den)
+  return (den>0) and num/den or 0
 end
 
-function clamp(val, low, high)
-  return math.min(math.max(val, low), high)
+function clamp(val,low,high)
+  return math.min(math.max(val,low),high)
 end
 
 function clamp01(val)
-  return clamp(val, 0.0, 1)
+  return clamp(val,0.0,1)
 end
 
-function nroot(root, num)
-  return num^(1 / root)
+function nroot(rt,num)
+  return num^(1/rt)
 end
 
-function lerp(a, b, t)
-  return a + (b-a) * t
+function lerp(a,b,t)
+  return a+(b-a)*t
 end
 
-function invLerp(a, b, v)
-  return (v-a) / (b-a)
+function invLerp(a,b,v)
+  return (v-a)/(b-a)
 end
 
-function sqrDistance(ptA, ptB)
-  x=ptA.x-ptB.x
-  y=ptA.y-ptB.y
+function sqrDistance(ptA,ptB)
+  local x=ptA.x-ptB.x
+  local y=ptA.y-ptB.y
   return x*x+y*y
 end
 
-function distance(ptA, ptB)
+function distance(ptA,ptB)
   return math.sqrt(sqrDistance(ptA,ptB))
 end
 
 function scaleV2(vec,scalar)
-  return {
-    x=vec.x*scalar,
-    y=vec.y*scalar
-  }
+  return {x=vec.x*scalar,y=vec.y*scalar}
 end
 
 function bbCenter(bb)
-  return {
-    x=(bb.max_x-bb.min_x)/2+bb.min_x,
-    y=(bb.max_y-bb.min_y)/2+bb.min_y
-  }
+  return {x=(bb.max_x-bb.min_x)/2+bb.min_x,y=(bb.max_y-bb.min_y)/2+bb.min_y}
 end
 
 function rotateV2(vec, angle)
@@ -2347,23 +2337,15 @@ function rotateV2(vec, angle)
   aSin=math.sin(r)
   aCos=math.cos(r)
 
-  return {
-    x=vec.x * aCos-vec.y * aSin,
-    y=vec.y * aCos + vec.x * aSin
-  }
+  return {x=vec.x*aCos-vec.y*aSin,y=vec.y*aCos+vec.x*aSin}
 end
 
 function contains(bb, pos)
-  return pos.x >= bb.min_x and pos.y >= bb.min_y and pos.x <= bb.max_x and pos.y <= bb.max_y
+  return pos.x>=bb.min_x and pos.y>=bb.min_y and pos.x<=bb.max_x and pos.y<=bb.max_y
 end
 
 function mapContains(bb, pos)
-  return contains({
-        min_x=bb.min_x * 8,
-        min_y=bb.min_y * 8,
-        max_x=bb.max_x * 8 + 7,
-        max_y=bb.max_y * 8 + 7
-      }, pos)
+  return contains({min_x=bb.min_x*8,min_y=bb.min_y*8,max_x=bb.max_x*8+7,max_y=bb.max_y*8+7}, pos)
 end
 
 init()
