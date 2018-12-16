@@ -121,72 +121,6 @@ s={
     CH4=0.0
   },
   com={
-    disps={
-      st=1,
-      active=true,
-      id="disp",
-      bb={
-        min_x=56,
-        min_y=23,
-        max_x=59,
-        max_y=24
-      }
-    },
-    eng={
-      bilr={
-        st=1,
-        id="bilr",
-        bb={
-          min_x=48,
-          min_y=27,
-          max_x=51,
-          max_y=28
-        }
-      },
-      turb={
-        st=1,
-        id="turb",
-        bb={
-          min_x=46,
-          min_y=27,
-          max_x=47,
-          max_y=28
-        }
-      },
-    },
-    hyd={
-      res={
-        st=1,
-        level=HYD_MAX_KNSM,
-        id="hyd_acc",
-        bb={
-          min_x=37,
-          min_y=23,
-          max_x=38,
-          max_y=24
-        }
-      },
-      pump={
-        st=1,
-        id="hyd_pump",
-        bb={
-          min_x=37,
-          min_y=27,
-          max_x=38,
-          max_y=28
-        }
-      }
-    },
-    gen={
-      st=1,
-      id="gen",
-      bb={
-        min_x=40,
-        min_y=27,
-        max_x=43,
-        max_y=28
-      }
-    },
     rtrs={
       one={
         st=1,
@@ -743,7 +677,7 @@ mapVls={}
 CH4pts={}
 H2Opts={}
 
-function init()
+function initGame()
   -- Background color
   poke(0x03FF8, 8)
   math.randomseed(8778)
@@ -756,6 +690,42 @@ function init()
   cam.cellY=cam.y / 8
 
   music(0)
+  initShip()
+end
+
+function initShip()
+  bilr={
+    st=1,
+    id="bilr",
+    bb={min_x=48,min_y=27,max_x=51,max_y=28}
+  }
+  disps={
+    st=1,
+    on=true,
+    id="disp",
+    bb={min_x=56,min_y=23,max_x=59,max_y=24}
+  }
+  gen={
+    st=1,
+    id="gen",
+    bb={min_x=40,min_y=27,max_x=43,max_y=28}
+  }
+  turb={
+    st=1,
+    id="turb",
+    bb={min_x=46,min_y=27,max_x=47,max_y=28}
+  }
+  hydRes={
+    st=1,
+    level=HYD_MAX_KNSM,
+    id="hyd_acc",
+    bb={min_x=37,min_y=23,max_x=38,max_y=24}
+  }
+  hydPump={
+    st=1,
+    id="hyd_pump",
+    bb={min_x=37,min_y=27,max_x=38,max_y=28}
+  }
 end
 
 function buildMap()
@@ -800,7 +770,7 @@ function TIC()
     music()
     --if btnp(5) then showMap=not showMap end
 
-    if mapContains(s.com.disps.bb, {x=p.x,y=p.y}) then
+    if mapContains(disps.bb, {x=p.x,y=p.y}) then
       if btnp(6) then showControls=not showControls end
     end
     doRepairs()
@@ -815,7 +785,7 @@ function TIC()
 
     playAmbientChannel(1,{
       {c=s.com.acc.H2O,id=6,nt="D#3"},
-      {c=s.com.eng.turb,id=5,nt="F-2"},
+      {c=turb,id=5,nt="F-2"},
       {c=s.com.props.one,id=3,nt="D-2"},
       {c=s.com.props.two,id=3,nt="D-2"},
       {c=s.com.rtrs.one,id=4,nt="C-1"},
@@ -824,8 +794,8 @@ function TIC()
     },7)
 
     playAmbientChannel(2,{
-      {c=s.com.eng.bilr,id=2,nt="C-1"},
-      {c=s.com.gen,id=1,nt="E-3"},
+      {c=bilr,id=2,nt="C-1"},
+      {c=gen,id=1,nt="E-3"},
       {c=s.com.acc.CH4,id=6,nt="F-4"},
       {c=s.com.rtrs.two,id=4,nt="C-1"}
     },4)
@@ -998,11 +968,11 @@ end
 function doRepairs()
   tP={x=p.x,y=p.y}
   if btn(6) then
-    maybeDoRepair(s.com.eng.bilr,tP)
-    maybeDoRepair(s.com.eng.turb,tP)
-    maybeDoRepair(s.com.hyd.res,tP)
-    maybeDoRepair(s.com.hyd.pump,tP)
-    maybeDoRepair(s.com.gen,tP)
+    maybeDoRepair(bilr,tP)
+    maybeDoRepair(turb,tP)
+    maybeDoRepair(hydRes,tP)
+    maybeDoRepair(hydPump,tP)
+    maybeDoRepair(gen,tP)
     maybeDoRepair(s.com.rtrs.one,tP)
     maybeDoRepair(s.com.rtrs.two,tP)
     maybeDoRepair(s.com.rtrs.three,tP)
@@ -1025,12 +995,12 @@ function doRepairs()
 end
 
 function applyWear()
-  s.com.eng.bilr.st=s.com.eng.bilr.st-0.00001
-  s.com.eng.bilr.st=s.com.eng.bilr.st-0.000001
-  s.com.eng.turb.st=s.com.eng.turb.st-0.00001
-  s.com.hyd.res.st=s.com.hyd.res.st-0.000001
-  s.com.hyd.pump.st=s.com.hyd.pump.st-0.00001
-  s.com.gen.st=s.com.gen.st-0.00001
+  bilr.st=bilr.st-0.00001
+  bilr.st=bilr.st-0.000001
+  turb.st=turb.st-0.00001
+  hydRes.st=hydRes.st-0.000001
+  hydPump.st=hydPump.st-0.00001
+  gen.st=gen.st-0.00001
   s.com.rtrs.one.st=s.com.rtrs.one.st-0.00001
   s.com.rtrs.two.st=s.com.rtrs.two.st-0.00001
   s.com.rtrs.three.st=s.com.rtrs.three.st-0.00001
@@ -1079,8 +1049,8 @@ end
 
 function drawShipStatus()
   c=s.com
-  repair = math.max((math.min(c.disps.st,c.eng.bilr.st,c.eng.turb.st,
-      c.hyd.res.st, c.hyd.pump.st,c.gen.st,c.rtrs.one.st,c.rtrs.two.st,
+  repair = math.max((math.min(disps.st,bilr.st,turb.st,
+      hydRes.st,hydPump.st,gen.st,c.rtrs.one.st,c.rtrs.two.st,
       c.rtrs.three.st,c.rtrs.four.st,c.props.one.st,c.props.two.st,
       c.acc.H2O.st,c.acc.CH4.st,c.clls.one.st,c.clls.two.st,c.clls.three.st,
       c.clls.four.st,c.btry.st,c.spltr.st,c.tks.H.st,c.tks.O.st,
@@ -1279,15 +1249,15 @@ function drawShip()
   map(cam.cellX + camXCellAdd, cam.cellY + camYCellAdd + mapYAdjust, 31,
       maxMapHeight, camXCor, camYCor)
 
-  drawCom(s.com.disps.bb, s.com.disps.id, yDown)
+  drawCom(disps.bb, disps.id, yDown)
 
-  drawCom(s.com.eng.bilr.bb, s.com.eng.bilr.id, yDown, s.com.eng.bilr.st)
-  drawCom(s.com.eng.turb.bb, s.com.eng.turb.id, yDown, s.com.eng.turb.st)
+  drawCom(bilr.bb, bilr.id, yDown, bilr.st)
+  drawCom(turb.bb, turb.id, yDown, turb.st)
 
-  drawCom(s.com.hyd.res.bb, s.com.hyd.res.id, yDown, s.com.hyd.res.st)
-  drawCom(s.com.hyd.pump.bb, s.com.hyd.pump.id, yDown, s.com.hyd.pump.st)
+  drawCom(hydRes.bb, hydRes.id, yDown, hydRes.st)
+  drawCom(hydPump.bb, hydPump.id, yDown, hydPump.st)
 
-  drawCom(s.com.gen.bb, s.com.gen.id, yDown, s.com.gen.st)
+  drawCom(gen.bb, gen.id, yDown, gen.st)
 
   drawCom(s.com.rtrs.one.bb, s.com.rtrs.one.id, yDown, s.com.rtrs.one.st)
   drawCom(s.com.rtrs.three.bb, s.com.rtrs.three.id, yDown, s.com.rtrs.three.st)
@@ -1459,11 +1429,11 @@ function dmgSyst(part,vSpeed)
 end
 
 function dmgSysts(vSpeed)
-  dmgSyst(s.com.eng.bilr,vSpeed)
-  dmgSyst(s.com.eng.turb,vSpeed)
-  dmgSyst(s.com.hyd.res,vSpeed)
-  dmgSyst(s.com.hyd.pump,vSpeed)
-  dmgSyst(s.com.gen,vSpeed)
+  dmgSyst(bilr,vSpeed)
+  dmgSyst(turb,vSpeed)
+  dmgSyst(hydRes,vSpeed)
+  dmgSyst(hydPump,vSpeed)
+  dmgSyst(gen,vSpeed)
   dmgSyst(s.com.rtrs.one,vSpeed)
   dmgSyst(s.com.rtrs.two,vSpeed)
   dmgSyst(s.com.rtrs.three,vSpeed)
@@ -1610,7 +1580,7 @@ function simulate()
     },
     availableForUse={
       kW=s.com.btry.level,
-      kNSM=s.com.hyd.res.level,
+      kNSM=hydRes.level,
       H2O=s.com.tks.H2O.level,
       CH4=s.com.tks.CH4.level,
       H_M=s.com.tks.H.level,
@@ -1760,7 +1730,7 @@ function btryDemand(sim)
 end
 
 function hydResDemand(sim)
-  sim.demand.kNSM.hydRes=HYD_MAX_KNSM-s.com.hyd.res.level
+  sim.demand.kNSM.hydRes=HYD_MAX_KNSM-hydRes.level
 
   return sim
 end
@@ -1790,7 +1760,7 @@ function hydPumpDemand(sim)
 end
 
 function genDemand(sim)
-  totalPowerDemand=math.min(GEN_MAX_KW * s.com.gen.st,
+  totalPowerDemand=math.min(GEN_MAX_KW * gen.st,
       sim.demand.kW.disps + sim.demand.kW.rtrs.one +
       sim.demand.kW.rtrs.two + sim.demand.kW.rtrs.three +
       sim.demand.kW.rtrs.four + sim.demand.kW.props.one +
@@ -1802,7 +1772,7 @@ function genDemand(sim)
 end
 
 function turbDemand(sim)
-  totalTorqueDemand=math.min(TURB_MAX_NM * s.com.eng.turb.st,
+  totalTorqueDemand=math.min(TURB_MAX_NM * turb.st,
       sim.demand.NM.gen + sim.demand.NM.hydPump)
   sim.demand.steam=(totalTorqueDemand / TURB_MAX_NM) * TURB_MAX_STEAM_KNSM
 
@@ -1812,9 +1782,9 @@ end
 function bilrDemand(sim)
   superSteamDemand=0
   if sim.demand.steam >= BILR_MAX_REG_STEAM_KNSM then
-    superSteamDemand=(sim.demand.steam-BILR_MAX_REG_STEAM_KNSM)*s.com.eng.bilr.st
+    superSteamDemand=(sim.demand.steam-BILR_MAX_REG_STEAM_KNSM)*bilr.st
   end
-  steamDemand=math.min(BILR_MAX_STEAM_KNSM*s.com.eng.bilr.st,
+  steamDemand=math.min(BILR_MAX_STEAM_KNSM*bilr.st,
                        sim.demand.steam)
   sim.demand.H2O.bilr=steamDemand * BILR_H2O_KG_PER_KNSM
   sim.demand.CH4.bilr=steamDemand * BILR_CH4_KG_PER_KNSM
@@ -2029,7 +1999,7 @@ function distributePower(sim)
   speedAdjustment=clamp(nroot(6.6, s.speed)-1, 0.2, 1.2)
   intakeAdjustment=altAdjustment * speedAdjustment
 
-  s.com.disps.active=(sim.sply.kW.disps >= sim.demand.kW.disps)
+  disps.on=(sim.sply.kW.disps>=sim.demand.kW.disps)
 
   if sim.sply.kW.spltr > 0 then
     powerPercent=sim.sply.kW.spltr / SPLTR_PWR_DEMAND_KW
@@ -2086,7 +2056,7 @@ function drainTanks(sim)
       sim.sply.H2O.spltr
   s.com.tks.CH4.level=s.com.tks.CH4.level-sim.sply.CH4.bilr
 
-  s.com.hyd.res.level=s.com.hyd.res.level -
+  hydRes.level=hydRes.level -
       sim.sply.kNSM.rtrs.one-sim.sply.kNSM.rtrs.two -
       sim.sply.kNSM.rtrs.three-sim.sply.kNSM.rtrs.four -
       sim.sply.kNSM.props.one-sim.sply.kNSM.props.two
@@ -2111,8 +2081,8 @@ function fillTanks(sim)
   s.com.tks.CH4.level=math.min(CH4_TANK_MAX_KG,
       s.com.tks.CH4.level + sim.sply.CH4.tank)
 
-  s.com.hyd.res.level=math.min(HYD_MAX_KNSM,
-      s.com.hyd.res.level + sim.sply.kNSM.hydRes)
+  hydRes.level=math.min(HYD_MAX_KNSM,
+      hydRes.level + sim.sply.kNSM.hydRes)
 
   s.com.btry.level=math.min(BATTERY_MAX_CHARGE_KW,
       s.com.btry.level + sim.availableForStorage.kW)
@@ -2348,4 +2318,4 @@ function mapContains(bb, pos)
   return contains({min_x=bb.min_x*8,min_y=bb.min_y*8,max_x=bb.max_x*8+7,max_y=bb.max_y*8+7}, pos)
 end
 
-init()
+initGame()
