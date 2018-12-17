@@ -121,84 +121,6 @@ s={
     CH4=0.0
   },
   com={
-    rtrs={
-      one={
-        st=1,
-        rot=0,
-        thrust=0,
-        id="rotor_lower",
-        bb={
-          min_x=76,
-          min_y=32,
-          max_x=81,
-          max_y=32
-        },
-        id2="rotor_upper",
-        bb2={
-          min_x=78,
-          min_y=31,
-          max_x=79,
-          max_y=31
-        }
-      },
-      two={
-        st=1,
-        rot=0,
-        thrust=0,
-        id="rotor_lower",
-        bb={
-          min_x=66,
-          min_y=32,
-          max_x=71,
-          max_y=32
-        },
-        id2="rotor_upper",
-        bb2={
-          min_x=68,
-          min_y=31,
-          max_x=69,
-          max_y=31
-        }
-      },
-      three={
-        st=1,
-        rot=0,
-        thrust=0,
-        id="rotor_lower",
-        bb={
-          min_x=48,
-          min_y=32,
-          max_x=53,
-          max_y=32
-        },
-        id2="rotor_upper",
-        bb2={
-          min_x=50,
-          min_y=31,
-          max_x=51,
-          max_y=31
-        }
-      },
-      four={
-        st=1,
-        rot=0,
-        thrust=0,
-        id="rotor_lower",
-        bb={
-          min_x=38,
-          min_y=32,
-          max_x=43,
-          max_y=32
-        },
-        id2="rotor_upper",
-        bb2={
-          min_x=40,
-          min_y=31,
-          max_x=41,
-          max_y=31
-        }
-      }
-    },
     props={
       one={
         st=1,
@@ -710,6 +632,42 @@ function initShip()
     id="gen",
     bb={min_x=40,min_y=27,max_x=43,max_y=28}
   }
+  rtr1={
+    st=1,
+    rot=0,
+    thrust=0,
+    id="rotor_lower",
+    bb={min_x=76,min_y=32,max_x=81,max_y=32},
+    id2="rotor_upper",
+    bb2={min_x=78,min_y=31,max_x=79,max_y=31}
+  }
+  rtr2={
+    st=1,
+    rot=0,
+    thrust=0,
+    id="rotor_lower",
+    bb={min_x=66,min_y=32,max_x=71,max_y=32},
+    id2="rotor_upper",
+    bb2={min_x=68,min_y=31,max_x=69,max_y=31}
+  }
+  rtr3={
+    st=1,
+    rot=0,
+    thrust=0,
+    id="rotor_lower",
+    bb={min_x=48,min_y=32,max_x=53,max_y=32},
+    id2="rotor_upper",
+    bb2={min_x=50,min_y=31,max_x=51,max_y=31}
+  }
+  rtr4={
+    st=1,
+    rot=0,
+    thrust=0,
+    id="rotor_lower",
+    bb={min_x=38,min_y=32,max_x=43,max_y=32},
+    id2="rotor_upper",
+    bb2={min_x=40,min_y=31,max_x=41,max_y=31}
+  }
   turb={
     st=1,
     id="turb",
@@ -788,16 +746,16 @@ function TIC()
       {c=turb,id=5,nt="F-2"},
       {c=s.com.props.one,id=3,nt="D-2"},
       {c=s.com.props.two,id=3,nt="D-2"},
-      {c=s.com.rtrs.one,id=4,nt="C-1"},
-      {c=s.com.rtrs.three,id=4,nt="C-1"},
-      {c=s.com.rtrs.four,id=4,nt="C-1"}
+      {c=rtr1,id=4,nt="C-1"},
+      {c=rtr3,id=4,nt="C-1"},
+      {c=rtr4,id=4,nt="C-1"}
     },7)
 
     playAmbientChannel(2,{
       {c=bilr,id=2,nt="C-1"},
       {c=gen,id=1,nt="E-3"},
       {c=s.com.acc.CH4,id=6,nt="F-4"},
-      {c=s.com.rtrs.two,id=4,nt="C-1"}
+      {c=rtr2,id=4,nt="C-1"}
     },4)
 
     if showControls then
@@ -973,10 +931,10 @@ function doRepairs()
     maybeDoRepair(hydRes,tP)
     maybeDoRepair(hydPump,tP)
     maybeDoRepair(gen,tP)
-    maybeDoRepair(s.com.rtrs.one,tP)
-    maybeDoRepair(s.com.rtrs.two,tP)
-    maybeDoRepair(s.com.rtrs.three,tP)
-    maybeDoRepair(s.com.rtrs.four,tP)
+    maybeDoRepair(rtr1,tP)
+    maybeDoRepair(rtr2,tP)
+    maybeDoRepair(rtr3,tP)
+    maybeDoRepair(rtr4,tP)
     maybeDoRepair(s.com.props.one,tP)
     maybeDoRepair(s.com.props.two,tP)
     maybeDoRepair(s.com.acc.H2O,tP)
@@ -1001,10 +959,10 @@ function applyWear()
   hydRes.st=hydRes.st-0.000001
   hydPump.st=hydPump.st-0.00001
   gen.st=gen.st-0.00001
-  s.com.rtrs.one.st=s.com.rtrs.one.st-0.00001
-  s.com.rtrs.two.st=s.com.rtrs.two.st-0.00001
-  s.com.rtrs.three.st=s.com.rtrs.three.st-0.00001
-  s.com.rtrs.four.st=s.com.rtrs.four.st-0.00001
+  rtr1.st=rtr1.st-0.00001
+  rtr2.st=rtr2.st-0.00001
+  rtr3.st=rtr3.st-0.00001
+  rtr4.st=rtr4.st-0.00001
   s.com.props.one.st=s.com.props.one.st-0.00001
   s.com.props.two.st=s.com.props.two.st-0.00001
   s.com.acc.H2O.st=s.com.acc.H2O.st-0.00001
@@ -1050,8 +1008,8 @@ end
 function drawShipStatus()
   c=s.com
   repair = math.max((math.min(disps.st,bilr.st,turb.st,
-      hydRes.st,hydPump.st,gen.st,c.rtrs.one.st,c.rtrs.two.st,
-      c.rtrs.three.st,c.rtrs.four.st,c.props.one.st,c.props.two.st,
+      hydRes.st,hydPump.st,gen.st,rtr1.st,rtr2.st,
+      rtr3.st,rtr4.st,c.props.one.st,c.props.two.st,
       c.acc.H2O.st,c.acc.CH4.st,c.clls.one.st,c.clls.two.st,c.clls.three.st,
       c.clls.four.st,c.btry.st,c.spltr.st,c.tks.H.st,c.tks.O.st,
       c.tks.H2O.st,c.tks.CH4.st)*100+0.5)//1,0)
@@ -1188,18 +1146,18 @@ function drawGame()
     print("RTR4", 138, 100, 6, false, 1, true)
 
     drawRotorRotationStatus(gauges.needles.rtrs.one,
-                            s.com.rtrs.one.rot)
+                            rtr1.rot)
     drawRotorRotationStatus(gauges.needles.rtrs.two,
-                            s.com.rtrs.two.rot)
+                            rtr2.rot)
     drawRotorRotationStatus(gauges.needles.rtrs.three,
-                            s.com.rtrs.three.rot)
+                            rtr3.rot)
     drawRotorRotationStatus(gauges.needles.rtrs.four,
-                            s.com.rtrs.four.rot)
+                            rtr4.rot)
 
-    drawRotorThrustStatus(gauges.bars.rtrs.one, s.com.rtrs.one.thrust)
-    drawRotorThrustStatus(gauges.bars.rtrs.two, s.com.rtrs.two.thrust)
-    drawRotorThrustStatus(gauges.bars.rtrs.three, s.com.rtrs.three.thrust)
-    drawRotorThrustStatus(gauges.bars.rtrs.four, s.com.rtrs.four.thrust)
+    drawRotorThrustStatus(gauges.bars.rtrs.one, rtr1.thrust)
+    drawRotorThrustStatus(gauges.bars.rtrs.two, rtr2.thrust)
+    drawRotorThrustStatus(gauges.bars.rtrs.three, rtr3.thrust)
+    drawRotorThrustStatus(gauges.bars.rtrs.four, rtr4.thrust)
 
     print("Hyd Cells", 199, 100, 6, false, 1, true)
 
@@ -1259,11 +1217,11 @@ function drawShip()
 
   drawCom(gen.bb, gen.id, yDown, gen.st)
 
-  drawCom(s.com.rtrs.one.bb, s.com.rtrs.one.id, yDown, s.com.rtrs.one.st)
-  drawCom(s.com.rtrs.three.bb, s.com.rtrs.three.id, yDown, s.com.rtrs.three.st)
+  drawCom(rtr1.bb, rtr1.id, yDown, rtr1.st)
+  drawCom(rtr3.bb, rtr3.id, yDown, rtr3.st)
 
-  drawCom(s.com.rtrs.one.bb2, s.com.rtrs.one.id2, yDown)
-  drawCom(s.com.rtrs.three.bb2, s.com.rtrs.three.id2, yDown)
+  drawCom(rtr1.bb2, rtr1.id2, yDown)
+  drawCom(rtr3.bb2, rtr3.id2, yDown)
 
   drawCom(s.com.props.one.bb, s.com.props.one.id, yDown, s.com.props.one.st)
   drawCom(s.com.props.two.bb, s.com.props.two.id, yDown, s.com.props.two.st)
@@ -1289,10 +1247,10 @@ function drawShip()
   drawCom(s.com.clls.two.bb, s.com.clls.two.id, yDown, s.com.clls.two.st)
   drawCom(s.com.clls.three.bb, s.com.clls.three.id, yDown, s.com.clls.three.st)
   drawCom(s.com.clls.four.bb, s.com.clls.four.id, yDown, s.com.clls.four.st)
-  drawCom(s.com.rtrs.two.bb, s.com.rtrs.two.id, yDown, s.com.rtrs.two.st)
-  drawCom(s.com.rtrs.four.bb, s.com.rtrs.four.id, yDown, s.com.rtrs.four.st)
-  drawCom(s.com.rtrs.two.bb2, s.com.rtrs.two.id2, yDown)
-  drawCom(s.com.rtrs.four.bb2, s.com.rtrs.four.id2, yDown)
+  drawCom(rtr2.bb, rtr2.id, yDown, rtr2.st)
+  drawCom(rtr4.bb, rtr4.id, yDown, rtr4.st)
+  drawCom(rtr2.bb2, rtr2.id2, yDown)
+  drawCom(rtr4.bb2, rtr4.id2, yDown)
   drawCom(s.com.tks.H.bb, s.com.tks.H.id, yDown, s.com.tks.H.st)
   drawCom(s.com.tks.CH4.bb, s.com.tks.CH4.id, yDown, s.com.tks.CH4.st)
   drawCom(s.com.btry.bb, s.com.btry.id, yDown, s.com.btry.st)
@@ -1434,10 +1392,10 @@ function dmgSysts(vSpeed)
   dmgSyst(hydRes,vSpeed)
   dmgSyst(hydPump,vSpeed)
   dmgSyst(gen,vSpeed)
-  dmgSyst(s.com.rtrs.one,vSpeed)
-  dmgSyst(s.com.rtrs.two,vSpeed)
-  dmgSyst(s.com.rtrs.three,vSpeed)
-  dmgSyst(s.com.rtrs.four,vSpeed)
+  dmgSyst(rtr1,vSpeed)
+  dmgSyst(rtr2,vSpeed)
+  dmgSyst(rtr3,vSpeed)
+  dmgSyst(rtr4,vSpeed)
   dmgSyst(s.com.props.one,vSpeed)
   dmgSyst(s.com.props.two,vSpeed)
   dmgSyst(s.com.acc.H2O,vSpeed)
@@ -1635,13 +1593,13 @@ function controlsPowerDemand(sim)
   sim.demand.kW.disps=DISPLAYS_PWR_DEMAND_KW
 
   sim.demand.kW.rtrs.one=RTR_MAX_PWR_DEMAND_KW *
-      s.com.rtrs.one.st * s.con.thrt.rtrs
+      rtr1.st * s.con.thrt.rtrs
   sim.demand.kW.rtrs.two=RTR_MAX_PWR_DEMAND_KW *
-      s.com.rtrs.two.st * s.con.thrt.rtrs
+      rtr2.st * s.con.thrt.rtrs
   sim.demand.kW.rtrs.three=RTR_MAX_PWR_DEMAND_KW *
-      s.com.rtrs.three.st * s.con.thrt.rtrs
+      rtr3.st * s.con.thrt.rtrs
   sim.demand.kW.rtrs.four=RTR_MAX_PWR_DEMAND_KW *
-      s.com.rtrs.four.st * s.con.thrt.rtrs
+      rtr4.st * s.con.thrt.rtrs
 
   sim.demand.kW.props.one=PROP_MAX_PWR_DEMAND_KW *
       s.com.props.one.st * s.con.thrt.props
@@ -1652,24 +1610,24 @@ function controlsPowerDemand(sim)
 end
 
 function controlsHydraulicDemand(sim)
-  sim.demand.kNSM.rtrs.one=calcHydDemand(s.com.rtrs.one.rot,
+  sim.demand.kNSM.rtrs.one=calcHydDemand(rtr1.rot,
                                              s.con.rot.rtrs,
-                                             s.com.rtrs.one.st,
+                                             rtr1.st,
                                              RTR_MAX_ROTATE_SPEED_D,
                                              RTR_MAX_HYD_DEMAND_KNSM)
-  sim.demand.kNSM.rtrs.two=calcHydDemand(s.com.rtrs.two.rot,
+  sim.demand.kNSM.rtrs.two=calcHydDemand(rtr2.rot,
                                              s.con.rot.rtrs,
-                                             s.com.rtrs.two.st,
+                                             rtr2.st,
                                              RTR_MAX_ROTATE_SPEED_D,
                                              RTR_MAX_HYD_DEMAND_KNSM)
-  sim.demand.kNSM.rtrs.three=calcHydDemand(s.com.rtrs.three.rot,
+  sim.demand.kNSM.rtrs.three=calcHydDemand(rtr3.rot,
                                                s.con.rot.rtrs,
-                                               s.com.rtrs.three.st,
+                                               rtr3.st,
                                                RTR_MAX_ROTATE_SPEED_D,
                                                RTR_MAX_HYD_DEMAND_KNSM)
-  sim.demand.kNSM.rtrs.four=calcHydDemand(s.com.rtrs.four.rot,
+  sim.demand.kNSM.rtrs.four=calcHydDemand(rtr4.rot,
                                               s.con.rot.rtrs,
-                                              s.com.rtrs.four.st,
+                                              rtr4.st,
                                               RTR_MAX_ROTATE_SPEED_D,
                                               RTR_MAX_HYD_DEMAND_KNSM)
 
@@ -2089,13 +2047,13 @@ function fillTanks(sim)
 end
 
 function applyThrust(sim)
-  s.com.rtrs.one.thrust=sim.sply.kW.rtrs.one /
+  rtr1.thrust=sim.sply.kW.rtrs.one /
       RTR_MAX_PWR_DEMAND_KW * RTR_MAX_THRUST_KN
-  s.com.rtrs.two.thrust=sim.sply.kW.rtrs.two /
+  rtr2.thrust=sim.sply.kW.rtrs.two /
       RTR_MAX_PWR_DEMAND_KW * RTR_MAX_THRUST_KN
-  s.com.rtrs.three.thrust=sim.sply.kW.rtrs.three /
+  rtr3.thrust=sim.sply.kW.rtrs.three /
       RTR_MAX_PWR_DEMAND_KW * RTR_MAX_THRUST_KN
-  s.com.rtrs.four.thrust=sim.sply.kW.rtrs.four /
+  rtr4.thrust=sim.sply.kW.rtrs.four /
       RTR_MAX_PWR_DEMAND_KW * RTR_MAX_THRUST_KN
 
   s.com.props.one.thrust=sim.sply.kW.props.one /
@@ -2109,21 +2067,21 @@ function applyForces(sim)
   thrustAdjustment=lerp(0.2, 1, altAdjustment)
   s.env.Atmo=altAdjustment * SEA_LEVEL_AIR_DENSITY
 
-  rotor1Xcomp=math.cos(math.rad(90-s.com.rtrs.one.rot)) *
+  rotor1Xcomp=math.cos(math.rad(90-rtr1.rot)) *
       thrustAdjustment
-  rotor1Ycomp=math.sin(math.rad(90-s.com.rtrs.one.rot)) *
+  rotor1Ycomp=math.sin(math.rad(90-rtr1.rot)) *
       thrustAdjustment
-  rotor2Xcomp=math.cos(math.rad(90-s.com.rtrs.two.rot)) *
+  rotor2Xcomp=math.cos(math.rad(90-rtr2.rot)) *
       thrustAdjustment
-  rotor2Ycomp=math.sin(math.rad(90-s.com.rtrs.two.rot)) *
+  rotor2Ycomp=math.sin(math.rad(90-rtr2.rot)) *
       thrustAdjustment
-  rotor3Xcomp=math.cos(math.rad(90-s.com.rtrs.three.rot)) *
+  rotor3Xcomp=math.cos(math.rad(90-rtr3.rot)) *
       thrustAdjustment
-  rotor3Ycomp=math.sin(math.rad(90-s.com.rtrs.three.rot)) *
+  rotor3Ycomp=math.sin(math.rad(90-rtr3.rot)) *
       thrustAdjustment
-  rotor4Xcomp=math.cos(math.rad(90-s.com.rtrs.four.rot)) *
+  rotor4Xcomp=math.cos(math.rad(90-rtr4.rot)) *
       thrustAdjustment
-  rotor4Ycomp=math.sin(math.rad(90-s.com.rtrs.four.rot)) *
+  rotor4Ycomp=math.sin(math.rad(90-rtr4.rot)) *
       thrustAdjustment
 
   totalHydrogenVolume=s.com.clls.one.level +
@@ -2142,10 +2100,10 @@ function applyForces(sim)
       (s.speed * s.speed)
   s.accl=(s.com.props.one.thrust * thrustAdjustment +
                   s.com.props.two.thrust * thrustAdjustment +
-                  s.com.rtrs.one.thrust * rotor1Xcomp +
-                  s.com.rtrs.two.thrust * rotor2Xcomp +
-                  s.com.rtrs.three.thrust * rotor3Xcomp +
-                  s.com.rtrs.four.thrust * rotor4Xcomp-drag) /
+                  rtr1.thrust * rotor1Xcomp +
+                  rtr2.thrust * rotor2Xcomp +
+                  rtr3.thrust * rotor3Xcomp +
+                  rtr4.thrust * rotor4Xcomp-drag) /
       totalShipWeightKN
   -- TODO Remove fudge? Acceleration bump, direction rotation.
   s.speed=s.speed+0.5*s.accl*10*0.00027777777
@@ -2158,12 +2116,12 @@ function applyForces(sim)
   totalHydrogenLiftForce=(totalAirWeight-totalHydrogenWeight)*KG_TO_N*HYDROGEN_LIFT_ADJUST
   totalWingLiftForce=s.speed*WING_LIFT*altAdjustment
 
-  s.rot=(s.com.rtrs.one.rot+s.com.rtrs.two.rot+s.com.rtrs.three.rot+s.com.rtrs.four.rot)/4
+  s.rot=(rtr1.rot+rtr2.rot+rtr3.rot+rtr4.rot)/4
   vertDrag=DRAG_COEFFICENT*BOTTOM_DRAG_AREA*0.5*s.env.Atmo*s.vsi*s.vsi
-  vForce=((s.com.rtrs.one.thrust*rotor1Ycomp+
-           s.com.rtrs.two.thrust*rotor2Ycomp+
-           s.com.rtrs.three.thrust*rotor3Ycomp+
-           s.com.rtrs.four.thrust*rotor4Ycomp)+
+  vForce=((rtr1.thrust*rotor1Ycomp+
+           rtr2.thrust*rotor2Ycomp+
+           rtr3.thrust*rotor3Ycomp+
+           rtr4.thrust*rotor4Ycomp)+
       totalHydrogenLiftForce+totalWingLiftForce)/totalShipWeightKN
   if s.vsi > 0 then
     vForce=vForce-vertDrag
@@ -2232,32 +2190,31 @@ function calcHydDemand(curAngle, dsrdAgl, st, maxSpd, maxDmnd)
   return (rotorAngleChange/maxSpd)*maxDmnd
 end
 
-function rotateThruster(sim, type, thruster, maxDmnd, maxSpd)
-  if math.abs(s.con.rot[type]-s.com[type][thruster].rot)<0.0001 then
-    s.com[type][thruster].rot=s.con.rot[type]
+function rotateThruster(sim,type,thrustr,maxDmnd,maxSpd)
+  if math.abs(s.con.rot[type]-thrustr.rot)<0.0001 then
+    thrustr.rot=s.con.rot[type]
   else
-    hydAvl=sim.sply.kNSM[type][thruster]/maxDmnd
+    -- replace sim thruster type.
+    hydAvl=sim.sply.kNSM[type][thrustr]/maxDmnd
     aglAvl=hydAvl*maxSpd
-    dsrdAgl=s.con.rot[type]-s.com[type][thruster].rot
+    dsrdAgl=s.con.rot[type]-thrustr.rot
     moveAngle=math.min(aglAvl,math.abs(dsrdAgl))
     if dsrdAgl<0 then
-      s.com[type][thruster].rot=s.com[type][thruster].rot-moveAngle
+      thrustr.rot=thrustr.rot-moveAngle
     else
-      s.com[type][thruster].rot=s.com[type][thruster].rot + moveAngle
+      thrustr.rot=thrustr.rot + moveAngle
     end
   end
 
   return sim
 end
 
-function rotateRotor(sim, rotor)
-  return rotateThruster(sim,'rtrs',rotor,RTR_MAX_HYD_DEMAND_KNSM,
-                        RTR_MAX_ROTATE_SPEED_D)
+function rotateRotor(sim,rotor)
+  return rotateThruster(sim,'rtrs',rotor,RTR_MAX_HYD_DEMAND_KNSM,RTR_MAX_ROTATE_SPEED_D)
 end
 
 function rotateProp(sim,prop)
-  return rotateThruster(sim,'props',prop,PROP_MAX_HYD_DEMAND_KNSM,
-                        PROP_MAX_ROTATE_SPEED_D)
+  return rotateThruster(sim,'props',prop,PROP_MAX_HYD_DEMAND_KNSM,PROP_MAX_ROTATE_SPEED_D)
 end
 
 function safeDivide(num,den)
