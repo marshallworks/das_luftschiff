@@ -90,12 +90,12 @@ p={
 }
 
 s={
-	speed=42,
+	spd=42,
 	accl=0,
-	heading=0,
+	hdg=0,
 	rot=0,
 	vsi=0,
-	set_vsi=0,
+	setVsi=0,
 	isCrash=false,
 	dis=0,
 	pos={
@@ -107,11 +107,11 @@ s={
 		alt=1000,
 		vsi=0.2,
 		thrt={
-			props=0.3,
+			prps=0.3,
 			rtrs=0.7
 		},
 		rot={
-			props=0,
+			prps=0,
 			rtrs=0
 		}
 	},
@@ -122,196 +122,22 @@ s={
 	}
 }
 
-gauges={
-	needles={
-		vsi={
-			x=109,
-			y=79,
-			c=5
-		},
-		heading={
-			x=175,
-			y=79,
-			c=5
-		},
-		rot={
-			x=92,
-			y=74,
-			c=5
-		},
-		con_vsi={
-			x=109,
-			y=80,
-			c=15
-		},
-		con_heading={
-			x=176,
-			y=80,
-			c=15
-		},
-		con_rot={
-			x=93,
-			y=75,
-			c=15
-		},
-		props={
-			one={
-				x=169,
-				y=113,
-				c=5
-			},
-			two={
-				x=185,
-				y=113,
-				c=5
-			}
-		},
-		rtrs={
-			one={
-				x=85,
-				y=110,
-				c=5
-			},
-			two={
-				x=101,
-				y=110,
-				c=5
-			},
-			three={
-				x=133,
-				y=110,
-				c=5
-			},
-			four={
-				x=149,
-				y=110,
-				c=5
-			}
-		}
+gg={
+	ndl={
+		vsi={x=109,y=79,c=5},
+		hdg={x=175,y=79,c=5},
+		rot={x=92,y=74,c=5},
+		con_vsi={x=109,y=80,c=15},
+		con_hdg={x=176,y=80,c=15},
+		con_rot={x=93,y=75,c=15}
 	},
-	levels={
-		con_alt={
-			x=114,
-			y=68,
-			w=4,
-			h=24,
-			c=15
-		},
-		con_thrt={
-			x=138,
-			y=68,
-			w=4,
-			h=24,
-			c=15
-		}
+	lvls={
+		con_alt={x=114,y=68,w=4,h=24,c=15},
+		con_thrt={x=138,y=68,w=4,h=24,c=15}
 	},
 	bars={
-		alt={
-			x=114,
-			y=68,
-			w=4,
-			h=24,
-			c=5
-		},
-		speed={
-			x=138,
-			y=68,
-			w=4,
-			h=24,
-			c=5
-		},
-		props={
-			one={
-				x=161,
-				y=108,
-				w=2,
-				h=11,
-				c=5
-			},
-			two={
-				x=177,
-				y=108,
-				w=2,
-				h=11,
-				c=5
-			}
-		},
-		rtrs={
-			one={
-				x=73,
-				y=108,
-				w=2,
-				h=11,
-				c=5
-			},
-			two={
-				x=89,
-				y=108,
-				w=2,
-				h=11,
-				c=5
-			},
-			three={
-				x=121,
-				y=108,
-				w=2,
-				h=11,
-				c=5
-			},
-			four={
-				x=137,
-				y=108,
-				w=2,
-				h=11,
-				c=5
-			}
-		},
-		clls={
-			one={
-				x=202,
-				y=108,
-				w=4,
-				h=16,
-				c=5
-			},
-			two={
-				x=210,
-				y=108,
-				w=4,
-				h=16,
-				c=5
-			},
-			three={
-				x=218,
-				y=108,
-				w=4,
-				h=16,
-				c=5
-			},
-			four={
-				x=226,
-				y=108,
-				w=4,
-				h=16,
-				c=5
-			}
-		},
-		tks={
-			H2O={
-				x=202,
-				y=68,
-				w=4,
-				h=24,
-				c=5
-			},
-			CH4={
-				x=218,
-				y=68,
-				w=4,
-				h=24,
-				c=5
-			}
-		}
+		alt={x=114,y=68,w=4,h=24,c=5},
+		spd={x=138,y=68,w=4,h=24,c=5}
 	}
 }
 
@@ -331,7 +157,7 @@ H2Opts={}
 
 function initGame()
 	-- Background color
-	poke(0x03FF8, 8)
+	poke(0x03FF8,8)
 	math.randomseed(8778)
 
 	buildMap()
@@ -377,7 +203,8 @@ function initShip()
 		level=CLL_MAX_M3*.7,
 		vent=0.0,
 		bb={{min_x=77,min_y=21,max_x=84,max_y=22}},
-		drw={{s=482,w=5,h=2}}
+		drw={{s=482,w=5,h=2}},
+    bar={x=202,y=108,w=4,h=16,c=5}
 	}
 	cl2={
 		st=1,
@@ -385,7 +212,8 @@ function initShip()
 		level=CLL_MAX_M3*.7,
 		vent=0.0,
 		bb={{min_x=68,min_y=21,max_x=75,max_y=22}},
-		drw={{s=482,w=5,h=2}}
+		drw={{s=482,w=5,h=2}},
+    bar={x=210,y=108,w=4,h=16,c=5}
 	}
 	cl3={
 		st=1,
@@ -393,7 +221,8 @@ function initShip()
 		level=CLL_MAX_M3*.7,
 		vent=0.0,
 		bb={{min_x=44,min_y=21,max_x=51,max_y=22}},
-		drw={{s=482,w=5,h=2}}
+		drw={{s=482,w=5,h=2}},
+    bar={x=218,y=108,w=4,h=16,c=5}
 	}
 	cl4={
 		st=1,
@@ -401,7 +230,8 @@ function initShip()
 		level=CLL_MAX_M3*.7,
 		vent=0.0,
 		bb={{min_x=35,min_y=21,max_x=42,max_y=22}},
-		drw={{s=482,w=5,h=2}}
+		drw={{s=482,w=5,h=2}},
+    bar={x=226,y=108,w=4,h=16,c=5}
 	}
 	disps={
 		st=1,
@@ -434,7 +264,9 @@ function initShip()
 		rot=0,
 		thrust=0,
 		bb={{min_x=33,min_y=22,max_x=34,max_y=24}},
-		drw={{s=400,w=2,h=3}}
+		drw={{s=400,w=2,h=3}},
+    ndl={x=169,y=113,c=5},
+    bar={x=161,y=108,w=2,h=11,c=5}
 	}
 	prp2={
 		st=1,
@@ -442,7 +274,9 @@ function initShip()
 		rot=0,
 		thrust=0,
 		bb={{min_x=33,min_y=26,max_x=34,max_y=28}},
-		drw={{s=400,w=2,h=3}}
+		drw={{s=400,w=2,h=3}},
+    ndl={x=185,y=113,c=5},
+    bar={x=177,y=108,w=2,h=11,c=5}
 	}
 	pto1={
 		bb={{min_x=39,min_y=27,max_x=39,max_y=27},{min_x=39,min_y=28,max_x=39,max_y=28}},
@@ -458,7 +292,9 @@ function initShip()
 		rot=0,
 		thrust=0,
 		bb={{min_x=76,min_y=32,max_x=81,max_y=32},{min_x=78,min_y=31,max_x=79,max_y=31}},
-		drw={{s=434,w=6,h=1},{s=420,w=2,h=1}}
+		drw={{s=434,w=6,h=1},{s=420,w=2,h=1}},
+    ndl={ x=85,y=110,c=5},
+    bar={x=73,y=108,w=2,h=11,c=5}
 	}
 	rtr2={
 		st=1,
@@ -466,7 +302,9 @@ function initShip()
 		rot=0,
 		thrust=0,
 		bb={{min_x=66,min_y=32,max_x=71,max_y=32},{min_x=68,min_y=31,max_x=69,max_y=31}},
-		drw={{s=434,w=6,h=1},{s=420,w=2,h=1}}
+		drw={{s=434,w=6,h=1},{s=420,w=2,h=1}},
+    ndl={x=101,y=110,c=5},
+    bar={x=89,y=108,w=2,h=11,c=5}
 	}
 	rtr3={
 		st=1,
@@ -474,7 +312,9 @@ function initShip()
 		rot=0,
 		thrust=0,
 		bb={{min_x=48,min_y=32,max_x=53,max_y=32},{min_x=50,min_y=31,max_x=51,max_y=31}},
-		drw={{s=434,w=6,h=1},{s=420,w=2,h=1}}
+		drw={{s=434,w=6,h=1},{s=420,w=2,h=1}},
+    ndl={x=133,y=110,c=5},
+    bar={x=121,y=108,w=2,h=11,c=5}
 	}
 	rtr4={
 		st=1,
@@ -482,7 +322,9 @@ function initShip()
 		rot=0,
 		thrust=0,
 		bb={{min_x=38,min_y=32,max_x=43,max_y=32},{min_x=40,min_y=31,max_x=41,max_y=31}},
-		drw={{s=434,w=6,h=1},{s=420,w=2,h=1}}
+		drw={{s=434,w=6,h=1},{s=420,w=2,h=1}},
+    ndl={x=149,y=110,c=5},
+    bar={x=137,y=108,w=2,h=11,c=5}
 	}
 	spltr={
 		st=1,
@@ -509,14 +351,16 @@ function initShip()
 		wr=randRangeF(0.000001,0.000002),
 		level=H2O_TANK_MAX_KG,
 		bb={{min_x=68,min_y=27,max_x=73,max_y=28}},
-		drw={{s=487,w=3,h=2}}
+		drw={{s=487,w=3,h=2}},
+    bar={x=202,y=68,w=4,h=24,c=5}
 	}
 	tkCH4={
 		st=1,
 		wr=randRangeF(0.000001,0.000002),
 		level=CH4_TANK_MAX_KG,
 		bb={{min_x=75,min_y=27,max_x=80,max_y=28}},
-		drw={{s=490,w=2,h=2}}
+		drw={{s=490,w=2,h=2}},
+    bar={x=218,y=68,w=4,h=24,c=5}
 	}
 	turb={
 		st=1,
@@ -527,10 +371,13 @@ function initShip()
 	drw1={disps,bilr,turb,hydRes,hydPump,gen,rtr1,rtr3,prp1,prp2,accH2O,accCH4,spltr,tkO,tkH2O,pto1,pto2}
 	drw2={cl1,cl2,cl3,cl4,rtr2,rtr4,tkH,tkCH4,btr}
 	wear={bilr,turb,hydRes,hydPump,gen,rtr1,rtr2,rtr3,rtr4,prp1,prp2,accH2O,accCH4,cl1,cl2,cl3,cl4,btry,spltr,tkH,tkO,tkH2O,tkCH4}
+  ggPrp={prp1,prp2}
+  ggRtr={rtr1,rtr2,rtr3,rtr4}
+  ggCl={cl1,cl2,cl3,cl4}
 end
 
 function buildMap()
-	for i=1, RES_PT_COUNT do
+	for i=1,RES_PT_COUNT do
 		CH4pts[i]={x=math.random(-MAP_DIM,MAP_DIM),y=math.random(-MAP_DIM,MAP_DIM)}
 		H2Opts[i]={x=math.random(-MAP_DIM,MAP_DIM),y=math.random(-MAP_DIM,MAP_DIM)}
 	end
@@ -603,36 +450,36 @@ function TIC()
 
 		if showControls then
 			if btnp(2) then controlType=controlType-1 end
-			if btnp(3) then controlType=controlType + 1 end
+			if btnp(3) then controlType=controlType+1 end
 
-			if controlType < 0 then controlType=4 end
-			if controlType > 4 then controlType=0 end
+			if controlType<0 then controlType=4 end
+			if controlType>4 then controlType=0 end
 
 			if controlType==0 then
-				if btn(0) then s.con.rot.rtrs=s.con.rot.rtrs + 1 end
+				if btn(0) then s.con.rot.rtrs=s.con.rot.rtrs+1 end
 				if btn(1) then s.con.rot.rtrs=s.con.rot.rtrs-1 end
-				if s.con.rot.rtrs < 0 then s.con.rot.rtrs=0 end
-				if s.con.rot.rtrs > 90 then s.con.rot.rtrs=90 end
+				if s.con.rot.rtrs<0 then s.con.rot.rtrs=0 end
+				if s.con.rot.rtrs>90 then s.con.rot.rtrs=90 end
 			elseif controlType==1 then
-				if btn(0) then s.con.vsi=s.con.vsi + 0.02 end
+				if btn(0) then s.con.vsi=s.con.vsi+0.02 end
 				if btn(1) then s.con.vsi=s.con.vsi-0.02 end
-				if s.con.vsi < -1.2 then s.con.vsi=-1.2 end
-				if s.con.vsi > 1.2 then s.con.vsi=1.2 end
+				if s.con.vsi<-1.2 then s.con.vsi=-1.2 end
+				if s.con.vsi>1.2 then s.con.vsi=1.2 end
 			elseif controlType==2 then
-				if btn(0) then s.con.alt=s.con.alt + 10 end
+				if btn(0) then s.con.alt=s.con.alt+10 end
 				if btn(1) then s.con.alt=s.con.alt-10 end
-				if s.con.alt < 0 then s.con.alt=0 end
-				if s.con.alt > SHIP_MAX_ALT then s.con.alt=SHIP_MAX_ALT end
+				if s.con.alt<0 then s.con.alt=0 end
+				if s.con.alt>SHIP_MAX_ALT then s.con.alt=SHIP_MAX_ALT end
 			elseif controlType==3 then
-				if btn(0) then s.con.thrt.props=s.con.thrt.props + 0.01 end
-				if btn(1) then s.con.thrt.props=s.con.thrt.props-0.01 end
-				if s.con.thrt.props < 0.0 then s.con.thrt.props=0.0 end
-				if s.con.thrt.props > 1 then s.con.thrt.props=1 end
+				if btn(0) then s.con.thrt.prps=s.con.thrt.prps+0.01 end
+				if btn(1) then s.con.thrt.prps=s.con.thrt.prps-0.01 end
+				if s.con.thrt.prps<0.0 then s.con.thrt.prps=0.0 end
+				if s.con.thrt.prps>1 then s.con.thrt.prps=1 end
 			elseif controlType==4 then
-				if btn(0) then s.con.rot.props=s.con.rot.props-1 end
-				if btn(1) then s.con.rot.props=s.con.rot.props + 1 end
-				if s.con.rot.props < 0 then s.con.rot.props=360 end
-				if s.con.rot.props > 360 then s.con.rot.props=s.con.rot.props-360 end
+				if btn(0) then s.con.rot.prps=s.con.rot.prps-1 end
+				if btn(1) then s.con.rot.prps=s.con.rot.prps+1 end
+				if s.con.rot.prps<0 then s.con.rot.prps=360 end
+				if s.con.rot.prps>360 then s.con.rot.prps=s.con.rot.prps-360 end
 			end
 		else
 			playerMovement()
@@ -644,14 +491,14 @@ function TIC()
 		applyWear()
 
 		if not showMap then
-			drawGame()
+			drwGame()
 		end
 
 		if showMap then
-			drawMap(30,17)
+			drwMap(30,17)
 		end
 
-		drawShipStatus()
+		drwShipSt()
 	end
 	str.t=str.t+1
 end
@@ -662,31 +509,31 @@ function playerMovement()
 	onLadder=false
 	testX=p.x // 8
 	testY=p.y // 8
-	testYD=(p.y // 8) + 1
+	testYD=(p.y // 8)+1
 	testYU=(p.y // 8)-1
 	downId=mget(testX,testYD)
 	if downId==16 or downId==189 or downId==158 then onFloor=true end
-	if mget(testX, testYU)==16 then inCeiling=true end
-	if mget(testX, testY)==32 or mget(testX, testYD)==32 then onLadder=true end
+	if mget(testX,testYU)==16 then inCeiling=true end
+	if mget(testX,testY)==32 or mget(testX,testYD)==32 then onLadder=true end
 
 	if btn(0) and onLadder then
 		p.vy=math.max(p.vy-0.06,-.3)
 	elseif btn(1) and onLadder and not onFloor then
-		p.vy=math.max(p.vy+0.06, .3)
+		p.vy=math.max(p.vy+0.06,.3)
 	elseif onLadder then
 		p.vy=0.0
 	elseif btn(0) and onFloor then
 		p.vy=-1.2
 	elseif p.vy==0 and onFloor then
-		p.y=testY * 8 + 1
-		p.vy=math.min(p.vy, 0.0)
+		p.y=testY*8+1
+		p.vy=math.min(p.vy,0.0)
 	elseif not onFloor then
-		p.vy=math.min(p.vy + 0.1, 2.0)
+		p.vy=math.min(p.vy+0.1,2.0)
 	else
 		p.vy=0.0
 	end
 
-	if inCeiling and p.vy < 0 then
+	if inCeiling and p.vy<0 then
 		p.vy=-p.vy
 	end
 
@@ -694,10 +541,10 @@ function playerMovement()
 	isDeAcc=false
 
 	if btn(2) then
-		p.vx=math.max(p.vx-0.06, -0.8)
+		p.vx=math.max(p.vx-0.06,-0.8)
 		isAcc=p.vx>-.3
 	elseif btn(3) then
-		p.vx=math.min(p.vx + 0.06, 0.8)
+		p.vx=math.min(p.vx+0.06,0.8)
 		isAcc=p.vx<.3
 	else
 		if p.vx>0 then
@@ -746,24 +593,24 @@ function playerMovement()
 	p.x=p.x+p.vx
 	p.y=p.y+p.vy
 
-	cam.x=lerp(cam.x, p.x-120, 0.15)
-	cam.y=lerp(cam.y, 137, 0.15) -- p.y-64
+	cam.x=lerp(cam.x,p.x-120,0.15)
+	cam.y=lerp(cam.y,137,0.15) -- p.y-64
 	cam.cellX=cam.x/8
 	cam.cellY=cam.y/8
 
-	if p.y > 234 then
-		if p.x < 292 then p.x=292 end
-		if p.x > 668 then p.x=668 end
-	elseif p.y > 202 then
-		if p.x < 268 then p.x=268 end
-		if p.x > 684 then p.x=684 end
+	if p.y>234 then
+		if p.x<292 then p.x=292 end
+		if p.x>668 then p.x=668 end
+	elseif p.y>202 then
+		if p.x<268 then p.x=268 end
+		if p.x>684 then p.x=684 end
 	else
-		if p.x < 268 then p.x=268 end
-		if p.x > 700 then p.x=700 end
+		if p.x<268 then p.x=268 end
+		if p.x>700 then p.x=700 end
 	end
 
-	if p.y > 257 then p.y=257 end
-	if p.y < 176 then p.y=176 end
+	if p.y>257 then p.y=257 end
+	if p.y<176 then p.y=176 end
 end
 
 function doRepairs()
@@ -794,7 +641,7 @@ end
 function playAmbientChannel(ch,comps,count)
 	nearDis=1000000
 	nearest=nil
-	for i=1, count do
+	for i=1,count do
 		item=comps[i]
 		soundPos=scaleV2(bbCenter(item.c.bb),8)
 		soundDis=sqrDistance({x=p.x,y=p.y},soundPos)
@@ -809,27 +656,25 @@ function playAmbientChannel(ch,comps,count)
 	end
 end
 
-function drawShipStatus()
-	repair = math.max((math.min(disps.st,bilr.st,turb.st,
-			hydRes.st,hydPump.st,gen.st,rtr1.st,rtr2.st,
-			rtr3.st,rtr4.st,prp1.st,prp2.st,
-			accH2O.st,accCH4.st,cl1.st,cl2.st,cl3.st,
-			cl4.st,btry.st,spltr.st,tkH.st,tkO.st,
+function drwShipSt()
+	repair=math.max((math.min(disps.st,bilr.st,turb.st,hydRes.st,hydPump.st,
+      gen.st,rtr1.st,rtr2.st,rtr3.st,rtr4.st,prp1.st,prp2.st,accH2O.st,
+      accCH4.st,cl1.st,cl2.st,cl3.st,cl4.st,btry.st,spltr.st,tkH.st,tkO.st,
 			tkH2O.st,tkCH4.st)*100+0.5)//1,0)
 	resources=(math.min((tkH2O.level/H2O_TANK_MAX_KG)*100+0.5,
 											(tkCH4.level/CH4_TANK_MAX_KG)*100+0.5))//1
-	rect(0, 0, 96, 8, 8)
-	rect(127, 0, 113, 8, 8)
-	print(string.format("Speed: %d", s.speed//1), 1, 1, 6, false, 1, true)
+	rect(0,0,96,8,8)
+	rect(127,0,113,8,8)
+	print(string.format("Speed: %d",s.spd//1),1,1,6,false,1,true)
 	if s.pos.z >=1000 then
-		print(string.sub(string.format("Altitude: %f", s.pos.z/1000.0), 1, -6).."k", 48, 1, 6, false, 1, true)
+		print(string.sub(string.format("Altitude: %f",s.pos.z/1000.0),1,-6).."k",48,1,6,false,1,true)
 	else
 		print(string.format("Altitude: %d",s.pos.z//1),48,1,6,false,1,true)
 	end
-	print(string.format("Repair: %d%%", repair), 128, 1, 6, false, 1, true)
-	print(string.format("Resources: %d%%", resources), 180, 1, 6, false, 1, true)
+	print(string.format("Repair: %d%%",repair),128,1,6,false,1,true)
+	print(string.format("Resources: %d%%",resources),180,1,6,false,1,true)
 
-	if s.pos.z<1 and s.speed<1 and resources<1 then
+	if s.pos.z<1 and s.spd<1 and resources<1 then
 		endScreen=true
 	end
 end
@@ -847,7 +692,7 @@ function getMapTile(pX,pY)
 		CH4cnt=0
 		H2Ocnt=0
 		tp={x=pX,y=pY}
-		for i=1, RES_PT_COUNT do
+		for i=1,RES_PT_COUNT do
 			CH4pt=CH4pts[i]
 			H2Opt=H2Opts[i]
 			CH4dis=64-sqrDistance(tp,CH4pt)
@@ -869,16 +714,16 @@ function getShipTile()
 	return getMapTile(sP.x,sP.y)
 end
 
-function drawMap(xSize,ySize,xOff,yOff)
+function drwMap(xSize,ySize,xOff,yOff)
 	if xOff==nil then xOff=0 end
 	if yOff==nil then yOff=0 end
 	sP=getShipTilePos()
 	cYOffset=sP.y-ySize//2
 	cXOffset=sP.x-xSize//2
-	-- print(string.format("%d:%d", cXOffset, cYOffset), 2, 2, 10, false, 1, true)
-	-- print(string.format("%d:%d", s.pos.x//1, s.pos.y//1), 2, 10, 10, false, 1, true)
-	for cY=cYOffset, ySize+cYOffset do
-		for cX=cXOffset, xSize+cXOffset do
+	-- print(string.format("%d:%d",cXOffset,cYOffset),2,2,10,false,1,true)
+	-- print(string.format("%d:%d",s.pos.x//1,s.pos.y//1),2,10,10,false,1,true)
+	for cY=cYOffset,ySize+cYOffset do
+		for cX=cXOffset,xSize+cXOffset do
 			mapVl=getMapTile(cX,cY)
 			spr(lerp(144,148,mapVl.CH4),(cX-cXOffset-1)*8+xOff,
 					(cY-cYOffset-1)*8+yOff,0)
@@ -888,113 +733,100 @@ function drawMap(xSize,ySize,xOff,yOff)
 	end
 end
 
-function drawGame()
-	drawShip()
+function drwGame()
+	drwShip()
 
 	if showControls then
-		map(0, 125, 30, 11, 0, 48)
+		map(0,125,30,11,0,48)
 
-		print("DLS Radar", 8, 57, 15, false, 1, true)
-		print("RTR", 78, 57, 6, false, 1, true)
-		print("Angle", 74, 65, 6, false, 1, true)
-		print("VS", 100, 57, 6, false, 1, true)
-		print("Alt", 111, 57, 6, false, 1, true)
-		print("Spd", 135, 57, 6, false, 1, true)
-		print("Heading", 163, 57, 6, false, 1, true)
-		print("H2O", 199, 57, 6, false, 1, true)
-		print("CH4", 215, 57, 6, false, 1, true)
+		print("DLS Radar",8,57,15,false,1,true)
+		print("RTR",78,57,6,false,1,true)
+		print("Angle",74,65,6,false,1,true)
+		print("VS",100,57,6,false,1,true)
+		print("Alt",111,57,6,false,1,true)
+		print("Spd",135,57,6,false,1,true)
+		print("Heading",163,57,6,false,1,true)
+		print("H2O",199,57,6,false,1,true)
+		print("CH4",215,57,6,false,1,true)
 
-		drawNeedleLevelStatus(gauges.needles.vsi, s.vsi, -1.2, 1.2, 0, 180, 8)
-		drawNeedleLevelStatus(gauges.needles.con_vsi, s.con.vsi, -1.2, 1.2, 0, 180, 10)
+		drwNdlLvlSt(gg.ndl.vsi,s.vsi,-1.2,1.2,0,180,8)
+		drwNdlLvlSt(gg.ndl.con_vsi,s.con.vsi,-1.2,1.2,0,180,10)
 
-		drawNeedleAngeStatus(gauges.needles.heading, s.heading, { x=0, y=-8 })
-		drawNeedleAngeStatus(gauges.needles.rot, s.rot, { x=0, y=15 })
-		drawNeedleAngeStatus(gauges.needles.con_heading, s.con.rot.props,
-										 { x=0, y=-10 })
-		drawNeedleAngeStatus(gauges.needles.con_rot, s.con.rot.rtrs,
-										 { x=0, y=17 })
+		drwNdlAglSt(gg.ndl.hdg,s.hdg,{ x=0,y=-8 })
+		drwNdlAglSt(gg.ndl.rot,s.rot,{ x=0,y=15 })
+		drwNdlAglSt(gg.ndl.con_hdg,s.con.rot.prps,
+										 { x=0,y=-10 })
+		drwNdlAglSt(gg.ndl.con_rot,s.con.rot.rtrs,
+										 { x=0,y=17 })
 
-		drawBarStatus(gauges.bars.alt, s.pos.z, SHIP_MAX_ALT)
-		drawBarStatus(gauges.bars.speed, s.speed, SHIP_MAX_SPEED)
+		drwBarSt(gg.bars.alt,s.pos.z,SHIP_MAX_ALT)
+		drwBarSt(gg.bars.spd,s.spd,SHIP_MAX_SPEED)
 
-		drawBarStatus(gauges.bars.tks.H2O, tkH2O.level, H2O_TANK_MAX_KG)
-		drawBarStatus(gauges.bars.tks.CH4, tkCH4.level, CH4_TANK_MAX_KG)
+		drwBarSt(tkH2O.bar,tkH2O.level,H2O_TANK_MAX_KG)
+		drwBarSt(tkCH4.bar,tkCH4.level,CH4_TANK_MAX_KG)
 
-		altY=lerp(91, 67, invLerp(0, SHIP_MAX_ALT, s.pos.z))-2.5
-		spdY=lerp(91, 67, invLerp(0, SHIP_MAX_SPEED, s.speed))-2.5
-		print(string.sub(string.format("%f", s.pos.z/1000.0), 1, -6).."k", 120, altY, 5, false, 1, true)
-		if s.speed < 100 then
-			print(string.sub(string.format("%f", s.speed), 1, -6), 144, spdY, 5, false, 1, true)
+		altY=lerp(91,67,invLerp(0,SHIP_MAX_ALT,s.pos.z))-2.5
+		spdY=lerp(91,67,invLerp(0,SHIP_MAX_SPEED,s.spd))-2.5
+		print(string.sub(string.format("%f",s.pos.z/1000.0),1,-6).."k",120,altY,5,false,1,true)
+		if s.spd<100 then
+			print(string.sub(string.format("%f",s.spd),1,-6),144,spdY,5,false,1,true)
 		else
-			print(string.format("%d", s.speed//1), 144, spdY, 5, false, 1, true)
+			print(string.format("%d",s.spd//1),144,spdY,5,false,1,true)
 		end
 
-		drawLevelStatus(gauges.levels.con_alt, s.con.alt, SHIP_MAX_ALT)
-		drawLevelStatus(gauges.levels.con_thrt, s.con.thrt.props, 1)
+		drwLevelSt(gg.lvls.con_alt,s.con.alt,SHIP_MAX_ALT)
+		drwLevelSt(gg.lvls.con_thrt,s.con.thrt.prps,1)
 
-		print("PRP1", 159, 100, 6, false, 1, true)
-		print("PRP2", 178, 100, 6, false, 1, true)
+		print("PRP1",159,100,6,false,1,true)
+		print("PRP2",178,100,6,false,1,true)
 
-		drawPropRotationStatus(gauges.needles.props.one,
-													 prp1.rot)
-		drawPropRotationStatus(gauges.needles.props.two,
-													 prp2.rot)
+    for i,prp in pairs(ggPrp) do
+      drwPropRotSt(prp.ndl,prp.rot)
+      drwPropThrustSt(prp.bar,prp.thrust)
+    end
 
-		drawPropThrustStatus(gauges.bars.props.one, prp1.thrust)
-		drawPropThrustStatus(gauges.bars.props.two, prp2.thrust)
+		print("RTR1",71,100,6,false,1,true)
+		print("RTR2",90,100,6,false,1,true)
+		print("RTR3",119,100,6,false,1,true)
+		print("RTR4",138,100,6,false,1,true)
 
-		print("RTR1", 71, 100, 6, false, 1, true)
-		print("RTR2", 90, 100, 6, false, 1, true)
-		print("RTR3", 119, 100, 6, false, 1, true)
-		print("RTR4", 138, 100, 6, false, 1, true)
+    for i,rtr in pairs(ggRtr) do
+      drwRotorRotSt(rtr.ndl,rtr.rot)
+      drwRotorThrustSt(rtr.bar,rtr.thrust)
+    end
 
-		drawRotorRotationStatus(gauges.needles.rtrs.one,
-														rtr1.rot)
-		drawRotorRotationStatus(gauges.needles.rtrs.two,
-														rtr2.rot)
-		drawRotorRotationStatus(gauges.needles.rtrs.three,
-														rtr3.rot)
-		drawRotorRotationStatus(gauges.needles.rtrs.four,
-														rtr4.rot)
+		print("Hyd Cells",199,100,6,false,1,true)
 
-		drawRotorThrustStatus(gauges.bars.rtrs.one, rtr1.thrust)
-		drawRotorThrustStatus(gauges.bars.rtrs.two, rtr2.thrust)
-		drawRotorThrustStatus(gauges.bars.rtrs.three, rtr3.thrust)
-		drawRotorThrustStatus(gauges.bars.rtrs.four, rtr4.thrust)
+    for i,cl in pairs(ggCl) do
+      drwBarSt(cl.bar,cl.level,CLL_MAX_M3)
+    end
 
-		print("Hyd Cells", 199, 100, 6, false, 1, true)
-
-		drawBarStatus(gauges.bars.clls.one, cl1.level, CLL_MAX_M3)
-		drawBarStatus(gauges.bars.clls.two, cl2.level, CLL_MAX_M3)
-		drawBarStatus(gauges.bars.clls.three, cl3.level, CLL_MAX_M3)
-		drawBarStatus(gauges.bars.clls.four, cl4.level, CLL_MAX_M3)
-
-		drawMap(5,7,16,72)
+		drwMap(5,7,16,72)
 		sHRot=0
-		if s.heading>=45 and s.heading<135 then
+		if s.hdg>=45 and s.hdg<135 then
 			sHRot=1
-		elseif s.heading>=135 and s.heading<225 then
+		elseif s.hdg>=135 and s.hdg<225 then
 			sHRot=2
-		elseif s.heading>=225 and s.heading<315 then
+		elseif s.hdg>=225 and s.hdg<315 then
 			sHRot=3
 		end
 		spr(422,28,92,0,1,0,sHRot)
 
 		if controlType==0 then
-			rectb(71, 63, 26, 34, 7)
+			rectb(71,63,26,34,7)
 		elseif controlType==1 then
-			rectb(95, 63, 18, 34, 7)
+			rectb(95,63,18,34,7)
 		elseif controlType==2 then
-			rectb(111, 63, 24, 34, 7)
+			rectb(111,63,24,34,7)
 		elseif controlType==3 then
-			rectb(135, 63, 24, 34, 7)
+			rectb(135,63,24,34,7)
 		elseif controlType==4 then
-			rectb(159, 63, 34, 34, 7)
+			rectb(159,63,34,34,7)
 		end
 	end
 end
 
-function drawShip()
+function drwShip()
 	maxMapHeight=18
 	mapYAdjust=0
 	if showControls then
@@ -1007,23 +839,23 @@ function drawShip()
 	camXCor=-cam.x % 8-8
 	camYCor=-cam.y % 8-8
 	yDown=mapYAdjust*-8
-	map(cam.cellX + camXCellAdd, cam.cellY + camYCellAdd + mapYAdjust, 31,
-			maxMapHeight, camXCor, camYCor)
+	map(cam.cellX+camXCellAdd,cam.cellY+camYCellAdd+mapYAdjust,31,
+			maxMapHeight,camXCor,camYCor)
 
 	for i,drw in pairs(drw1) do
-		drawCom(drw,yDown)
+		drwCom(drw,yDown)
 	end
 
-	spr(p.s, p.x-cam.x-4, p.y-cam.y-8 + yDown, 0, 1, p.flip, 0, 1, 2)
+	spr(p.s,p.x-cam.x-4,p.y-cam.y-8+yDown,0,1,p.flip,0,1,2)
 
 	for i,drw in pairs(drw2) do
-		drawCom(drw,yDown)
+		drwCom(drw,yDown)
 	end
 end
 
-function drawCom(com,yDown)
+function drwCom(com,yDown)
 	for i,bb in pairs(com.bb) do
-		drawPart(bb,com.drw[i],yDown)
+		drwPart(bb,com.drw[i],yDown)
 	end
 
 	if com.st~=nil then
@@ -1036,119 +868,118 @@ function drawCom(com,yDown)
 	end
 end
 
-function drawPart(bb,drw,yDown)
-	posX=(bb.min_x * 8-cam.x) // 1 + 1
-	posY=(bb.min_y * 8-cam.y) // 1 + 1 + yDown
+function drwPart(bb,drw,yDown)
+	posX=(bb.min_x*8-cam.x) // 1+1
+	posY=(bb.min_y*8-cam.y) // 1+1+yDown
 
-	requestedX=bb.max_x + 1-bb.min_x
-	requestedY=bb.max_y + 1-bb.min_y
+	requestedX=bb.max_x+1-bb.min_x
+	requestedY=bb.max_y+1-bb.min_y
 
-	if requestedY > drw.h and drw.h==3 and
-		 requestedX > drw.w and drw.w==2 then
-		for y=1, requestedY do
-			adjYPos=(y-1) * 8 + posY
-			yOffset=(y-1) * 16
+	if requestedY>drw.h and drw.h==3 and
+		 requestedX>drw.w and drw.w==2 then
+		for y=1,requestedY do
+			adjYPos=(y-1)*8+posY
+			yOffset=(y-1)*16
 			if y>1 and y<requestedY then
 				yOffset=16
 			elseif y==requestedY then
 				yOffset=32
 			end
-			for x=1, requestedX do
-				adjXPos=(x-1) * 8 + posX
+			for x=1,requestedX do
+				adjXPos=(x-1)*8+posX
 				xOffset=(x-1) % drw.w
-				spr(drw.s + yOffset + xOffset, adjXPos, adjYPos, 0)
+				spr(drw.s+yOffset+xOffset,adjXPos,adjYPos,0)
 			end
 		end
-	elseif requestedX > drw.w and drw.w==5 then
-		for y=1, requestedY do
-			adjYPos=(y-1) * 8 + posY
-			yOffset=(y-1) * 16
-			for x=1, requestedX do
-				adjXPos=(x-1) * 8 + posX
+	elseif requestedX>drw.w and drw.w==5 then
+		for y=1,requestedY do
+			adjYPos=(y-1)*8+posY
+			yOffset=(y-1)*16
+			for x=1,requestedX do
+				adjXPos=(x-1)*8+posX
 				xOffset=x-1
-				if x < 3 then
-					spr(drw.s + yOffset + xOffset, adjXPos, adjYPos, 0)
-				elseif x < requestedX-1 then
-					spr(drw.s + yOffset + 2, adjXPos, adjYPos, 0)
+				if x<3 then
+					spr(drw.s+yOffset+xOffset,adjXPos,adjYPos,0)
+				elseif x<requestedX-1 then
+					spr(drw.s+yOffset+2,adjXPos,adjYPos,0)
 				else
-					spr(drw.s + yOffset + xOffset-3, adjXPos, adjYPos, 0)
+					spr(drw.s+yOffset+xOffset-3,adjXPos,adjYPos,0)
 				end
 			end
 		end
-	elseif requestedX > drw.w and drw.w==3 then
-		for y=1, requestedY do
-			adjYPos=(y-1) * 8 + posY
-			yOffset=(y-1) * 16
-			for x=1, requestedX do
-				adjXPos=(x-1) * 8 + posX
+	elseif requestedX>drw.w and drw.w==3 then
+		for y=1,requestedY do
+			adjYPos=(y-1)*8+posY
+			yOffset=(y-1)*16
+			for x=1,requestedX do
+				adjXPos=(x-1)*8+posX
 				xOffset=x-1
 				if x==1 then
-					spr(drw.s + yOffset + xOffset, adjXPos, adjYPos, 0)
-				elseif x < requestedX then
-					spr(drw.s + yOffset + 1, adjXPos, adjYPos, 0)
+					spr(drw.s+yOffset+xOffset,adjXPos,adjYPos,0)
+				elseif x<requestedX then
+					spr(drw.s+yOffset+1,adjXPos,adjYPos,0)
 				else
-					spr(drw.s + yOffset + drw.w-1, adjXPos, adjYPos, 0)
+					spr(drw.s+yOffset+drw.w-1,adjXPos,adjYPos,0)
 				end
 			end
 		end
-	elseif requestedX > drw.w and drw.w==2 then
-		for y=1, requestedY do
-			adjYPos=(y-1) * 8 + posY
-			yOffset=(y-1) * 16
-			for x=1, requestedX do
-				adjXPos=(x-1) * 8 + posX
+	elseif requestedX>drw.w and drw.w==2 then
+		for y=1,requestedY do
+			adjYPos=(y-1)*8+posY
+			yOffset=(y-1)*16
+			for x=1,requestedX do
+				adjXPos=(x-1)*8+posX
 				xOffset=(x-1) % drw.w
-				spr(drw.s + yOffset + xOffset, adjXPos, adjYPos, 0)
+				spr(drw.s+yOffset+xOffset,adjXPos,adjYPos,0)
 			end
 		end
 	else
-		spr(drw.s, posX, posY, 0, 1, 0, 0, drw.w, drw.h)
+		spr(drw.s,posX,posY,0,1,0,0,drw.w,drw.h)
 	end
 end
 
-function drawNeedleAngeStatus(needle, angle, vec)
-	target=rotateV2(vec, angle)
-	line(needle.x, needle.y, needle.x + target.x, needle.y + target.y, needle.c)
+function drwNdlAglSt(needle,angle,vec)
+	target=rotateV2(vec,angle)
+	line(needle.x,needle.y,needle.x+target.x,needle.y+target.y,needle.c)
 end
 
-function drawNeedleLevelStatus(needle, value, min_value, max_value,
-															 min_angle, max_angle, length)
-	vec={ x=0, y=length }
-	normal=invLerp(min_value, max_value, value)
-	angle=clamp(lerp(min_angle, max_angle, normal), min_angle,max_angle)
-	drawNeedleAngeStatus(needle, angle, vec)
+function drwNdlLvlSt(needle,value,min_value,max_value,min_angle,max_angle,length)
+	vec={x=0,y=length}
+	normal=invLerp(min_value,max_value,value)
+	angle=clamp(lerp(min_angle,max_angle,normal),min_angle,max_angle)
+	drwNdlAglSt(needle,angle,vec)
 end
 
-function drawPropRotationStatus(needle, angle)
-	drawNeedleAngeStatus(needle, angle, { x=0, y=-5})
+function drwPropRotSt(needle,angle)
+	drwNdlAglSt(needle,angle,{x=0,y=-5})
 end
 
-function drawRotorRotationStatus(needle, angle)
-	drawNeedleAngeStatus(needle, angle, { x=0, y=7})
+function drwRotorRotSt(needle,angle)
+	drwNdlAglSt(needle,angle,{x=0,y=7})
 end
 
-function drawLevelStatus(level, value, max)
-	baseY=level.y + level.h
-	normal=invLerp(0, max, value)
-	levelHeight=(lerp(0, level.h, normal) + 1.5)//1
+function drwLevelSt(level,value,max)
+	baseY=level.y+level.h
+	normal=invLerp(0,max,value)
+	levelHeight=(lerp(0,level.h,normal)+1.5)//1
 	levelY=baseY-levelHeight
-	line(level.x, levelY, level.x + level.w-1, levelY, level.c)
+	line(level.x,levelY,level.x+level.w-1,levelY,level.c)
 end
 
-function drawBarStatus(bar, value, max)
-	baseY=bar.y + bar.h
-	normal=invLerp(0, max, value)
-	barHeight=(lerp(0, bar.h, normal) + 0.5)//1
+function drwBarSt(bar,value,max)
+	baseY=bar.y+bar.h
+	normal=invLerp(0,max,value)
+	barHeight=(lerp(0,bar.h,normal)+0.5)//1
 	barY=baseY-barHeight
-	rect(bar.x, barY, bar.w, barHeight, bar.c)
+	rect(bar.x,barY,bar.w,barHeight,bar.c)
 end
 
-function drawPropThrustStatus(bar, thrust)
-	drawBarStatus(bar, thrust, PROP_MAX_THRUST_KN)
+function drwPropThrustSt(bar,thrust)
+	drwBarSt(bar,thrust,PROP_MAX_THRUST_KN)
 end
 
-function drawRotorThrustStatus(bar, thrust)
-	drawBarStatus(bar, thrust, RTR_MAX_THRUST_KN)
+function drwRotorThrustSt(bar,thrust)
+	drwBarSt(bar,thrust,RTR_MAX_THRUST_KN)
 end
 
 function dmgSyst(part,vSpeed)
@@ -1194,7 +1025,7 @@ function simulate()
 					three=0,
 					four=0
 				},
-				props={
+				prps={
 					one=0,
 					two=0
 				},
@@ -1211,7 +1042,7 @@ function simulate()
 					three=0,
 					four=0
 				},
-				props={
+				prps={
 					one=0,
 					two=0
 				}
@@ -1255,7 +1086,7 @@ function simulate()
 					three=0,
 					four=0
 				},
-				props={
+				prps={
 					one=0,
 					two=0
 				},
@@ -1272,7 +1103,7 @@ function simulate()
 					three=0,
 					four=0
 				},
-				props={
+				prps={
 					one=0,
 					two=0
 				}
@@ -1313,7 +1144,7 @@ function simulate()
 			H2O=tkH2O.level,
 			CH4=tkCH4.level,
 			H_M=tkH.level,
-			H_V=tkH.level * H_MASS_TO_VOLUME,
+			H_V=tkH.level*H_MASS_TO_VOLUME,
 			O=tkO.level
 		},
 		availableForStorage={
@@ -1354,9 +1185,9 @@ function simulate()
 	applyForces(sim)
 
 	if debugType==3 then
-		drawSimDebug(sim)
+		drwSimDebug(sim)
 	elseif debugType==4 then
-		drawStorageDebug(sim)
+		drwStorageDebug(sim)
 	end
 end
 
@@ -1364,18 +1195,18 @@ function controlsPowerDemand(sim)
 	sim.demand.kW.disps=DISPLAYS_PWR_DEMAND_KW
 
 	sim.demand.kW.rtrs.one=RTR_MAX_PWR_DEMAND_KW *
-			rtr1.st * s.con.thrt.rtrs
+			rtr1.st*s.con.thrt.rtrs
 	sim.demand.kW.rtrs.two=RTR_MAX_PWR_DEMAND_KW *
-			rtr2.st * s.con.thrt.rtrs
+			rtr2.st*s.con.thrt.rtrs
 	sim.demand.kW.rtrs.three=RTR_MAX_PWR_DEMAND_KW *
-			rtr3.st * s.con.thrt.rtrs
+			rtr3.st*s.con.thrt.rtrs
 	sim.demand.kW.rtrs.four=RTR_MAX_PWR_DEMAND_KW *
-			rtr4.st * s.con.thrt.rtrs
+			rtr4.st*s.con.thrt.rtrs
 
-	sim.demand.kW.props.one=PROP_MAX_PWR_DEMAND_KW *
-			prp1.st * s.con.thrt.props
-	sim.demand.kW.props.two=PROP_MAX_PWR_DEMAND_KW *
-			prp2.st * s.con.thrt.props
+	sim.demand.kW.prps.one=PROP_MAX_PWR_DEMAND_KW *
+			prp1.st*s.con.thrt.prps
+	sim.demand.kW.prps.two=PROP_MAX_PWR_DEMAND_KW *
+			prp2.st*s.con.thrt.prps
 
 	return sim
 end
@@ -1402,13 +1233,13 @@ function controlsHydraulicDemand(sim)
 																							RTR_MAX_ROTATE_SPEED_D,
 																							RTR_MAX_HYD_DEMAND_KNSM)
 
-	sim.demand.kNSM.props.one=calcHydDemand(prp1.rot,
-																						s.con.rot.props,
+	sim.demand.kNSM.prps.one=calcHydDemand(prp1.rot,
+																						s.con.rot.prps,
 																						prp1.st,
 																						PROP_MAX_ROTATE_SPEED_D,
 																						PROP_MAX_HYD_DEMAND_KNSM)
-	sim.demand.kNSM.props.two=calcHydDemand(prp2.rot,
-																						s.con.rot.props,
+	sim.demand.kNSM.prps.two=calcHydDemand(prp2.rot,
+																						s.con.rot.prps,
 																						prp2.st,
 																						PROP_MAX_ROTATE_SPEED_D,
 																						PROP_MAX_HYD_DEMAND_KNSM)
@@ -1432,19 +1263,19 @@ end
 function cellDemand(sim)
 	if cl1.vent <= 0 then
 		sim.demand.H_V.clls.one=math.min(
-				CLL_MAX_M3-cl1.level, -cl1.vent)
+				CLL_MAX_M3-cl1.level,-cl1.vent)
 	end
 	if cl2.vent <= 0 then
 		sim.demand.H_V.clls.two=math.min(
-				CLL_MAX_M3-cl2.level, -cl2.vent)
+				CLL_MAX_M3-cl2.level,-cl2.vent)
 	end
 	if cl3.vent <= 0 then
 		sim.demand.H_V.clls.three=math.min(
-				CLL_MAX_M3-cl3.level, -cl3.vent)
+				CLL_MAX_M3-cl3.level,-cl3.vent)
 	end
 	if cl4.vent <= 0 then
 		sim.demand.H_V.clls.four=math.min(
-				CLL_MAX_M3-cl4.level, -cl4.vent)
+				CLL_MAX_M3-cl4.level,-cl4.vent)
 	end
 
 	return sim
@@ -1452,8 +1283,8 @@ end
 
 function btryDemand(sim)
 	btryStateDemand=math.min(BATTERY_MAX_CHARGE_RATE_KW,
-			BATTERY_MAX_CHARGE_KW * btry.st-btry.level)
-	sim.demand.kW.btry=math.max(btryStateDemand, 0)
+			BATTERY_MAX_CHARGE_KW*btry.st-btry.level)
+	sim.demand.kW.btry=math.max(btryStateDemand,0)
 
 	return sim
 end
@@ -1465,17 +1296,17 @@ function hydResDemand(sim)
 end
 
 function spltrAccDemand(sim)
-	if sim.demand.H_M.tank > 0 or sim.demand.O.tank > 0 then
-		sim.demand.kW.spltr=SPLTR_PWR_DEMAND_KW * spltr.st
-		sim.demand.H2O.spltr=SPLTR_MAX_H2O * spltr.st
+	if sim.demand.H_M.tank>0 or sim.demand.O.tank>0 then
+		sim.demand.kW.spltr=SPLTR_PWR_DEMAND_KW*spltr.st
+		sim.demand.H2O.spltr=SPLTR_MAX_H2O*spltr.st
 	end
 
-	if sim.demand.H2O.tank > 0 then
-		sim.demand.kW.H2OAcc=H2O_ACC_PWR_DEMAND_KW * accH2O.st
+	if sim.demand.H2O.tank>0 then
+		sim.demand.kW.H2OAcc=H2O_ACC_PWR_DEMAND_KW*accH2O.st
 	end
 
-	if sim.demand.CH4.tank > 0 then
-		sim.demand.kW.CH4Acc=CH4_ACC_PWR_DEMAND_KW * accCH4.st
+	if sim.demand.CH4.tank>0 then
+		sim.demand.kW.CH4Acc=CH4_ACC_PWR_DEMAND_KW*accCH4.st
 	end
 
 	return sim
@@ -1483,27 +1314,27 @@ end
 
 function hydPumpDemand(sim)
 	sim.demand.NM.hydPump=math.min(HYD_PUMP_MAX_NM,
-			sim.demand.kNSM.hydRes * HYD_PUMP_NM_PER_KNSM)
+			sim.demand.kNSM.hydRes*HYD_PUMP_NM_PER_KNSM)
 
 	return sim
 end
 
 function genDemand(sim)
-	totalPowerDemand=math.min(GEN_MAX_KW * gen.st,
-			sim.demand.kW.disps + sim.demand.kW.rtrs.one +
-			sim.demand.kW.rtrs.two + sim.demand.kW.rtrs.three +
-			sim.demand.kW.rtrs.four + sim.demand.kW.props.one +
-			sim.demand.kW.props.two + sim.demand.kW.spltr +
-			sim.demand.kW.H2OAcc + sim.demand.kW.CH4Acc + sim.demand.kW.btry)
-	sim.demand.NM.gen=(totalPowerDemand/GEN_MAX_KW) * GEN_MAX_NM
+	totalPowerDemand=math.min(GEN_MAX_KW*gen.st,
+			sim.demand.kW.disps+sim.demand.kW.rtrs.one +
+			sim.demand.kW.rtrs.two+sim.demand.kW.rtrs.three +
+			sim.demand.kW.rtrs.four+sim.demand.kW.prps.one +
+			sim.demand.kW.prps.two+sim.demand.kW.spltr +
+			sim.demand.kW.H2OAcc+sim.demand.kW.CH4Acc+sim.demand.kW.btry)
+	sim.demand.NM.gen=(totalPowerDemand/GEN_MAX_KW)*GEN_MAX_NM
 
 	return sim
 end
 
 function turbDemand(sim)
-	totalTorqueDemand=math.min(TURB_MAX_NM * turb.st,
-			sim.demand.NM.gen + sim.demand.NM.hydPump)
-	sim.demand.steam=(totalTorqueDemand/TURB_MAX_NM) * TURB_MAX_STEAM_KNSM
+	totalTorqueDemand=math.min(TURB_MAX_NM*turb.st,
+			sim.demand.NM.gen+sim.demand.NM.hydPump)
+	sim.demand.steam=(totalTorqueDemand/TURB_MAX_NM)*TURB_MAX_STEAM_KNSM
 
 	return sim
 end
@@ -1515,45 +1346,45 @@ function bilrDemand(sim)
 	end
 	steamDemand=math.min(BILR_MAX_STEAM_KNSM*bilr.st,
 											 sim.demand.steam)
-	sim.demand.H2O.bilr=steamDemand * BILR_H2O_KG_PER_KNSM
-	sim.demand.CH4.bilr=steamDemand * BILR_CH4_KG_PER_KNSM
-	sim.demand.O.bilr=superSteamDemand * BILR_O_KG_PER_KNSM
+	sim.demand.H2O.bilr=steamDemand*BILR_H2O_KG_PER_KNSM
+	sim.demand.CH4.bilr=steamDemand*BILR_CH4_KG_PER_KNSM
+	sim.demand.O.bilr=superSteamDemand*BILR_O_KG_PER_KNSM
 
 	return sim
 end
 
 function elementSupply(sim)
-	sim.sply.O.bilr=math.min(sim.demand.O.bilr, sim.availableForUse.O)
+	sim.sply.O.bilr=math.min(sim.demand.O.bilr,sim.availableForUse.O)
 	sim.sply.CH4.bilr=math.min(sim.demand.CH4.bilr,
 																	 sim.availableForUse.CH4)
 
-	totalH2ODemand=sim.demand.H2O.bilr + sim.demand.H2O.spltr
-	if sim.availableForUse.H2O > totalH2ODemand then
+	totalH2ODemand=sim.demand.H2O.bilr+sim.demand.H2O.spltr
+	if sim.availableForUse.H2O>totalH2ODemand then
 		sim.sply.H2O.bilr=sim.demand.H2O.bilr
 		sim.sply.H2O.spltr=sim.demand.H2O.spltr
-	elseif sim.availableForUse.H2O > 0 then
-		bilrPercent=sim.demand.H2O.bilr/totalH2ODemand
-		spltrPercent=sim.demand.H2O.spltr/totalH2ODemand
-		sim.sply.H2O.bilr=bilrPercent * sim.availableForUse.H2O
-		sim.sply.H2O.spltr=spltrPercent * sim.availableForUse.H2O
+	elseif sim.availableForUse.H2O>0 then
+		bilrPrct=sim.demand.H2O.bilr/totalH2ODemand
+		spltrPrct=sim.demand.H2O.spltr/totalH2ODemand
+		sim.sply.H2O.bilr=bilrPrct*sim.availableForUse.H2O
+		sim.sply.H2O.spltr=spltrPrct*sim.availableForUse.H2O
 	end
 
-	totalH_VDemand=sim.demand.H_V.clls.one + sim.demand.H_V.clls.two +
-			sim.demand.H_V.clls.three + sim.demand.H_V.clls.four
-	if sim.availableForUse.H_V > totalH_VDemand then
+	totalH_VDemand=sim.demand.H_V.clls.one+sim.demand.H_V.clls.two +
+			sim.demand.H_V.clls.three+sim.demand.H_V.clls.four
+	if sim.availableForUse.H_V>totalH_VDemand then
 		sim.sply.H_V.clls.one=sim.demand.H_V.clls.one
 		sim.sply.H_V.clls.two=sim.demand.H_V.clls.two
 		sim.sply.H_V.clls.three=sim.demand.H_V.clls.three
 		sim.sply.H_V.clls.four=sim.demand.H_V.clls.four
-	elseif sim.availableForUse.H_V > 0 then
-		bOnePercent=sim.demand.H_V.clls.one/totalH_VDemand
-		bTwoPercent=sim.demand.H_V.clls.two/totalH_VDemand
-		bThreePercent=sim.demand.H_V.clls.three/totalH_VDemand
-		bFourPercent=sim.demand.H_V.clls.four/totalH_VDemand
-		sim.sply.H_V.clls.one=bOnePercent * sim.availableForUse.H_V
-		sim.sply.H_V.clls.two=bTwoPercent * sim.availableForUse.H_V
-		sim.sply.H_V.clls.three=bThreePercent * sim.availableForUse.H_V
-		sim.sply.H_V.clls.four=bFourPercent * sim.availableForUse.H_V
+	elseif sim.availableForUse.H_V>0 then
+		bOnePrct=sim.demand.H_V.clls.one/totalH_VDemand
+		bTwoPrct=sim.demand.H_V.clls.two/totalH_VDemand
+		bThreePrct=sim.demand.H_V.clls.three/totalH_VDemand
+		bFourPrct=sim.demand.H_V.clls.four/totalH_VDemand
+		sim.sply.H_V.clls.one=bOnePrct*sim.availableForUse.H_V
+		sim.sply.H_V.clls.two=bTwoPrct*sim.availableForUse.H_V
+		sim.sply.H_V.clls.three=bThreePrct*sim.availableForUse.H_V
+		sim.sply.H_V.clls.four=bFourPrct*sim.availableForUse.H_V
 	end
 
 	return sim
@@ -1564,25 +1395,25 @@ function steamSupply(sim)
 	suppliedCH4_KNSM=sim.sply.CH4.bilr/BILR_CH4_KG_PER_KNSM
 	suppliedO_KNSM=sim.sply.O.bilr/BILR_O_KG_PER_KNSM
 
-	if suppliedH2O_KNSM < suppliedCH4_KNSM then
+	if suppliedH2O_KNSM<suppliedCH4_KNSM then
 		suppliedCH4_KNSM=suppliedH2O_KNSM
-		sim.sply.CH4.bilr=suppliedCH4_KNSM * BILR_CH4_KG_PER_KNSM
-	elseif suppliedCH4_KNSM < suppliedH2O_KNSM then
+		sim.sply.CH4.bilr=suppliedCH4_KNSM*BILR_CH4_KG_PER_KNSM
+	elseif suppliedCH4_KNSM<suppliedH2O_KNSM then
 		suppliedH2O_KNSM=suppliedCH4_KNSM
-		sim.sply.H2O.bilr=suppliedH2O_KNSM * BILR_H2O_KG_PER_KNSM
+		sim.sply.H2O.bilr=suppliedH2O_KNSM*BILR_H2O_KG_PER_KNSM
 	end
 
 	suppliedKNSM=suppliedCH4_KNSM
 
-	if suppliedKNSM > BILR_MAX_REG_STEAM_KNSM then
+	if suppliedKNSM>BILR_MAX_REG_STEAM_KNSM then
 		superSteam=suppliedKNSM-BILR_MAX_REG_STEAM_KNSM
 		if suppliedO_KNSM >= superSteam then
-			sim.sply.O.bilr=superSteam * BILR_O_KG_PER_KNSM
+			sim.sply.O.bilr=superSteam*BILR_O_KG_PER_KNSM
 		else
 			missing=superSteam-suppliedO_KNSM
 			suppliedKNSM=suppliedKNSM-missing
-			sim.sply.CH4.bilr=suppliedKNSM * BILR_CH4_KG_PER_KNSM
-			sim.sply.H2O.bilr=suppliedKNSM * BILR_H2O_KG_PER_KNSM
+			sim.sply.CH4.bilr=suppliedKNSM*BILR_CH4_KG_PER_KNSM
+			sim.sply.H2O.bilr=suppliedKNSM*BILR_H2O_KG_PER_KNSM
 		end
 	end
 
@@ -1592,64 +1423,64 @@ function steamSupply(sim)
 end
 
 function torqueSupply(sim)
-	torqueSupplied=TURB_MAX_NM * (sim.sply.steam/TURB_MAX_STEAM_KNSM)
-	torqueDemand=sim.demand.NM.gen + sim.demand.NM.hydPump
+	torqueSupplied=TURB_MAX_NM*(sim.sply.steam/TURB_MAX_STEAM_KNSM)
+	torqueDemand=sim.demand.NM.gen+sim.demand.NM.hydPump
 
 	if torqueSupplied >= torqueDemand then
 		sim.sply.NM.gen=sim.demand.NM.gen
 		sim.sply.NM.hydPump=sim.demand.NM.hydPump
 	else
-		genPercent=sim.demand.NM.gen/torqueDemand
-		pumpPercent=sim.demand.NM.hydPump/torqueDemand
-		sim.sply.NM.gen=torqueSupplied * genPercent
-		sim.sply.NM.hydPump=torqueSupplied * pumpPercent
+		genPrct=sim.demand.NM.gen/torqueDemand
+		pumpPrct=sim.demand.NM.hydPump/torqueDemand
+		sim.sply.NM.gen=torqueSupplied*genPrct
+		sim.sply.NM.hydPump=torqueSupplied*pumpPrct
 	end
 
 	return sim
 end
 
 function hydraulicSupply(sim)
-	sim.sply.kNSM.hydRes=sim.sply.NM.hydPump * HYD_PUMP_NM_PER_KNSM
+	sim.sply.kNSM.hydRes=sim.sply.NM.hydPump*HYD_PUMP_NM_PER_KNSM
 
 	totalPressureDemand=sim.demand.kNSM.rtrs.one +
-			sim.demand.kNSM.rtrs.two + sim.demand.kNSM.rtrs.three +
-			sim.demand.kNSM.rtrs.four + sim.demand.kNSM.props.one +
-			sim.demand.kNSM.props.two
+			sim.demand.kNSM.rtrs.two+sim.demand.kNSM.rtrs.three +
+			sim.demand.kNSM.rtrs.four+sim.demand.kNSM.prps.one +
+			sim.demand.kNSM.prps.two
 
 	if sim.availableForUse.kNSM >= totalPressureDemand then
 		sim.sply.kNSM.rtrs.one=sim.demand.kNSM.rtrs.one
 		sim.sply.kNSM.rtrs.two=sim.demand.kNSM.rtrs.two
 		sim.sply.kNSM.rtrs.three=sim.demand.kNSM.rtrs.three
 		sim.sply.kNSM.rtrs.four=sim.demand.kNSM.rtrs.four
-		sim.sply.kNSM.props.one=sim.demand.kNSM.props.one
-		sim.sply.kNSM.props.two=sim.demand.kNSM.props.two
-	elseif sim.availableForUse.kNSM > 0 then
-		rtrsOnePercent=sim.demand.kNSM.rtrs.one/totalPressureDemand
-		rtrsTwoPercent=sim.demand.kNSM.rtrs.two/totalPressureDemand
-		rtrsThreePercent=sim.demand.kNSM.rtrs.three/totalPressureDemand
-		rtrsFourPercent=sim.demand.kNSM.rtrs.four/totalPressureDemand
-		propsOnePercent=sim.demand.kNSM.props.one/totalPressureDemand
-		propsTwoPercent=sim.demand.kNSM.props.two/totalPressureDemand
+		sim.sply.kNSM.prps.one=sim.demand.kNSM.prps.one
+		sim.sply.kNSM.prps.two=sim.demand.kNSM.prps.two
+	elseif sim.availableForUse.kNSM>0 then
+		rtrsOnePrct=sim.demand.kNSM.rtrs.one/totalPressureDemand
+		rtrsTwoPrct=sim.demand.kNSM.rtrs.two/totalPressureDemand
+		rtrsThreePrct=sim.demand.kNSM.rtrs.three/totalPressureDemand
+		rtrsFourPrct=sim.demand.kNSM.rtrs.four/totalPressureDemand
+		prpsOnePrct=sim.demand.kNSM.prps.one/totalPressureDemand
+		prpsTwoPrct=sim.demand.kNSM.prps.two/totalPressureDemand
 
-		sim.sply.kNSM.rtrs.one=rtrsOnePercent * sim.availableForUse.kNSM
-		sim.sply.kNSM.rtrs.two=rtrsTwoPercent * sim.availableForUse.kNSM
-		sim.sply.kNSM.rtrs.three=rtrsThreePercent * sim.availableForUse.kNSM
-		sim.sply.kNSM.rtrs.four=rtrsFourPercent * sim.availableForUse.kNSM
-		sim.sply.kNSM.props.one=propsOnePercent * sim.availableForUse.kNSM
-		sim.sply.kNSM.props.two=propsTwoPercent * sim.availableForUse.kNSM
+		sim.sply.kNSM.rtrs.one=rtrsOnePrct*sim.availableForUse.kNSM
+		sim.sply.kNSM.rtrs.two=rtrsTwoPrct*sim.availableForUse.kNSM
+		sim.sply.kNSM.rtrs.three=rtrsThreePrct*sim.availableForUse.kNSM
+		sim.sply.kNSM.rtrs.four=rtrsFourPrct*sim.availableForUse.kNSM
+		sim.sply.kNSM.prps.one=prpsOnePrct*sim.availableForUse.kNSM
+		sim.sply.kNSM.prps.two=prpsTwoPrct*sim.availableForUse.kNSM
 	end
 
 	return sim
 end
 
 function powerSupply(sim)
-	genPower=GEN_MAX_KW * (sim.sply.NM.gen/GEN_MAX_NM)
+	genPower=GEN_MAX_KW*(sim.sply.NM.gen/GEN_MAX_NM)
 	btryPower=sim.availableForUse.kW
-	totalPowerDemand=sim.demand.kW.disps + sim.demand.kW.btry +
-			sim.demand.kW.rtrs.one + sim.demand.kW.rtrs.two +
-			sim.demand.kW.rtrs.three + sim.demand.kW.rtrs.four +
-			sim.demand.kW.props.one + sim.demand.kW.props.two +
-			sim.demand.kW.spltr + sim.demand.kW.H2OAcc + sim.demand.kW.CH4Acc
+	totalPowerDemand=sim.demand.kW.disps+sim.demand.kW.btry +
+			sim.demand.kW.rtrs.one+sim.demand.kW.rtrs.two +
+			sim.demand.kW.rtrs.three+sim.demand.kW.rtrs.four +
+			sim.demand.kW.prps.one+sim.demand.kW.prps.two +
+			sim.demand.kW.spltr+sim.demand.kW.H2OAcc+sim.demand.kW.CH4Acc
 
 	if totalPowerDemand <= genPower then
 		sim.sply.kW.disps=sim.demand.kW.disps
@@ -1657,20 +1488,20 @@ function powerSupply(sim)
 		sim.sply.kW.rtrs.two=sim.demand.kW.rtrs.two
 		sim.sply.kW.rtrs.three=sim.demand.kW.rtrs.three
 		sim.sply.kW.rtrs.four=sim.demand.kW.rtrs.four
-		sim.sply.kW.props.one=sim.demand.kW.props.one
-		sim.sply.kW.props.two=sim.demand.kW.props.two
+		sim.sply.kW.prps.one=sim.demand.kW.prps.one
+		sim.sply.kW.prps.two=sim.demand.kW.prps.two
 		sim.sply.kW.spltr=sim.demand.kW.spltr
 		sim.sply.kW.H2OAcc=sim.demand.kW.H2OAcc
 		sim.sply.kW.CH4Acc=sim.demand.kW.CH4Acc
 		sim.sply.kW.btry=sim.demand.kW.btry
-	elseif totalPowerDemand <= (genPower + btryPower) then
+	elseif totalPowerDemand <= (genPower+btryPower) then
 		sim.sply.kW.disps= sim.demand.kW.disps
 		sim.sply.kW.rtrs.one=sim.demand.kW.rtrs.one
 		sim.sply.kW.rtrs.two=sim.demand.kW.rtrs.two
 		sim.sply.kW.rtrs.three=sim.demand.kW.rtrs.three
 		sim.sply.kW.rtrs.four=sim.demand.kW.rtrs.four
-		sim.sply.kW.props.one=sim.demand.kW.props.one
-		sim.sply.kW.props.two=sim.demand.kW.props.two
+		sim.sply.kW.prps.one=sim.demand.kW.prps.one
+		sim.sply.kW.prps.two=sim.demand.kW.prps.two
 		sim.sply.kW.spltr=sim.demand.kW.spltr
 		sim.sply.kW.H2OAcc=sim.demand.kW.H2OAcc
 		sim.sply.kW.CH4Acc=sim.demand.kW.CH4Acc
@@ -1679,31 +1510,31 @@ function powerSupply(sim)
 		btryUse=totalPowerDemand-genPower
 		sim.availableForStorage.kW=sim.availableForStorage.kW-btryUse
 	else
-		dispsPercent=sim.demand.kW.disps/totalPowerDemand
-		rtrsOnePercent=sim.demand.kW.rtrs.one/totalPowerDemand
-		rtrsTwoPercent=sim.demand.kW.rtrs.two/totalPowerDemand
-		rtrsThreePercent=sim.demand.kW.rtrs.three/totalPowerDemand
-		rtrsFourPercent=sim.demand.kW.rtrs.four/totalPowerDemand
-		propsOnePercent=sim.demand.kW.props.one/totalPowerDemand
-		propsTwoPercent=sim.demand.kW.props.two/totalPowerDemand
-		spltrPercent=sim.demand.kW.spltr/totalPowerDemand
-		H2OAccPercent=sim.demand.kW.H2OAcc/totalPowerDemand
-		CH4AccPercent=sim.demand.kW.CH4Acc/totalPowerDemand
-		btryPercent=sim.demand.kW.btry/totalPowerDemand
+		dispsPrct=sim.demand.kW.disps/totalPowerDemand
+		rtrsOnePrct=sim.demand.kW.rtrs.one/totalPowerDemand
+		rtrsTwoPrct=sim.demand.kW.rtrs.two/totalPowerDemand
+		rtrsThreePrct=sim.demand.kW.rtrs.three/totalPowerDemand
+		rtrsFourPrct=sim.demand.kW.rtrs.four/totalPowerDemand
+		prpsOnePrct=sim.demand.kW.prps.one/totalPowerDemand
+		prpsTwoPrct=sim.demand.kW.prps.two/totalPowerDemand
+		spltrPrct=sim.demand.kW.spltr/totalPowerDemand
+		H2OAccPrct=sim.demand.kW.H2OAcc/totalPowerDemand
+		CH4AccPrct=sim.demand.kW.CH4Acc/totalPowerDemand
+		btryPrct=sim.demand.kW.btry/totalPowerDemand
 
-		totalPowerAvailable=genPower + btryPower
+		totalPowerAvailable=genPower+btryPower
 
-		sim.sply.kW.disps=dispsPercent * totalPowerAvailable
-		sim.sply.kW.rtrs.one=rtrsOnePercent * totalPowerAvailable
-		sim.sply.kW.rtrs.two=rtrsTwoPercent * totalPowerAvailable
-		sim.sply.kW.rtrs.three=rtrsThreePercent * totalPowerAvailable
-		sim.sply.kW.rtrs.four=rtrsFourPercent * totalPowerAvailable
-		sim.sply.kW.props.one=propsOnePercent * totalPowerAvailable
-		sim.sply.kW.props.two=propsTwoPercent * totalPowerAvailable
-		sim.sply.kW.spltr=spltrPercent * totalPowerAvailable
-		sim.sply.kW.H2OAcc=H2OAccPercent * totalPowerAvailable
-		sim.sply.kW.CH4Acc=CH4AccPercent * totalPowerAvailable
-		sim.sply.kW.btry=btryPercent * totalPowerAvailable
+		sim.sply.kW.disps=dispsPrct*totalPowerAvailable
+		sim.sply.kW.rtrs.one=rtrsOnePrct*totalPowerAvailable
+		sim.sply.kW.rtrs.two=rtrsTwoPrct*totalPowerAvailable
+		sim.sply.kW.rtrs.three=rtrsThreePrct*totalPowerAvailable
+		sim.sply.kW.rtrs.four=rtrsFourPrct*totalPowerAvailable
+		sim.sply.kW.prps.one=prpsOnePrct*totalPowerAvailable
+		sim.sply.kW.prps.two=prpsTwoPrct*totalPowerAvailable
+		sim.sply.kW.spltr=spltrPrct*totalPowerAvailable
+		sim.sply.kW.H2OAcc=H2OAccPrct*totalPowerAvailable
+		sim.sply.kW.CH4Acc=CH4AccPrct*totalPowerAvailable
+		sim.sply.kW.btry=btryPrct*totalPowerAvailable
 
 		sim.availableForStorage.kW=sim.availableForStorage.kW-btryPower
 	end
@@ -1724,38 +1555,37 @@ function distributeHydraulics(sim)
 end
 
 function distributePower(sim)
-	altAdjustment=clamp01(5000/(s.pos.z + 5000))
-	speedAdjustment=clamp(nroot(6.6, s.speed)-1, 0.2, 1.2)
-	intakeAdjustment=altAdjustment * speedAdjustment
+	altAdj=clamp01(5000/(s.pos.z+5000))
+	spdAdj=clamp(nroot(6.6,s.spd)-1,0.2,1.2)
+	intakeAdj=altAdj*spdAdj
 
 	disps.on=(sim.sply.kW.disps>=sim.demand.kW.disps)
 
-	if sim.sply.kW.spltr > 0 then
-		powerPercent=sim.sply.kW.spltr/SPLTR_PWR_DEMAND_KW
-		h2oPercent=sim.sply.H2O.spltr/SPLTR_MAX_H2O
-		productionPercent=math.min(powerPercent, h2oPercent)
-		if powerPercent < h2oPercent then
-			sim.sply.H2O.spltr=productionPercent * sim.demand.H2O.spltr
-		elseif h2oPercent < powerPercent then
-			sim.sply.kW.spltr=productionPercent * sim.demand.kW.spltr
+	if sim.sply.kW.spltr>0 then
+		powerPrct=sim.sply.kW.spltr/SPLTR_PWR_DEMAND_KW
+		h2oPrct=sim.sply.H2O.spltr/SPLTR_MAX_H2O
+		productionPrct=math.min(powerPrct,h2oPrct)
+		if powerPrct<h2oPrct then
+			sim.sply.H2O.spltr=productionPrct*sim.demand.H2O.spltr
+		elseif h2oPrct<powerPrct then
+			sim.sply.kW.spltr=productionPrct*sim.demand.kW.spltr
 		end
-		sim.sply.H_M.tank=productionPercent * SPLTR_PER_TIC_H
-		sim.sply.O.tank=productionPercent * SPLTR_PER_TIC_O
+		sim.sply.H_M.tank=productionPrct*SPLTR_PER_TIC_H
+		sim.sply.O.tank=productionPrct*SPLTR_PER_TIC_O
 	end
 
-	if sim.sply.kW.H2OAcc > 0 then
+	if sim.sply.kW.H2OAcc>0 then
 		sim.sply.H2O.tank=(sim.sply.kW.H2OAcc/H2O_ACC_PWR_DEMAND_KW) *
-				H2O_ACC_PER_TIC * s.env.H2O * intakeAdjustment
+				H2O_ACC_PER_TIC*s.env.H2O*intakeAdj
 	end
 
-	if sim.sply.kW.CH4Acc > 0 then
+	if sim.sply.kW.CH4Acc>0 then
 		sim.sply.CH4.tank=(sim.sply.kW.CH4Acc/CH4_ACC_PWR_DEMAND_KW) *
-				CH4_ACC_PER_TIC * s.env.CH4 * intakeAdjustment
+				CH4_ACC_PER_TIC*s.env.CH4*intakeAdj
 	end
 
-	if sim.sply.kW.btry > 0 then
-		sim.availableForStorage.kW=sim.availableForStorage.kW +
-				sim.sply.kW.btry
+	if sim.sply.kW.btry>0 then
+		sim.availableForStorage.kW=sim.availableForStorage.kW+sim.sply.kW.btry
 	end
 
 	return sim
@@ -1763,16 +1593,16 @@ end
 
 function drainTanks(sim)
 	cl1.level=cl1.level-math.max(
-			math.max(0.01, 1-cl1.st) * CLL_MAX_VENT_M3F,
+			math.max(0.01,1-cl1.st)*CLL_MAX_VENT_M3F,
 			cl1.vent)
 	cl2.level=cl2.level-math.max(
-			math.max(0.01, 1-cl2.st) * CLL_MAX_VENT_M3F,
+			math.max(0.01,1-cl2.st)*CLL_MAX_VENT_M3F,
 			cl2.vent)
 	cl3.level=cl3.level-math.max(
-			math.max(0.01, 1-cl3.st) * CLL_MAX_VENT_M3F,
+			math.max(0.01,1-cl3.st)*CLL_MAX_VENT_M3F,
 			cl3.vent)
 	cl4.level=cl4.level-math.max(
-			math.max(0.01, 1-cl4.st) * CLL_MAX_VENT_M3F,
+			math.max(0.01,1-cl4.st)*CLL_MAX_VENT_M3F,
 			cl4.vent)
 
 	tkH.level=tkH.level -
@@ -1788,135 +1618,123 @@ function drainTanks(sim)
 	hydRes.level=hydRes.level -
 			sim.sply.kNSM.rtrs.one-sim.sply.kNSM.rtrs.two -
 			sim.sply.kNSM.rtrs.three-sim.sply.kNSM.rtrs.four -
-			sim.sply.kNSM.props.one-sim.sply.kNSM.props.two
+			sim.sply.kNSM.prps.one-sim.sply.kNSM.prps.two
 end
 
 function fillTanks(sim)
 	cl1.level=math.min(CLL_MAX_M3,
-			cl1.level + sim.sply.H_V.clls.one)
+			cl1.level+sim.sply.H_V.clls.one)
 	cl2.level=math.min(CLL_MAX_M3,
-			cl2.level + sim.sply.H_V.clls.two)
+			cl2.level+sim.sply.H_V.clls.two)
 	cl3.level=math.min(CLL_MAX_M3,
-			cl3.level + sim.sply.H_V.clls.three)
+			cl3.level+sim.sply.H_V.clls.three)
 	cl4.level=math.min(CLL_MAX_M3,
-			cl4.level + sim.sply.H_V.clls.four)
+			cl4.level+sim.sply.H_V.clls.four)
 
 	tkH.level=math.min(H_TANK_MAX_KG,
-			tkH.level + sim.sply.H_M.tank)
+			tkH.level+sim.sply.H_M.tank)
 	tkO.level=math.min(O_TANK_MAX_KG,
-			tkO.level + sim.sply.O.tank)
+			tkO.level+sim.sply.O.tank)
 	tkH2O.level=math.min(H2O_TANK_MAX_KG,
-			tkH2O.level + sim.sply.H2O.tank)
+			tkH2O.level+sim.sply.H2O.tank)
 	tkCH4.level=math.min(CH4_TANK_MAX_KG,
-			tkCH4.level + sim.sply.CH4.tank)
+			tkCH4.level+sim.sply.CH4.tank)
 
 	hydRes.level=math.min(HYD_MAX_KNSM,
-			hydRes.level + sim.sply.kNSM.hydRes)
+			hydRes.level+sim.sply.kNSM.hydRes)
 
 	btry.level=math.min(BATTERY_MAX_CHARGE_KW,
-			btry.level + sim.availableForStorage.kW)
+			btry.level+sim.availableForStorage.kW)
 end
 
 function applyThrust(sim)
 	rtr1.thrust=sim.sply.kW.rtrs.one /
-			RTR_MAX_PWR_DEMAND_KW * RTR_MAX_THRUST_KN
+			RTR_MAX_PWR_DEMAND_KW*RTR_MAX_THRUST_KN
 	rtr2.thrust=sim.sply.kW.rtrs.two /
-			RTR_MAX_PWR_DEMAND_KW * RTR_MAX_THRUST_KN
+			RTR_MAX_PWR_DEMAND_KW*RTR_MAX_THRUST_KN
 	rtr3.thrust=sim.sply.kW.rtrs.three /
-			RTR_MAX_PWR_DEMAND_KW * RTR_MAX_THRUST_KN
+			RTR_MAX_PWR_DEMAND_KW*RTR_MAX_THRUST_KN
 	rtr4.thrust=sim.sply.kW.rtrs.four /
-			RTR_MAX_PWR_DEMAND_KW * RTR_MAX_THRUST_KN
+			RTR_MAX_PWR_DEMAND_KW*RTR_MAX_THRUST_KN
 
-	prp1.thrust=sim.sply.kW.props.one /
-			PROP_MAX_PWR_DEMAND_KW * PROP_MAX_THRUST_KN
-	prp2.thrust=sim.sply.kW.props.two /
-			PROP_MAX_PWR_DEMAND_KW * PROP_MAX_THRUST_KN
+	prp1.thrust=sim.sply.kW.prps.one /
+			PROP_MAX_PWR_DEMAND_KW*PROP_MAX_THRUST_KN
+	prp2.thrust=sim.sply.kW.prps.two /
+			PROP_MAX_PWR_DEMAND_KW*PROP_MAX_THRUST_KN
 end
 
 function applyForces(sim)
-	altAdjustment=clamp01(5000/(s.pos.z + 5000))
-	thrustAdjustment=lerp(0.2, 1, altAdjustment)
-	s.env.Atmo=altAdjustment * SEA_LEVEL_AIR_DENSITY
+	altAdj=clamp01(5000/(s.pos.z+5000))
+	thrustAdj=lerp(0.2,1,altAdj)
+	s.env.Atmo=altAdj*SEA_LEVEL_AIR_DENSITY
 
-	rotor1Xcomp=math.cos(math.rad(90-rtr1.rot)) *
-			thrustAdjustment
-	rotor1Ycomp=math.sin(math.rad(90-rtr1.rot)) *
-			thrustAdjustment
-	rotor2Xcomp=math.cos(math.rad(90-rtr2.rot)) *
-			thrustAdjustment
-	rotor2Ycomp=math.sin(math.rad(90-rtr2.rot)) *
-			thrustAdjustment
-	rotor3Xcomp=math.cos(math.rad(90-rtr3.rot)) *
-			thrustAdjustment
-	rotor3Ycomp=math.sin(math.rad(90-rtr3.rot)) *
-			thrustAdjustment
-	rotor4Xcomp=math.cos(math.rad(90-rtr4.rot)) *
-			thrustAdjustment
-	rotor4Ycomp=math.sin(math.rad(90-rtr4.rot)) *
-			thrustAdjustment
+	rtr1Xcomp=math.cos(math.rad(90-rtr1.rot))*thrustAdj
+	rtr1Ycomp=math.sin(math.rad(90-rtr1.rot))*thrustAdj
+	rtr2Xcomp=math.cos(math.rad(90-rtr2.rot))*thrustAdj
+	rtr2Ycomp=math.sin(math.rad(90-rtr2.rot))*thrustAdj
+	rtr3Xcomp=math.cos(math.rad(90-rtr3.rot))*thrustAdj
+	rtr3Ycomp=math.sin(math.rad(90-rtr3.rot))*thrustAdj
+	rtr4Xcomp=math.cos(math.rad(90-rtr4.rot))*thrustAdj
+	rtr4Ycomp=math.sin(math.rad(90-rtr4.rot))*thrustAdj
 
-	totalHydrogenVolume=cl1.level +
-			cl2.level + cl3.level +
-			cl4.level
-	totalHydrogenWeight=totalHydrogenVolume * HYDROGEN_DENSITY
-	totalAirWeight=totalHydrogenVolume * SEA_LEVEL_AIR_DENSITY
+	totalHydrogenVolume=cl1.level+cl2.level+cl3.level+cl4.level
+	totalHydrogenWeight=totalHydrogenVolume*HYDROGEN_DENSITY
+	totalAirWeight=totalHydrogenVolume*SEA_LEVEL_AIR_DENSITY
 
-	totalShipWeightKG=SHIP_DRY_WEIGHT_KG + totalHydrogenWeight +
-			tkH.level + tkO.level +
-			tkH2O.level + tkCH4.level
-	totalShipWeightKN=(totalShipWeightKG * KG_TO_N) * 0.001
+	totalShipWeightKG=SHIP_DRY_WEIGHT_KG+totalHydrogenWeight+tkH.level+tkO.level+tkH2O.level+tkCH4.level
+	totalShipWeightKN=(totalShipWeightKG*KG_TO_N)*0.001
 
-	s.heading=(prp1.rot + prp2.rot)/2
-	drag=DRAG_COEFFICENT * FRONT_DRAG_AREA * 0.5 * s.env.Atmo *
-			(s.speed * s.speed)
-	s.accl=(prp1.thrust * thrustAdjustment +
-									prp2.thrust * thrustAdjustment +
-									rtr1.thrust * rotor1Xcomp +
-									rtr2.thrust * rotor2Xcomp +
-									rtr3.thrust * rotor3Xcomp +
-									rtr4.thrust * rotor4Xcomp-drag) /
+	s.hdg=(prp1.rot+prp2.rot)/2
+	drag=DRAG_COEFFICENT*FRONT_DRAG_AREA*0.5*s.env.Atmo *
+			(s.spd*s.spd)
+	s.accl=(prp1.thrust*thrustAdj +
+					prp2.thrust*thrustAdj +
+					rtr1.thrust*rtr1Xcomp +
+					rtr2.thrust*rtr2Xcomp +
+					rtr3.thrust*rtr3Xcomp +
+					rtr4.thrust*rtr4Xcomp-drag) /
 			totalShipWeightKN
-	-- TODO Remove fudge? Acceleration bump, direction rotation.
-	s.speed=s.speed+0.5*s.accl*10*0.00027777777
-	changeX=s.speed*math.sin(math.rad(s.heading))
-	changeY=-s.speed*math.cos(math.rad(s.heading))
+	-- TODO Remove fudge? Acceleration bump,direction rotation.
+	s.spd=s.spd+0.5*s.accl*10*0.00027777777
+	changeX=s.spd*math.sin(math.rad(s.hdg))
+	changeY=-s.spd*math.cos(math.rad(s.hdg))
 	s.pos.x=s.pos.x+changeX
 	s.pos.y=s.pos.y+changeY
 	s.dis=s.dis+math.sqrt(changeX*changeX+changeY*changeY)
 
 	totalHydrogenLiftForce=(totalAirWeight-totalHydrogenWeight)*KG_TO_N*HYDROGEN_LIFT_ADJUST
-	totalWingLiftForce=s.speed*WING_LIFT*altAdjustment
+	totalWingLiftForce=s.spd*WING_LIFT*altAdj
 
 	s.rot=(rtr1.rot+rtr2.rot+rtr3.rot+rtr4.rot)/4
 	vertDrag=DRAG_COEFFICENT*BOTTOM_DRAG_AREA*0.5*s.env.Atmo*s.vsi*s.vsi
-	vForce=((rtr1.thrust*rotor1Ycomp+
-					 rtr2.thrust*rotor2Ycomp+
-					 rtr3.thrust*rotor3Ycomp+
-					 rtr4.thrust*rotor4Ycomp)+
+	vForce=((rtr1.thrust*rtr1Ycomp+
+					 rtr2.thrust*rtr2Ycomp+
+					 rtr3.thrust*rtr3Ycomp+
+					 rtr4.thrust*rtr4Ycomp)+
 			totalHydrogenLiftForce+totalWingLiftForce)/totalShipWeightKN
-	if s.vsi > 0 then
+	if s.vsi>0 then
 		vForce=vForce-vertDrag
-	elseif s.vsi < 0 then
-		vForce=vForce + vertDrag
+	elseif s.vsi<0 then
+		vForce=vForce+vertDrag
 	end
 
-	s.vsi=s.vsi + 0.5 * ((vForce-totalShipWeightKN-vertDrag) * 0.00027777777)
-	s.pos.z=s.pos.z + s.vsi
+	s.vsi=s.vsi+0.5*((vForce-totalShipWeightKN-vertDrag)*0.00027777777)
+	s.pos.z=s.pos.z+s.vsi
 
 	-- Auto controls
-	if s.vsi < s.set_vsi then
-		s.con.thrt.rtrs=math.min(s.con.thrt.rtrs + 0.1, 1)
-	elseif s.vsi > s.set_vsi then
-		s.con.thrt.rtrs=math.max(s.con.thrt.rtrs-0.1, 0.0)
+	if s.vsi<s.setVsi then
+		s.con.thrt.rtrs=math.min(s.con.thrt.rtrs+0.1,1)
+	elseif s.vsi>s.setVsi then
+		s.con.thrt.rtrs=math.max(s.con.thrt.rtrs-0.1,0.0)
 	end
 
-	if s.pos.z-100 > s.con.alt and s.vsi > -0.2 then
+	if s.pos.z-100>s.con.alt and s.vsi>-0.2 then
 		altDiff=math.min((s.pos.z-100-s.con.alt)/100,8)
 		cl1.vent=altDiff
 		cl2.vent=altDiff
 		cl3.vent=altDiff
 		cl4.vent=altDiff
-	elseif s.pos.z + 100 < s.con.alt and s.vsi < 0.2 then
+	elseif s.pos.z+100<s.con.alt and s.vsi<0.2 then
 		altDiff=math.max((s.pos.z+100-s.con.alt)/100,-8)
 		cl1.vent=altDiff
 		cl2.vent=altDiff
@@ -1929,17 +1747,17 @@ function applyForces(sim)
 		cl4.vent=0
 	end
 
-	if s.pos.z + 10 < s.con.alt and s.con.vsi > 0 then
-		s.set_vsi=s.con.vsi
-	elseif s.pos.z-10 > s.con.alt and s.con.vsi < 0 then
-		s.set_vsi=s.con.vsi
+	if s.pos.z+10<s.con.alt and s.con.vsi>0 then
+		s.setVsi=s.con.vsi
+	elseif s.pos.z-10>s.con.alt and s.con.vsi<0 then
+		s.setVsi=s.con.vsi
 	else
-		s.set_vsi=0.0
+		s.setVsi=0.0
 	end
 
 	if s.pos.z <= 0 then
 		s.pos.z=0
-		s.speed=0
+		s.spd=0
 		if not s.isCrash then
 			dmgSysts(s.vsi)
 			s.isCrash=true
@@ -1954,11 +1772,11 @@ function applyForces(sim)
 end
 
 
-function calcHydDemand(curAngle, dsrdAgl, st, maxSpd, maxDmnd)
+function calcHydDemand(curAngle,dsrdAgl,st,maxSpd,maxDmnd)
 	if curAngle==dsrdAgl then return 0 end
-	rotorAngleChange=math.abs(dsrdAgl-curAngle)
-	rotorAngleChange=math.min(rotorAngleChange, maxSpd*st)
-	return (rotorAngleChange/maxSpd)*maxDmnd
+	rtrAngleChange=math.abs(dsrdAgl-curAngle)
+	rtrAngleChange=math.min(rtrAngleChange,maxSpd*st)
+	return (rtrAngleChange/maxSpd)*maxDmnd
 end
 
 function rotateThruster(sim,type,id,thrustr,maxDmnd,maxSpd)
@@ -1973,19 +1791,19 @@ function rotateThruster(sim,type,id,thrustr,maxDmnd,maxSpd)
 		if dsrdAgl<0 then
 			thrustr.rot=thrustr.rot-moveAngle
 		else
-			thrustr.rot=thrustr.rot + moveAngle
+			thrustr.rot=thrustr.rot+moveAngle
 		end
 	end
 
 	return sim
 end
 
-function rotateRotor(sim,id,rotor)
-	return rotateThruster(sim,'rtrs',id,rotor,RTR_MAX_HYD_DEMAND_KNSM,RTR_MAX_ROTATE_SPEED_D)
+function rotateRotor(sim,id,rtr)
+	return rotateThruster(sim,'rtrs',id,rtr,RTR_MAX_HYD_DEMAND_KNSM,RTR_MAX_ROTATE_SPEED_D)
 end
 
 function rotateProp(sim,id,prop)
-	return rotateThruster(sim,'props',id,prop,PROP_MAX_HYD_DEMAND_KNSM,PROP_MAX_ROTATE_SPEED_D)
+	return rotateThruster(sim,'prps',id,prop,PROP_MAX_HYD_DEMAND_KNSM,PROP_MAX_ROTATE_SPEED_D)
 end
 
 function randRangeF(min,max)
@@ -2036,10 +1854,10 @@ function joinBBs(bbs)
 	local max_x=-10000
 	local max_y=-10000
 	for i,bb in pairs(bbs) do
-		if bb.min_x < min_x then min_x = bb.min_x end
-		if bb.min_y < min_y then min_y = bb.min_y end
-		if bb.max_x > max_x then max_x = bb.max_x end
-		if bb.max_y > max_y then max_y = bb.max_y end
+		if bb.min_x<min_x then min_x=bb.min_x end
+		if bb.min_y<min_y then min_y=bb.min_y end
+		if bb.max_x>max_x then max_x=bb.max_x end
+		if bb.max_y>max_y then max_y=bb.max_y end
 	end
 	return {min_x=min_x,min_y=min_y,max_x=max_x,max_y=max_y}
 end
@@ -2049,11 +1867,10 @@ function bbCenter(bbs)
 	return {x=(bb.max_x-bb.min_x)/2+bb.min_x,y=(bb.max_y-bb.min_y)/2+bb.min_y}
 end
 
-function rotateV2(vec, angle)
+function rotateV2(vec,angle)
 	r=math.rad(angle)
 	aSin=math.sin(r)
 	aCos=math.cos(r)
-
 	return {x=vec.x*aCos-vec.y*aSin,y=vec.y*aCos+vec.x*aSin}
 end
 
@@ -2062,13 +1879,13 @@ function contains(bb,pos)
 end
 
 function mapContains(bb,pos)
-	return contains({min_x=bb.min_x*8,min_y=bb.min_y*8,max_x=bb.max_x*8+7,max_y=bb.max_y*8+7}, pos)
+	return contains({min_x=bb.min_x*8,min_y=bb.min_y*8,max_x=bb.max_x*8+7,max_y=bb.max_y*8+7},pos)
 end
 
 function comContains(bbs,pos)
-	local res = false
+	local res=false
 	for i,bb in pairs(bbs) do
-		if mapContains(bb,pos) then res = true end
+		if mapContains(bb,pos) then res=true end
 	end
 	return res
 end
