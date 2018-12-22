@@ -732,6 +732,7 @@ function drwMap(xSize,ySize,xOff,yOff)
 end
 
 function drwGame()
+  drwEnv()
 	drwShip()
 
 	if showControls then
@@ -824,6 +825,10 @@ function drwGame()
 	end
 end
 
+function drwEnv()
+  map()
+end
+
 function drwShip()
 	maxMapHeight=18
 	mapYAdjust=0
@@ -838,7 +843,7 @@ function drwShip()
 	camYCor=-cam.y%8-8
 	yDown=mapYAdjust*-8
 	map(cam.cellX+camXCellAdd,cam.cellY+camYCellAdd+mapYAdjust,31,
-			maxMapHeight,camXCor,camYCor)
+			maxMapHeight,camXCor,camYCor,0)
 
 	for i,drw in pairs(drw1) do
 		drwCom(drw,yDown)
