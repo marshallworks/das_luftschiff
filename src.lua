@@ -1026,12 +1026,9 @@ function simulate()
 	cntrlsHydDmd()
 	strgTanksDmd()
 	cellDmd()
-	btryDmd()
-	hydResDmd()
+	btryHydDmd()
 	spltrAccDmd()
-	hydPumpDmd()
-	genDmd()
-	turbDmd()
+	genTurbDmd()
 	bilrDmd()
 
 	elementSupply()
@@ -1082,13 +1079,11 @@ function cellDmd()
 	if cl4.vent<=0 then dmd.H_V.cl4=math.min(CLL_MAX_M3-cl4.lvl,-cl4.vent) end
 end
 
-function btryDmd()
+function btryHydDmd()
 	btryStateDmd=math.min(BTRY_MAX_CHARGE_RATE_KW,BTRY_MAX_CHARGE_KW*btry.st-btry.lvl)
 	dmd.kW.btry=math.max(btryStateDmd,0)
-end
-
-function hydResDmd()
-	dmd.kNSM.hydRes=HYD_MAX_KNSM-hydRes.lvl
+  dmd.kNSM.hydRes=HYD_MAX_KNSM-hydRes.lvl
+  dmd.NM.hydPump=math.min(HYD_PUMP_MAX_NM,dmd.kNSM.hydRes*HYD_PUMP_NM_PER_KNSM)
 end
 
 function spltrAccDmd()
@@ -1096,25 +1091,17 @@ function spltrAccDmd()
 		dmd.kW.spltr=SPLTR_PWR_DMD_KW*spltr.st
 		dmd.H2O.spltr=SPLTR_MAX_H2O*spltr.st
 	end
-
 	if dmd.H2O.tank>0 then dmd.kW.H2OAcc=H2O_ACC_PWR_DMD_KW*accH2O.st end
   if dmd.CH4.tank>0 then dmd.kW.CH4Acc=CH4_ACC_PWR_DMD_KW*accCH4.st end
 end
 
-function hydPumpDmd()
-	dmd.NM.hydPump=math.min(HYD_PUMP_MAX_NM,dmd.kNSM.hydRes*HYD_PUMP_NM_PER_KNSM)
-end
-
-function genDmd()
+function genTurbDmd()
 	ttlPwrDmd=math.min(GEN_MAX_KW*gen.st,dmd.kW.disps+dmd.kW.rtr1+dmd.kW.rtr2+
       dmd.kW.rtr3+dmd.kW.rtr4+dmd.kW.prp1+dmd.kW.prp2+dmd.kW.spltr+
       dmd.kW.H2OAcc+dmd.kW.CH4Acc+dmd.kW.btry)
 	dmd.NM.gen=(ttlPwrDmd/GEN_MAX_KW)*GEN_MAX_NM
-end
-
-function turbDmd()
-	ttlTorqueDmd=math.min(TURB_MAX_NM*turb.st,dmd.NM.gen+dmd.NM.hydPump)
-	dmd.steam=(ttlTorqueDmd/TURB_MAX_NM)*TURB_MAX_STEAM_KNSM
+  ttlTorqueDmd=math.min(TURB_MAX_NM*turb.st,dmd.NM.gen+dmd.NM.hydPump)
+  dmd.steam=(ttlTorqueDmd/TURB_MAX_NM)*TURB_MAX_STEAM_KNSM
 end
 
 function bilrDmd()
@@ -1131,7 +1118,6 @@ end
 function elementSupply()
 	sply.O.bilr=math.min(dmd.O.bilr,avlb4Use.O)
 	sply.CH4.bilr=math.min(dmd.CH4.bilr,avlb4Use.CH4)
-
 	ttlH2ODmd=dmd.H2O.bilr+dmd.H2O.spltr
 	if avlb4Use.H2O>ttlH2ODmd then
 		sply.H2O.bilr=dmd.H2O.bilr
@@ -1142,7 +1128,6 @@ function elementSupply()
 		sply.H2O.bilr=bilrPrct*avlb4Use.H2O
 		sply.H2O.spltr=spltrPrct*avlb4Use.H2O
 	end
-
 	ttlH_VDmd=dmd.H_V.cl1+dmd.H_V.cl2+dmd.H_V.cl3+dmd.H_V.cl4
 	if avlb4Use.H_V>ttlH_VDmd then
 		sply.H_V.cl1=dmd.H_V.cl1
@@ -1165,7 +1150,6 @@ function steamSupply()
 	spldH2O_KNSM=sply.H2O.bilr/BILR_H2O_KG_PER_KNSM
 	spldCH4_KNSM=sply.CH4.bilr/BILR_CH4_KG_PER_KNSM
 	spldO_KNSM=sply.O.bilr/BILR_O_KG_PER_KNSM
-
 	if spldH2O_KNSM<spldCH4_KNSM then
 		spldCH4_KNSM=spldH2O_KNSM
 		sply.CH4.bilr=spldCH4_KNSM*BILR_CH4_KG_PER_KNSM
@@ -1173,9 +1157,7 @@ function steamSupply()
 		spldH2O_KNSM=spldCH4_KNSM
 		sply.H2O.bilr=spldH2O_KNSM*BILR_H2O_KG_PER_KNSM
 	end
-
 	spldKNSM=spldCH4_KNSM
-
 	if spldKNSM>BILR_MAX_REG_STEAM_KNSM then
 		superSteam=spldKNSM-BILR_MAX_REG_STEAM_KNSM
 		if spldO_KNSM >= superSteam then
@@ -1187,22 +1169,21 @@ function steamSupply()
 			sply.H2O.bilr=spldKNSM*BILR_H2O_KG_PER_KNSM
 		end
 	end
-
 	sply.steam=spldKNSM
 end
 
 function torqueSupply()
-	torqueSupplied=TURB_MAX_NM*(sply.steam/TURB_MAX_STEAM_KNSM)
+	torqueSpld=TURB_MAX_NM*(sply.steam/TURB_MAX_STEAM_KNSM)
 	torqueDmd=dmd.NM.gen+dmd.NM.hydPump
 
-	if torqueSupplied >= torqueDmd then
+	if torqueSpld >= torqueDmd then
 		sply.NM.gen=dmd.NM.gen
 		sply.NM.hydPump=dmd.NM.hydPump
 	else
 		genPrct=dmd.NM.gen/torqueDmd
 		pumpPrct=dmd.NM.hydPump/torqueDmd
-		sply.NM.gen=torqueSupplied*genPrct
-		sply.NM.hydPump=torqueSupplied*pumpPrct
+		sply.NM.gen=torqueSpld*genPrct
+		sply.NM.hydPump=torqueSpld*pumpPrct
 	end
 end
 
@@ -1314,9 +1295,7 @@ function distPwr()
 	altAdj=clamp01(5000/(s.pos.z+5000))
 	spdAdj=clamp(nroot(6.6,s.spd)-1,0.2,1.2)
 	intakeAdj=altAdj*spdAdj
-
 	disps.on=(sply.kW.disps>=dmd.kW.disps)
-
 	if sply.kW.spltr>0 then
 		pwrPrct=sply.kW.spltr/SPLTR_PWR_DMD_KW
 		h2oPrct=sply.H2O.spltr/SPLTR_MAX_H2O
@@ -1329,15 +1308,12 @@ function distPwr()
 		sply.H_M.tank=prodPrct*SPLTR_PER_TIC_H
 		sply.O.tank=prodPrct*SPLTR_PER_TIC_O
 	end
-
 	if sply.kW.H2OAcc>0 then
 		sply.H2O.tank=(sply.kW.H2OAcc/H2O_ACC_PWR_DMD_KW)*H2O_ACC_PER_TIC*s.env.H2O*intakeAdj
 	end
-
 	if sply.kW.CH4Acc>0 then
 		sply.CH4.tank=(sply.kW.CH4Acc/CH4_ACC_PWR_DMD_KW)*CH4_ACC_PER_TIC*s.env.CH4*intakeAdj
 	end
-
 	if sply.kW.btry>0 then
 		avlb4Stg.kW=avlb4Stg.kW+sply.kW.btry
 	end
@@ -1362,14 +1338,11 @@ function fillTanks()
 	cl2.lvl=math.min(CLL_MAX_M3,cl2.lvl+sply.H_V.cl2)
 	cl3.lvl=math.min(CLL_MAX_M3,cl3.lvl+sply.H_V.cl3)
 	cl4.lvl=math.min(CLL_MAX_M3,cl4.lvl+sply.H_V.cl4)
-
 	tkH.lvl=math.min(H_TANK_MAX_KG,tkH.lvl+sply.H_M.tank)
 	tkO.lvl=math.min(O_TANK_MAX_KG,tkO.lvl+sply.O.tank)
 	tkH2O.lvl=math.min(H2O_TANK_MAX_KG,tkH2O.lvl+sply.H2O.tank)
 	tkCH4.lvl=math.min(CH4_TANK_MAX_KG,tkCH4.lvl+sply.CH4.tank)
-
 	hydRes.lvl=math.min(HYD_MAX_KNSM,hydRes.lvl+sply.kNSM.hydRes)
-
 	btry.lvl=math.min(BTRY_MAX_CHARGE_KW,btry.lvl+avlb4Stg.kW)
 end
 
@@ -1407,13 +1380,9 @@ function applyForces()
 	s.hdg=(prp1.rot+prp2.rot)/2
 	drag=DRAG_COEFFICENT*FRONT_DRAG_AREA*0.5*s.env.Atmo *
 			(s.spd*s.spd)
-	s.accl=(prp1.thrst*thrstAdj+
-            prp2.thrst*thrstAdj+
-            rtr1.thrst*rtr1Xcomp+
-            rtr2.thrst*rtr2Xcomp+
-            rtr3.thrst*rtr3Xcomp+
-            rtr4.thrst*rtr4Xcomp-drag) /
-			ttlShipWeightKN
+	s.accl=(prp1.thrst*thrstAdj+prp2.thrst*thrstAdj+rtr1.thrst*rtr1Xcomp+
+      rtr2.thrst*rtr2Xcomp+rtr3.thrst*rtr3Xcomp+rtr4.thrst*rtr4Xcomp-drag) /
+      ttlShipWeightKN
 	-- TODO Remove fudge? Acceleration bump,direction rotation.
 	s.spd=s.spd+0.5*s.accl*10*0.00027777777
 	changeX=s.spd*math.sin(math.rad(s.hdg))
@@ -1491,10 +1460,9 @@ function applyForces()
 	s.env.CH4=tile.CH4
 end
 
-
-function calcHydDmd(curAngl,dsrdAgl,st,maxSpd,maxDmd)
-	if curAngl==dsrdAgl then return 0 end
-	rtrAnglChg=math.abs(dsrdAgl-curAngl)
+function calcHydDmd(curAngl,dsrdAngl,st,maxSpd,maxDmd)
+	if curAngl==dsrdAngl then return 0 end
+	rtrAnglChg=math.abs(dsrdAngl-curAngl)
 	rtrAnglChg=math.min(rtrAnglChg,maxSpd*st)
 	return (rtrAnglChg/maxSpd)*maxDmd
 end
@@ -1506,9 +1474,9 @@ function rotThrster(type,spl,thrst,maxDmd,maxSpd)
 		-- replace thrster type.
 		hydAvl=spl/maxDmd
 		aglAvl=hydAvl*maxSpd
-		dsrdAgl=s.con.rot[type]-thrst.rot
-		moveAngl=math.min(aglAvl,math.abs(dsrdAgl))
-		if dsrdAgl<0 then
+		dsrdAngl=s.con.rot[type]-thrst.rot
+		moveAngl=math.min(aglAvl,math.abs(dsrdAngl))
+		if dsrdAngl<0 then
 			thrst.rot=thrst.rot-moveAngl
 		else
 			thrst.rot=thrst.rot+moveAngl
