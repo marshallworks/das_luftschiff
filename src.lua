@@ -381,6 +381,12 @@ function buildMap()
 	end
 end
 
+function mapVertLoc()
+  xLoc=((s.dis/1000)%(240*8))+cam.x
+  yLoc=lerp(102*8,51*8,clamp01(invLerp(0,SHIP_MAX_ALT,s.pos.z)))
+  return {x=xLoc,y=yLoc}
+end
+
 function TIC()
 
 	if strScreen then
@@ -826,24 +832,24 @@ function drwGame()
 end
 
 function drwEnv()
-  map()
+  vLoc=mapVertLoc()
+  xDiff=vLoc.x%8
+  yDiff=vLoc.y%8
+  map(vLoc.x//8,vLoc.y//8,31,18,-xDiff,-yDiff)
 end
 
 function drwShip()
 	maxMapHeight=18
 	mapYAdjust=0
+  yDown=mapYAdjust*-8
 	if showControls then
 		maxMapHeight=6
 		mapYAdjust=3
 	end
 
-	camXCellAdd=cam.x%8==0 and -1 or 0
-	camYCellAdd=cam.y%8==0 and -1 or 0
-	camXCor=-cam.x%8-8
-	camYCor=-cam.y%8-8
-	yDown=mapYAdjust*-8
-	map(cam.cellX+camXCellAdd,cam.cellY+camYCellAdd+mapYAdjust,31,
-			maxMapHeight,camXCor,camYCor,0)
+  xCDiff=cam.x%8
+  yCDiff=cam.y%8
+  map(cam.x//8,cam.y//8+mapYAdjust,31,maxMapHeight,-xCDiff,-yCDiff,0)
 
 	for i,drw in pairs(drw1) do
 		drwCom(drw,yDown)
@@ -872,6 +878,7 @@ function drwCom(com,yDown)
 end
 
 function drwPart(bb,drw,yDown)
+  -- TODO Fix draw positions.
 	posX=(bb.min_x*8-cam.x) // 1+1
 	posY=(bb.min_y*8-cam.y) // 1+1+yDown
 
