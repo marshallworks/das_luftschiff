@@ -76,8 +76,10 @@ cam={
 	t=0,
 	x=0,
 	y=0,
-	cellX=0,
-	cellY=0
+  xCell=0,
+  yCell=0,
+	xOff=0,
+	yOff=0
 }
 
 p={
@@ -153,6 +155,15 @@ mapVls={}
 CH4pts={}
 H2Opts={}
 
+function upCam(x,y)
+  cam.x=x
+  cam.y=y
+  cam.xCell=x//8
+  cam.yCell=y//8
+  cam.xOff=-(x%8)
+  cam.yOff=-(y%8)
+end
+
 function initGame()
 	-- Background color
 	poke(0x03FF8,8)
@@ -160,16 +171,17 @@ function initGame()
 
 	buildMap()
 
-	cam.x=p.x-120
-	cam.y=p.y-64
-	cam.cellX=cam.x/8
-	cam.cellY=cam.y/8
+  upCam(p.x-120,136)
 
 	music(0)
 	initShip()
 end
 
 function initShip()
+  clDrw={s=482,w=5,h=2,rx=3}
+  prpDrw={s=400,w=2,h=3}
+  rtr1Drw={s=434,w=6,h=1}
+  rtr2Drw={s=420,w=2,h=1}
 	accH2O={
 		st=1,
 		wr=randRangeF(0.00001,0.00003),
@@ -187,13 +199,13 @@ function initShip()
 		wr=randRangeF(0.000003,0.000007),
 		lvl=BTRY_MAX_CHARGE_KW,
 		bb={{min_x=42,min_y=23,max_x=47,max_y=24}},
-		drw={{s=448,w=3,h=2}}
+		drw={{s=448,w=3,h=2,rx=2}}
 	}
 	bilr={
 		st=1,
 		wr=randRangeF(0.000015,0.00003),
 		bb={{min_x=48,min_y=27,max_x=51,max_y=28}},
-		drw={{s=459,w=3,h=2}}
+		drw={{s=459,w=3,h=2,rx=2}}
 	}
 	cl1={
 		st=1,
@@ -201,7 +213,7 @@ function initShip()
 		lvl=CLL_MAX_M3*.7,
 		vent=0.0,
 		bb={{min_x=77,min_y=21,max_x=84,max_y=22}},
-		drw={{s=482,w=5,h=2}},
+		drw={clDrw},
     bar={x=202,y=108,w=4,h=16,c=5}
 	}
 	cl2={
@@ -210,7 +222,7 @@ function initShip()
 		lvl=CLL_MAX_M3*.7,
 		vent=0.0,
 		bb={{min_x=68,min_y=21,max_x=75,max_y=22}},
-		drw={{s=482,w=5,h=2}},
+		drw={clDrw},
     bar={x=210,y=108,w=4,h=16,c=5}
 	}
 	cl3={
@@ -219,7 +231,7 @@ function initShip()
 		lvl=CLL_MAX_M3*.7,
 		vent=0.0,
 		bb={{min_x=44,min_y=21,max_x=51,max_y=22}},
-		drw={{s=482,w=5,h=2}},
+		drw={clDrw},
     bar={x=218,y=108,w=4,h=16,c=5}
 	}
 	cl4={
@@ -228,7 +240,7 @@ function initShip()
 		lvl=CLL_MAX_M3*.7,
 		vent=0.0,
 		bb={{min_x=35,min_y=21,max_x=42,max_y=22}},
-		drw={{s=482,w=5,h=2}},
+		drw={clDrw},
     bar={x=226,y=108,w=4,h=16,c=5}
 	}
 	disps={
@@ -262,7 +274,7 @@ function initShip()
 		rot=0,
 		thrst=0,
 		bb={{min_x=33,min_y=22,max_x=34,max_y=24}},
-		drw={{s=400,w=2,h=3}},
+		drw={prpDrw},
     ndl={x=169,y=113,c=5},
     bar={x=161,y=108,w=2,h=11,c=5}
 	}
@@ -272,7 +284,7 @@ function initShip()
 		rot=0,
 		thrst=0,
 		bb={{min_x=33,min_y=26,max_x=34,max_y=28}},
-		drw={{s=400,w=2,h=3}},
+		drw={prpDrw},
     ndl={x=185,y=113,c=5},
     bar={x=177,y=108,w=2,h=11,c=5}
 	}
@@ -290,7 +302,7 @@ function initShip()
 		rot=0,
 		thrst=0,
 		bb={{min_x=76,min_y=32,max_x=81,max_y=32},{min_x=78,min_y=31,max_x=79,max_y=31}},
-		drw={{s=434,w=6,h=1},{s=420,w=2,h=1}},
+		drw={rtr1Drw,rtr2Drw},
     ndl={ x=85,y=110,c=5},
     bar={x=73,y=108,w=2,h=11,c=5}
 	}
@@ -300,7 +312,7 @@ function initShip()
 		rot=0,
 		thrst=0,
 		bb={{min_x=66,min_y=32,max_x=71,max_y=32},{min_x=68,min_y=31,max_x=69,max_y=31}},
-		drw={{s=434,w=6,h=1},{s=420,w=2,h=1}},
+		drw={rtr1Drw,rtr2Drw},
     ndl={x=101,y=110,c=5},
     bar={x=89,y=108,w=2,h=11,c=5}
 	}
@@ -310,7 +322,7 @@ function initShip()
 		rot=0,
 		thrst=0,
 		bb={{min_x=48,min_y=32,max_x=53,max_y=32},{min_x=50,min_y=31,max_x=51,max_y=31}},
-		drw={{s=434,w=6,h=1},{s=420,w=2,h=1}},
+		drw={rtr1Drw,rtr2Drw},
     ndl={x=133,y=110,c=5},
     bar={x=121,y=108,w=2,h=11,c=5}
 	}
@@ -320,7 +332,7 @@ function initShip()
 		rot=0,
 		thrst=0,
 		bb={{min_x=38,min_y=32,max_x=43,max_y=32},{min_x=40,min_y=31,max_x=41,max_y=31}},
-		drw={{s=434,w=6,h=1},{s=420,w=2,h=1}},
+		drw={rtr1Drw,rtr2Drw},
     ndl={x=149,y=110,c=5},
     bar={x=137,y=108,w=2,h=11,c=5}
 	}
@@ -335,7 +347,7 @@ function initShip()
 		wr=randRangeF(0.000001,0.000002),
 		lvl=H_TANK_MAX_KG,
 		bb={{min_x=58,min_y=26,max_x=61,max_y=29}},
-		drw={{s=478,w=2,h=3}}
+		drw={{s=478,w=2,h=3,ry=2}}
 	}
 	tkO={
 		st=1,
@@ -349,7 +361,7 @@ function initShip()
 		wr=randRangeF(0.000001,0.000002),
 		lvl=H2O_TANK_MAX_KG,
 		bb={{min_x=68,min_y=27,max_x=73,max_y=28}},
-		drw={{s=487,w=3,h=2}},
+		drw={{s=487,w=3,h=2,rx=2}},
     bar={x=202,y=68,w=4,h=24,c=5}
 	}
 	tkCH4={
@@ -367,7 +379,7 @@ function initShip()
 		drw={{s=457,w=2,h=2}}
 	}
 	drw1={disps,bilr,turb,hydRes,hydPump,gen,rtr1,rtr3,prp1,prp2,accH2O,accCH4,spltr,tkO,tkH2O,pto1,pto2}
-	drw2={cl1,cl2,cl3,cl4,rtr2,rtr4,tkH,tkCH4,btr}
+	drw2={cl1,cl2,cl3,cl4,rtr2,rtr4,tkH,tkCH4,btry}
 	wear={bilr,turb,hydRes,hydPump,gen,rtr1,rtr2,rtr3,rtr4,prp1,prp2,accH2O,accCH4,cl1,cl2,cl3,cl4,btry,spltr,tkH,tkO,tkH2O,tkCH4}
   ggPrp={prp1,prp2}
   ggRtr={rtr1,rtr2,rtr3,rtr4}
@@ -597,10 +609,7 @@ function playerMovement()
 	p.x=p.x+p.vx
 	p.y=p.y+p.vy
 
-	cam.x=lerp(cam.x,p.x-120,0.15)
-	cam.y=lerp(cam.y,137,0.15) -- p.y-64
-	cam.cellX=cam.x/8
-	cam.cellY=cam.y/8
+  upCam(lerp(cam.x,p.x-120,0.15),lerp(cam.y,136,0.15))
 
 	if p.y>234 then
 		if p.x<292 then p.x=292 end
@@ -841,21 +850,19 @@ end
 function drwShip()
 	maxMapHeight=18
 	mapYAdjust=0
-  yDown=mapYAdjust*-8
 	if showControls then
 		maxMapHeight=6
 		mapYAdjust=3
 	end
+  yDown=mapYAdjust*-8
 
-  xCDiff=cam.x%8
-  yCDiff=cam.y%8
-  map(cam.x//8,cam.y//8+mapYAdjust,31,maxMapHeight,-xCDiff,-yCDiff,0)
+  map(cam.xCell,cam.yCell+mapYAdjust,31,maxMapHeight,cam.xOff,cam.yOff,0)
 
 	for i,drw in pairs(drw1) do
 		drwCom(drw,yDown)
 	end
 
-	spr(p.s,p.x-cam.x-4,p.y-cam.y-8+yDown,0,1,p.flip,0,1,2)
+	spr(p.s,p.x-cam.x-4,p.y-cam.y-9+yDown,0,1,p.flip,0,1,2)
 
 	for i,drw in pairs(drw2) do
 		drwCom(drw,yDown)
@@ -869,6 +876,7 @@ function drwCom(com,yDown)
 
 	if com.st~=nil then
 		local bb=joinBBs(com.bb)
+    local posX=(bb.min_x-cam.xCell)*8+cam.xOff
 		baseY=(bb.max_y*8-cam.y+9)
 		baseX=posX+((bb.max_x-bb.min_x)/2)*8-4
 		sW=(lerp(0,16,com.st)+0.5)//1
@@ -878,6 +886,40 @@ function drwCom(com,yDown)
 end
 
 function drwPart(bb,drw,yDown)
+  local posX=bb.min_x-cam.xCell
+  local posY=bb.min_y-cam.yCell
+  local reqX=bb.max_x-bb.min_x
+  local reqY=bb.max_y-bb.min_y
+
+  local ySub=0
+  for y=0,reqY do
+    yAdj=y
+    if drw.ry~=nil and y>=drw.ry-1 and y<reqX-(drw.ry-1) then
+      yAdj=drw.ry-1
+      ySub=ySub+1
+    elseif drw.ry~=nil and y>drw.ry-1 then
+      yAdj=yAdj-ySub
+    else
+      yAdj=y%drw.h
+    end
+    yOff=yAdj*16
+    local xSub=0
+    for x=0,reqX do
+      xOff=x
+      if drw.rx~=nil and x>=drw.rx-1 and x<reqX-(drw.rx-1) then
+        xOff=drw.rx-1
+        xSub=xSub+1
+      elseif drw.rx~=nil and x>drw.rx-1 then
+        xOff=xOff-xSub
+      else
+        xOff=x%drw.w
+      end
+      spr(drw.s+yOff+xOff,(posX+x)*8+cam.xOff,(posY+y)*8+cam.yOff+yDown,0)
+    end
+  end
+end
+
+function drwPart2(bb,drw,yDown)
   -- TODO Fix draw positions.
 	posX=(bb.min_x*8-cam.x) // 1+1
 	posY=(bb.min_y*8-cam.y) // 1+1+yDown
