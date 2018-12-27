@@ -8,9 +8,10 @@ SEA_LEVEL_AIR_DENSITY=1.225
 HYDROGEN_DENSITY=0.08988
 WING_LIFT=128
 
-HYDROGEN_LIFT_ADJUST=5.95
+HYDROGEN_LIFT_ADJ=5.95
 
-SHIP_MAX_SPEED=300
+SHIP_STRT_SPD=42
+SHIP_MAX_SPD=300
 SHIP_MAX_ALT=10000
 SHIP_DRY_WEIGHT_KG=120000
 
@@ -23,12 +24,12 @@ SPLTR_PER_TIC_O=2.128
 
 RTR_MAX_THRST_KN=70000
 RTR_MAX_PWR_DMD_KW=46.4
-RTR_MAX_ROTATE_SPEED_D=0.08
+RTR_MAX_ROTATE_SPD_D=0.08
 RTR_MAX_HYD_DMD_KNSM=6.4
 
 PROP_MAX_THRST_KN=47600
 PROP_MAX_PWR_DMD_KW=18.5
-PROP_MAX_ROTATE_SPEED_D=0.12
+PROP_MAX_ROTATE_SPD_D=0.12
 PROP_MAX_HYD_DMD_KNSM=5.2
 
 GEN_MAX_KW=225
@@ -82,48 +83,6 @@ cam={
 	yOff=0
 }
 
-p={
-	s=257,
-	x=492,
-	y=190,
-	vx=0,
-	vy=0,
-	flip=0,
-}
-
-s={
-	spd=42,
-	accl=0,
-	hdg=0,
-	rot=0,
-	vsi=0,
-	setVsi=0,
-	isCrash=false,
-	dis=0,
-	pos={
-		x=0,
-		y=0,
-		z=1000
-	},
-	con={
-		alt=1000,
-		vsi=0.2,
-		thrt={
-			prps=0.3,
-			rtrs=0.7
-		},
-		rot={
-			prps=0,
-			rtrs=0
-		}
-	},
-	env={
-		Atmo=SEA_LEVEL_AIR_DENSITY,
-		H2O=0.0,
-		CH4=0.0
-	}
-}
-
 gg={
 	ndl={
 		vsi={x=109,y=79,c=5},
@@ -164,20 +123,44 @@ function upCam(x,y)
   cam.yOff=-(y%8)
 end
 
+function initCam()
+  upCam(p.x-120,136)
+end
+
+function initPlyr()
+  p={
+    s=257,
+    x=492,
+    y=190,
+    vx=0,
+    vy=0,
+    flip=0,
+  }
+end
+
 function initGame()
 	-- Background color
 	poke(0x03FF8,8)
 	math.randomseed(8778)
 
 	buildMap()
-
-  upCam(p.x-120,136)
-
 	music(0)
+  initPlyr()
+  initCam()
 	initShip()
 end
 
 function initShip()
+  s={
+    spd=SHIP_STRT_SPD,accl=0,hdg=0,rot=0,vsi=0,setVsi=0,isCrash=false,dis=0,
+    pos={x=0,y=0,z=1000},
+    con={
+      alt=1000,vsi=0.2,
+      thrt={prps=0.3,rtrs=0.7},
+      rot={prps=0,rtrs=0}
+    },
+    env={Atmo=SEA_LEVEL_AIR_DENSITY,H2O=0.0,CH4=0.0}
+  }
   clDrw={s=482,w=5,h=2,rx=3}
   prpDrw={s=400,w=2,h=3}
   rtr1Drw={s=434,w=6,h=1}
@@ -209,7 +192,7 @@ function initShip()
 	}
 	cl1={
 		st=1,
-		wr=randRangeF(0.00002,0.00008),
+		wr=0.00001, --randRangeF(0.00001,0.00004),
 		lvl=CLL_MAX_M3*.7,
 		vent=0.0,
 		bb={{min_x=77,min_y=21,max_x=84,max_y=22}},
@@ -218,7 +201,7 @@ function initShip()
 	}
 	cl2={
 		st=1,
-		wr=randRangeF(0.00002,0.00008),
+		wr=0.00001, --randRangeF(0.00001,0.00004),
 		lvl=CLL_MAX_M3*.7,
 		vent=0.0,
 		bb={{min_x=68,min_y=21,max_x=75,max_y=22}},
@@ -227,7 +210,7 @@ function initShip()
 	}
 	cl3={
 		st=1,
-		wr=randRangeF(0.00002,0.00008),
+		wr=0.00001, --randRangeF(0.00001,0.00004),
 		lvl=CLL_MAX_M3*.7,
 		vent=0.0,
 		bb={{min_x=44,min_y=21,max_x=51,max_y=22}},
@@ -236,7 +219,7 @@ function initShip()
 	}
 	cl4={
 		st=1,
-		wr=randRangeF(0.00002,0.00008),
+		wr=0.00001, --randRangeF(0.00001,0.00004),
 		lvl=CLL_MAX_M3*.7,
 		vent=0.0,
 		bb={{min_x=35,min_y=21,max_x=42,max_y=22}},
@@ -774,13 +757,13 @@ function drwGame()
 										 { x=0,y=17 })
 
 		drwBarSt(gg.bars.alt,s.pos.z,SHIP_MAX_ALT)
-		drwBarSt(gg.bars.spd,s.spd,SHIP_MAX_SPEED)
+		drwBarSt(gg.bars.spd,s.spd,SHIP_MAX_SPD)
 
 		drwBarSt(tkH2O.bar,tkH2O.lvl,H2O_TANK_MAX_KG)
 		drwBarSt(tkCH4.bar,tkCH4.lvl,CH4_TANK_MAX_KG)
 
 		altY=lerp(91,67,invLerp(0,SHIP_MAX_ALT,s.pos.z))-2.5
-		spdY=lerp(91,67,invLerp(0,SHIP_MAX_SPEED,s.spd))-2.5
+		spdY=lerp(91,67,invLerp(0,SHIP_MAX_SPD,s.spd))-2.5
 		print(string.sub(string.format("%f",s.pos.z/1000.0),1,-6).."k",120,altY,5,false,1,true)
 		if s.spd<100 then
 			print(string.sub(string.format("%f",s.spd),1,-6),144,spdY,5,false,1,true)
@@ -1040,12 +1023,12 @@ function cntrlsPwrDmd()
 end
 
 function cntrlsHydDmd()
-	dmd.kNSM.rtr1=calcHydDmd(rtr1.rot,s.con.rot.rtrs,rtr1.st,RTR_MAX_ROTATE_SPEED_D,RTR_MAX_HYD_DMD_KNSM)
-	dmd.kNSM.rtr2=calcHydDmd(rtr2.rot,s.con.rot.rtrs,rtr2.st,RTR_MAX_ROTATE_SPEED_D,RTR_MAX_HYD_DMD_KNSM)
-	dmd.kNSM.rtr3=calcHydDmd(rtr3.rot,s.con.rot.rtrs,rtr3.st,RTR_MAX_ROTATE_SPEED_D,RTR_MAX_HYD_DMD_KNSM)
-	dmd.kNSM.rtr4=calcHydDmd(rtr4.rot,s.con.rot.rtrs,rtr4.st,RTR_MAX_ROTATE_SPEED_D,RTR_MAX_HYD_DMD_KNSM)
-	dmd.kNSM.prp1=calcHydDmd(prp1.rot,s.con.rot.prps,prp1.st,PROP_MAX_ROTATE_SPEED_D,PROP_MAX_HYD_DMD_KNSM)
-	dmd.kNSM.prp2=calcHydDmd(prp2.rot,s.con.rot.prps,prp2.st,PROP_MAX_ROTATE_SPEED_D,PROP_MAX_HYD_DMD_KNSM)
+	dmd.kNSM.rtr1=calcHydDmd(rtr1.rot,s.con.rot.rtrs,rtr1.st,RTR_MAX_ROTATE_SPD_D,RTR_MAX_HYD_DMD_KNSM)
+	dmd.kNSM.rtr2=calcHydDmd(rtr2.rot,s.con.rot.rtrs,rtr2.st,RTR_MAX_ROTATE_SPD_D,RTR_MAX_HYD_DMD_KNSM)
+	dmd.kNSM.rtr3=calcHydDmd(rtr3.rot,s.con.rot.rtrs,rtr3.st,RTR_MAX_ROTATE_SPD_D,RTR_MAX_HYD_DMD_KNSM)
+	dmd.kNSM.rtr4=calcHydDmd(rtr4.rot,s.con.rot.rtrs,rtr4.st,RTR_MAX_ROTATE_SPD_D,RTR_MAX_HYD_DMD_KNSM)
+	dmd.kNSM.prp1=calcHydDmd(prp1.rot,s.con.rot.prps,prp1.st,PROP_MAX_ROTATE_SPD_D,PROP_MAX_HYD_DMD_KNSM)
+	dmd.kNSM.prp2=calcHydDmd(prp2.rot,s.con.rot.prps,prp2.st,PROP_MAX_ROTATE_SPD_D,PROP_MAX_HYD_DMD_KNSM)
 end
 
 function strgTanksDmd()
@@ -1374,7 +1357,7 @@ function applyForces()
 	s.pos.y=s.pos.y+changeY
 	s.dis=s.dis+math.sqrt(changeX*changeX+changeY*changeY)
 
-	ttlHydrogenLiftForce=(ttlAirWeight-ttlHydrogenWeight)*KG_TO_N*HYDROGEN_LIFT_ADJUST
+	ttlHydrogenLiftForce=(ttlAirWeight-ttlHydrogenWeight)*KG_TO_N*HYDROGEN_LIFT_ADJ
 	ttlWingLiftForce=s.spd*WING_LIFT*altAdj
 
 	s.rot=(rtr1.rot+rtr2.rot+rtr3.rot+rtr4.rot)/4
@@ -1401,17 +1384,19 @@ function applyForces()
 	end
 
 	if s.pos.z-100>s.con.alt and s.vsi>-0.2 then
-		altDiff=math.min((s.pos.z-100-s.con.alt)/100,8)
-		cl1.vent=altDiff
-		cl2.vent=altDiff
-		cl3.vent=altDiff
-		cl4.vent=altDiff
+		altDiff=math.min((s.pos.z-100-s.con.alt)/100,8)*4
+    ttlLvl=safeDivide(1,cl1.lvl+cl2.lvl+cl3.lvl+cl4.lvl)
+    cl1.vent=altDiff*cl1.lvl*ttlLvl
+    cl2.vent=altDiff*cl2.lvl*ttlLvl
+    cl3.vent=altDiff*cl3.lvl*ttlLvl
+    cl4.vent=altDiff*cl4.lvl*ttlLvl
 	elseif s.pos.z+100<s.con.alt and s.vsi<0.2 then
-		altDiff=math.max((s.pos.z+100-s.con.alt)/100,-8)
-		cl1.vent=altDiff
-		cl2.vent=altDiff
-		cl3.vent=altDiff
-		cl4.vent=altDiff
+		altDiff=math.max((s.pos.z+100-s.con.alt)/100,-8)*4
+    ttlLvl=safeDivide(1,cl1.lvl+cl2.lvl+cl3.lvl+cl4.lvl)
+    cl1.vent=altDiff*(1-cl1.lvl*ttlLvl)
+    cl2.vent=altDiff*(1-cl2.lvl*ttlLvl)
+    cl3.vent=altDiff*(1-cl3.lvl*ttlLvl)
+    cl4.vent=altDiff*(1-cl4.lvl*ttlLvl)
 	else
 		cl1.vent=0
 		cl2.vent=0
@@ -1468,11 +1453,11 @@ function rotThrster(type,spl,thrst,maxDmd,maxSpd)
 end
 
 function rotRtr(spl,rtr)
-	return rotThrster('rtrs',spl,rtr,RTR_MAX_HYD_DMD_KNSM,RTR_MAX_ROTATE_SPEED_D)
+	return rotThrster('rtrs',spl,rtr,RTR_MAX_HYD_DMD_KNSM,RTR_MAX_ROTATE_SPD_D)
 end
 
 function rotProp(spl,prop)
-	return rotThrster('prps',spl,prop,PROP_MAX_HYD_DMD_KNSM,PROP_MAX_ROTATE_SPEED_D)
+	return rotThrster('prps',spl,prop,PROP_MAX_HYD_DMD_KNSM,PROP_MAX_ROTATE_SPD_D)
 end
 
 function randRangeF(min,max)
