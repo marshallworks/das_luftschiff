@@ -8,6 +8,9 @@ SEA_LEVEL_AIR_DENSITY=1.225
 HYDROGEN_DENSITY=0.08988
 WING_LIFT=128
 HYDROGEN_LIFT_ADJ=5.95
+ENT_DWN_ACC=.1
+ENT_DWN_TRM_V=2
+ENT_DRG=.3
 
 SHIP_STRT_SPD=42
 SHIP_MAX_SPD=300
@@ -118,11 +121,11 @@ function initCam()
 end
 
 function initPlyr()
-  p={s=256,x=492,y=190,vx=0,vy=0,flip=0}
+  p={bs=256,s=256,x=492,y=190,vx=0,vy=0,isAcc=false,isDeAcc=false,flip=0,onFlr=false,onLdr=false,inCil=false}
 end
 
 function initGrmln()
-  g={s=264,x=508,y=190,vx=0,vy=0,flip=0}
+  g={bs=264,s=264,x=508,y=190,vx=0,vy=0,isAcc=false,isDeAcc=false,flip=0,onFlr=false,onLdr=false,inCil=false}
 end
 
 function initGame()
@@ -492,122 +495,134 @@ function TIC()
 end
 
 function playerMovement()
-	onFloor=false
-	inCeiling=false
-	onLadder=false
-	testX=p.x // 8
-	testY=p.y // 8
-	testYD=(p.y // 8)+1
-	testYU=(p.y // 8)-1
-	downId=mget(testX,testYD)
-	if downId==16 or downId==189 or downId==158 then onFloor=true end
-	if mget(testX,testYU)==16 then inCeiling=true end
-	if mget(testX,testY)==32 or mget(testX,testYD)==32 then onLadder=true end
+  entStUpd(p)
+  entMv(p,btn(0),btn(1),btn(2),btn(3),.06,.8,.04,.3,1.2)
+  entSetSpr(p)
 
-	if btn(0) and onLadder then
-		p.vy=math.max(p.vy-0.06,-.3)
-	elseif btn(1) and onLadder and not onFloor then
-		p.vy=math.max(p.vy+0.06,.3)
-	elseif onLadder then
-		p.vy=0.0
-	elseif btn(0) and onFloor then
-		p.vy=-1.2
-	elseif p.vy==0 and onFloor then
-		p.y=testY*8+1
-		p.vy=math.min(p.vy,0.0)
-	elseif not onFloor then
-		p.vy=math.min(p.vy+0.1,2.0)
-	else
-		p.vy=0.0
-	end
-
-	if inCeiling and p.vy<0 then
-		p.vy=-p.vy
-	end
-
-	isAcc=false
-	isDeAcc=false
-
-	if btn(2) then
-		p.vx=math.max(p.vx-0.06,-0.8)
-		isAcc=p.vx>-.3
-	elseif btn(3) then
-		p.vx=math.min(p.vx+0.06,0.8)
-		isAcc=p.vx<.3
-	else
-		if p.vx>0 then
-			p.vx=math.max(p.vx-0.1,0)
-		else
-			p.vx=math.min(p.vx+0.1,0)
-		end
-		isDeAcc=p.vx~=0
-	end
-
-	if p.vx>0 then
-		p.flip=0
-	elseif p.vx<0 then
-		p.flip=1
-	end
-
-	if not onLadder and not onFloor then
-		p.s=261
-	elseif p.vx==0 and onLadder and not onFloor then
-		if p.vy==0 then
-			p.s=262
-		else
-			if (str.t%16)//8==0 then
-				p.s=262
-			else
-				p.s=263
-			end
-		end
-	elseif p.vx==0 then
-		p.s=256
-	elseif isAcc then
-		p.s=259
-	elseif isDeAcc then
-		p.s=260
-	else
-		if (str.t%12)==0 then
-			sfx(2,48,3,3,4,3)
-		end
-		if (str.t%12)//6==0 then
-			p.s=257
-		else
-			p.s=258
-		end
+	if p.onFlr and p.vx~=0 and (str.t%12)==0 then
+		sfx(2,48,3,3,4,3)
 	end
 
 	p.x=p.x+p.vx
 	p.y=p.y+p.vy
 
   updCam(lerp(cam.x,p.x-120,0.15),lerp(cam.y,136,0.15))
-  keepInShip(p)
+  entKpInShip(p)
 end
 
 function gremlinMovement()
+  entStUpd(g)
+
+  local gUp=false
+  local gDwn=false
+  local gLft=false
+  local gRgt=false
   if sqrDistance(p,g)<500 then
-    if g.x>p.x then g.vx=1 end
-    if g.x<p.x then g.vx=-1 end
-    if g.y>p.y then g.vy=1 end
-    if g.y<p.y then g.vy=-1 end
+    if g.x>p.x then gRgt=true end
+    if g.x<p.x then gLft=true end
   elseif sqrDistance(p,g)>1200 then
-    if g.x>p.x then g.vx=-1 end
-    if g.x<p.x then g.vx=1 end
-    if g.y>p.y then g.vy=-1 end
-    if g.y<p.y then g.vy=1 end
-  else
-    g.vx=0
-    g.vy=0
+    if g.x>p.x then gLft=true end
+    if g.x<p.x then gRgt=true end
   end
+
+  entMv(g,gUp,gDwn,gLft,gRgt,.06,.8,.04,.3,1.2)
+  entSetSpr(g)
 
   g.x=g.x+g.vx
   g.y=g.y+g.vy
 
-  keepInShip(g)
+  entKpInShip(g)
 end
 
-function keepInShip(ent)
+function entStUpd(ent)
+  ent.onFlr=false
+  ent.inCil=false
+  ent.onLdr=false
+  local testX=ent.x//8
+  local testY=ent.y//8
+  local testYD=testY+1
+  local testYU=testY-1
+  local downId=mget(testX,testYD)
+  if downId==16 or downId==189 or downId==158 then ent.onFlr=true end
+  if mget(testX,testYU)==16 then ent.inCil=true end
+  if mget(testX,testY)==32 or mget(testX,testYD)==32 then ent.onLdr=true end
+end
+
+function entMv(ent,up,dwn,lft,rgt,xAcc,xMax,yAcc,yMax,yBurst)
+  if up and ent.onLdr then
+    ent.vy=math.max(ent.vy-yAcc,-yMax)
+  elseif dwn and ent.onLdr and not ent.onFlr then
+    ent.vy=math.max(ent.vy+yAcc,yMax)
+  elseif ent.onLdr then
+    ent.vy=0
+  elseif up and ent.onFlr then
+    ent.vy=-yBurst
+  elseif ent.vy==0 and ent.onFlr then
+    ent.y=(ent.y//8)*8+1
+    ent.vy=math.min(ent.vy,0)
+  elseif not ent.onFlr then
+    ent.vy=math.min(ent.vy+ENT_DWN_ACC,ENT_DWN_TRM_V)
+  else
+    ent.vy=0
+  end
+  if ent.inCil and ent.vy<0 then
+    ent.vy=-ent.vy
+  end
+
+  ent.isAcc=false
+  ent.isDeAcc=false
+
+  if lft then
+    ent.vx=math.max(ent.vx-xAcc,-xMax)
+    ent.isAcc=ent.vx>-.3
+  elseif rgt then
+    ent.vx=math.min(ent.vx+xAcc,xMax)
+    ent.isAcc=ent.vx<.3
+  else
+    if ent.vx>0 then
+      ent.vx=math.max(ent.vx-ENT_DRG,0)
+    else
+      ent.vx=math.min(ent.vx+ENT_DRG,0)
+    end
+    ent.isDeAcc=ent.vx~=0
+  end
+
+  if ent.vx>0 then
+    ent.flip=0
+  elseif ent.vx<0 then
+    ent.flip=1
+  end
+end
+
+function entSetSpr(ent)
+  if not ent.onLdr and not ent.onFlr then
+    ent.s=ent.bs+5
+  elseif ent.vx==0 and ent.onLdr and not ent.onFlr then
+    if ent.vy==0 then
+      ent.s=ent.bs+6
+    else
+      if (str.t%16)//8==0 then
+        ent.s=ent.bs+6
+      else
+        ent.s=ent.bs+7
+      end
+    end
+  elseif ent.vx==0 then
+    ent.s=ent.bs
+  elseif ent.isAcc then
+    ent.s=ent.bs+3
+  elseif ent.isDeAcc then
+    ent.s=ent.bs+4
+  else
+    if (str.t%12)//6==0 then
+      ent.s=ent.bs+1
+    else
+      ent.s=ent.bs+2
+    end
+  end
+end
+
+function entKpInShip(ent)
   if ent.y>234 then
     if ent.x<292 then ent.x=292 end
     if ent.x>668 then ent.x=668 end
@@ -859,7 +874,7 @@ function drwShip()
 		drwCom(drw,yDown)
 	end
 
-  spr(g.s,g.x-cam.x-4,g.y-cam.y-6+yDown,0,1,g.flip,0,1,2)
+  spr(g.s,g.x-cam.x-4,g.y-cam.y-9+yDown,0,1,g.flip,0,1,2)
 	spr(p.s,p.x-cam.x-4,p.y-cam.y-9+yDown,0,1,p.flip,0,1,2)
 
 	for i,drw in pairs(drw2) do
