@@ -7,7 +7,6 @@ GRAVITY=9.8
 SEA_LEVEL_AIR_DENSITY=1.225
 HYDROGEN_DENSITY=0.08988
 WING_LIFT=128
-
 HYDROGEN_LIFT_ADJ=5.95
 
 SHIP_STRT_SPD=42
@@ -73,16 +72,6 @@ str={
 	y= 42
 }
 
-cam={
-	t=0,
-	x=0,
-	y=0,
-  xCell=0,
-  yCell=0,
-	xOff=0,
-	yOff=0
-}
-
 gg={
 	ndl={
 		vsi={x=109,y=79,c=5},
@@ -114,7 +103,7 @@ mapVls={}
 CH4pts={}
 H2Opts={}
 
-function upCam(x,y)
+function updCam(x,y)
   cam.x=x
   cam.y=y
   cam.xCell=x//8
@@ -124,7 +113,8 @@ function upCam(x,y)
 end
 
 function initCam()
-  upCam(p.x-120,136)
+  cam={t=0,x=0,y=0,xCell=0,yCell=0,xOff=0,yOff=0}
+  updCam(p.x-120,136)
 end
 
 function initPlyr()
@@ -592,7 +582,7 @@ function playerMovement()
 	p.x=p.x+p.vx
 	p.y=p.y+p.vy
 
-  upCam(lerp(cam.x,p.x-120,0.15),lerp(cam.y,136,0.15))
+  updCam(lerp(cam.x,p.x-120,0.15),lerp(cam.y,136,0.15))
 
 	if p.y>234 then
 		if p.x<292 then p.x=292 end
