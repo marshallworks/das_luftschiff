@@ -118,14 +118,11 @@ function initCam()
 end
 
 function initPlyr()
-  p={
-    s=257,
-    x=492,
-    y=190,
-    vx=0,
-    vy=0,
-    flip=0,
-  }
+  p={s=256,x=492,y=190,vx=0,vy=0,flip=0}
+end
+
+function initGrmln()
+  g={s=264,x=508,y=190,vx=0,vy=0,flip=0}
 end
 
 function initGame()
@@ -136,6 +133,7 @@ function initGame()
 	buildMap()
 	music(0)
   initPlyr()
+  initGrmln()
   initCam()
 	initShip()
 end
@@ -471,6 +469,7 @@ function TIC()
 				if s.con.rot.prps>360 then s.con.rot.prps=s.con.rot.prps-360 end
 			end
 		else
+      gremlinMovement()
 			playerMovement()
 		end
 
@@ -583,20 +582,45 @@ function playerMovement()
 	p.y=p.y+p.vy
 
   updCam(lerp(cam.x,p.x-120,0.15),lerp(cam.y,136,0.15))
+  keepInShip(p)
+end
 
-	if p.y>234 then
-		if p.x<292 then p.x=292 end
-		if p.x>668 then p.x=668 end
-	elseif p.y>202 then
-		if p.x<268 then p.x=268 end
-		if p.x>684 then p.x=684 end
-	else
-		if p.x<268 then p.x=268 end
-		if p.x>700 then p.x=700 end
-	end
+function gremlinMovement()
+  if sqrDistance(p,g)<500 then
+    if g.x>p.x then g.vx=1 end
+    if g.x<p.x then g.vx=-1 end
+    if g.y>p.y then g.vy=1 end
+    if g.y<p.y then g.vy=-1 end
+  elseif sqrDistance(p,g)>1200 then
+    if g.x>p.x then g.vx=-1 end
+    if g.x<p.x then g.vx=1 end
+    if g.y>p.y then g.vy=-1 end
+    if g.y<p.y then g.vy=1 end
+  else
+    g.vx=0
+    g.vy=0
+  end
 
-	if p.y>257 then p.y=257 end
-	if p.y<176 then p.y=176 end
+  g.x=g.x+g.vx
+  g.y=g.y+g.vy
+
+  keepInShip(g)
+end
+
+function keepInShip(ent)
+  if ent.y>234 then
+    if ent.x<292 then ent.x=292 end
+    if ent.x>668 then ent.x=668 end
+  elseif ent.y>202 then
+    if ent.x<268 then ent.x=268 end
+    if ent.x>684 then ent.x=684 end
+  else
+    if ent.x<268 then ent.x=268 end
+    if ent.x>700 then ent.x=700 end
+  end
+
+  if ent.y>257 then ent.y=257 end
+  if ent.y<176 then ent.y=176 end
 end
 
 function doRepairs()
@@ -835,6 +859,7 @@ function drwShip()
 		drwCom(drw,yDown)
 	end
 
+  spr(g.s,g.x-cam.x-4,g.y-cam.y-6+yDown,0,1,g.flip,0,1,2)
 	spr(p.s,p.x-cam.x-4,p.y-cam.y-9+yDown,0,1,p.flip,0,1,2)
 
 	for i,drw in pairs(drw2) do
