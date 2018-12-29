@@ -98,6 +98,8 @@ strScreen=true
 endScreen=false
 showControls=false
 showMap=false
+gremlinInSight=false
+gremlinLastSeen=0
 controlType=0
 
 RES_PT_COUNT=4200
@@ -121,11 +123,12 @@ function initCam()
 end
 
 function initPlyr()
-  p={bs=256,s=256,x=492,y=190,vx=0,vy=0,isAcc=false,isDeAcc=false,flip=0,onFlr=false,onLdr=false,inCil=false}
+  p={bs=256,s=256,x=492,y=190,vx=0,vy=0,isAcc=false,isDeAcc=false,flip=0,onFlr=false,onLdr=false,hasMoLdr=false,inCil=false}
 end
 
 function initGrmln()
-  g={bs=264,s=264,x=508,y=190,vx=0,vy=0,isAcc=false,isDeAcc=false,flip=0,onFlr=false,onLdr=false,inCil=false}
+  g={bs=264,s=264,x=508,y=190,vx=0,vy=0,isAcc=false,isDeAcc=false,flip=0,onFlr=false,onLdr=false,hasMoLdr=false,inCil=false}
+  gb={up=false,dwn=false,lft=false,rgt=false,srchDir=0,trgt=nil,trgtT=0}
 end
 
 function initGame()
@@ -183,7 +186,7 @@ function initShip()
 	}
 	cl1={
 		st=1,
-		wr=0.00001, --randRangeF(0.00001,0.00004),
+		wr=randRangeF(0.00001,0.00004),
 		lvl=CLL_MAX_M3*.7,
 		vent=0.0,
 		bb={{min_x=77,min_y=21,max_x=84,max_y=22}},
@@ -192,7 +195,7 @@ function initShip()
 	}
 	cl2={
 		st=1,
-		wr=0.00001, --randRangeF(0.00001,0.00004),
+		wr=randRangeF(0.00001,0.00004),
 		lvl=CLL_MAX_M3*.7,
 		vent=0.0,
 		bb={{min_x=68,min_y=21,max_x=75,max_y=22}},
@@ -201,7 +204,7 @@ function initShip()
 	}
 	cl3={
 		st=1,
-		wr=0.00001, --randRangeF(0.00001,0.00004),
+		wr=randRangeF(0.00001,0.00004),
 		lvl=CLL_MAX_M3*.7,
 		vent=0.0,
 		bb={{min_x=44,min_y=21,max_x=51,max_y=22}},
@@ -210,7 +213,7 @@ function initShip()
 	}
 	cl4={
 		st=1,
-		wr=0.00001, --randRangeF(0.00001,0.00004),
+		wr=randRangeF(0.00001,0.00004),
 		lvl=CLL_MAX_M3*.7,
 		vent=0.0,
 		bb={{min_x=35,min_y=21,max_x=42,max_y=22}},
@@ -438,6 +441,16 @@ function TIC()
 			{c=rtr2,id=4,nt="C-1"}
 		},4)
 
+    if (distance(p,g)<120 and not isLinThFlr(p.x,p.y-7,g.x,g.y-1)) or str.t-gremlinLastSeen<60 then
+      gremlinInSight=true
+      if gremlinLastSeen==0 then
+        gremlinLastSeen=str.t
+      end
+    else
+      gremlinInSight=false
+      gremlinLastSeen=0
+    end
+
 		if showControls then
 			if btnp(2) then controlType=controlType-1 end
 			if btnp(3) then controlType=controlType+1 end
@@ -472,13 +485,12 @@ function TIC()
 				if s.con.rot.prps>360 then s.con.rot.prps=s.con.rot.prps-360 end
 			end
 		else
-      gremlinMovement()
 			playerMovement()
 		end
+    gremlinMovement()
 
 		cls(0)
 		simulate()
-
 		applyWear()
 
 		if not showMap then
@@ -498,39 +510,98 @@ function playerMovement()
   entStUpd(p)
   entMv(p,btn(0),btn(1),btn(2),btn(3),.06,.8,.04,.3,1.2)
   entSetSpr(p)
-
 	if p.onFlr and p.vx~=0 and (str.t%12)==0 then
 		sfx(2,48,3,3,4,3)
 	end
-
-	p.x=p.x+p.vx
-	p.y=p.y+p.vy
-
+  entSetPos(p)
   updCam(lerp(cam.x,p.x-120,0.15),lerp(cam.y,136,0.15))
   entKpInShip(p)
 end
 
+function gremlinTarget()
+  local count=#wear
+  local tries=count
+  while true do
+    local com=wear[math.random(count)]
+    if com.st>0 then return com end
+    tries=tries-1
+    if tries<=0 then return nil end
+  end
+end
+
 function gremlinMovement()
   entStUpd(g)
-
-  local gUp=false
-  local gDwn=false
-  local gLft=false
-  local gRgt=false
-  if sqrDistance(p,g)<500 then
-    if g.x>p.x then gRgt=true end
-    if g.x<p.x then gLft=true end
-  elseif sqrDistance(p,g)>1200 then
-    if g.x>p.x then gLft=true end
-    if g.x<p.x then gRgt=true end
+  gb.up=false
+  gb.dwn=false
+  gb.lft=false
+  gb.rgt=false
+  if gb.trgt==nil then
+    gb.trgt=gremlinTarget()
+    gb.trgtT=str.t
   end
-
-  entMv(g,gUp,gDwn,gLft,gRgt,.06,.8,.04,.3,1.2)
+  if gremlinInSight then
+    gb.srchDir=0
+    if distance(p,g)<62 then
+      if g.onLdr and math.abs(p.y-g.y)>2 then
+        if g.y>p.y and not g.onFlr then gb.dwn=true end
+        if g.y<p.y and g.hasMoLdr then gb.up=true end
+      end
+      if not gb.dwn and not gb.up then
+        if g.x>p.x then gb.rgt=true end
+        if g.x<p.x then gb.lft=true end
+      end
+    elseif distance(p,g)>100 then
+      if g.onLdr and math.abs(p.y-g.y)>2 then
+        if g.y>p.y and g.hasMoLdr then gb.up=true end
+        if g.y<p.y and not g.onFlr then gb.dwn=true end
+      end
+      if not gb.dwn and not gb.up then
+        if g.x>p.x then gb.lft=true end
+        if g.x<p.x then gb.rgt=true end
+      end
+    end
+  else
+    if gb.trgt~=nil and comContains(gb.trgt.bb,g) and gb.trgt.st>0 then
+      gb.trgt.st=math.max(gb.trgt.st-.0004,0)
+      gb.trgtT=str.t
+    elseif gb.trgt~=nil and gb.trgt.st>0 then
+      local go2=bbHorPxlCntr(gb.trgt.bb)
+      if math.abs(go2.y-(g.y+6))>1 then
+        if g.onLdr then
+          if g.y+6>go2.y and g.hasMoLdr then gb.up=true end
+          if g.y+6<go2.y and not g.onFlr then gb.dwn=true end
+        end
+        if not gb.up and not gb.dwn then
+          if gb.srchDir<0 then
+            gb.lft=true
+            if g.x<37*8 then gb.srchDir=1 end
+          elseif gb.srchDir>0 then
+            gb.rgt=true
+            if g.x>82*8 then gb.srchDir=-1 end
+          else
+            if g.x>=60*8 then gb.srchDir=-1 else gb.srchDir=1 end
+          end
+        end
+      else
+        if not gb.dwn and not gb.up then
+          if g.x>go2.x then gb.lft=true end
+          if g.x<go2.x then gb.rgt=true end
+        end
+      end
+      if str.t-gb.trgtT>1100 then
+        gb.trgt=nil
+        gb.trgtT=0
+        gb.srchDir=0
+      end
+    else
+      gb.trgt=nil
+      gb.trgtT=0
+      gb.srchDir=0
+    end
+  end
+  entMv(g,gb.up,gb.dwn,gb.lft,gb.rgt,.08,.55,.03,.2,1.2)
   entSetSpr(g)
-
-  g.x=g.x+g.vx
-  g.y=g.y+g.vy
-
+  entSetPos(g)
   entKpInShip(g)
 end
 
@@ -538,104 +609,112 @@ function entStUpd(ent)
   ent.onFlr=false
   ent.inCil=false
   ent.onLdr=false
+  ent.hasMoLdr=false
   local testX=ent.x//8
   local testY=ent.y//8
   local testYD=testY+1
   local testYU=testY-1
+  local onId=mget(testX,testY)
   local downId=mget(testX,testYD)
-  if downId==16 or downId==189 or downId==158 then ent.onFlr=true end
+  if downId==16 or downId==80 or downId==81 or downId==189 or downId==158 then ent.onFlr=true end
   if mget(testX,testYU)==16 then ent.inCil=true end
-  if mget(testX,testY)==32 or mget(testX,testYD)==32 then ent.onLdr=true end
+  if onId==32 or mget(testX,testYD)==32 then ent.onLdr=true end
+  if onId==32 or mget(testX,(ent.y-4)//8)==32 then ent.hasMoLdr=true end
 end
 
-function entMv(ent,up,dwn,lft,rgt,xAcc,xMax,yAcc,yMax,yBurst)
-  if up and ent.onLdr then
-    ent.vy=math.max(ent.vy-yAcc,-yMax)
-  elseif dwn and ent.onLdr and not ent.onFlr then
-    ent.vy=math.max(ent.vy+yAcc,yMax)
-  elseif ent.onLdr then
-    ent.vy=0
-  elseif up and ent.onFlr then
-    ent.vy=-yBurst
-  elseif ent.vy==0 and ent.onFlr then
-    ent.y=(ent.y//8)*8+1
-    ent.vy=math.min(ent.vy,0)
-  elseif not ent.onFlr then
-    ent.vy=math.min(ent.vy+ENT_DWN_ACC,ENT_DWN_TRM_V)
+function entMv(e,up,dwn,lft,rgt,xAcc,xMax,yAcc,yMax,yBurst)
+  if up and e.onLdr then
+    e.vy=math.max(e.vy-yAcc,-yMax)
+  elseif dwn and e.onLdr and not e.onFlr then
+    e.vy=math.max(e.vy+yAcc,yMax)
+  elseif e.onLdr then
+    e.vy=0
+  elseif up and e.onFlr then
+    e.vy=-yBurst
+  elseif e.vy==0 and e.onFlr then
+    e.y=(e.y//8)*8+1
+    e.vy=math.min(e.vy,0)
+  elseif not e.onFlr then
+    e.vy=math.min(e.vy+ENT_DWN_ACC,ENT_DWN_TRM_V)
   else
-    ent.vy=0
+    e.vy=0
   end
-  if ent.inCil and ent.vy<0 then
-    ent.vy=-ent.vy
+  if e.inCil and e.vy<0 then
+    e.vy=-e.vy
   end
 
-  ent.isAcc=false
-  ent.isDeAcc=false
+  e.isAcc=false
+  e.isDeAcc=false
 
   if lft then
-    ent.vx=math.max(ent.vx-xAcc,-xMax)
-    ent.isAcc=ent.vx>-.3
+    e.vx=math.max(e.vx-xAcc,-xMax)
+    e.isAcc=e.vx>-.3
   elseif rgt then
-    ent.vx=math.min(ent.vx+xAcc,xMax)
-    ent.isAcc=ent.vx<.3
+    e.vx=math.min(e.vx+xAcc,xMax)
+    e.isAcc=e.vx<.3
   else
-    if ent.vx>0 then
-      ent.vx=math.max(ent.vx-ENT_DRG,0)
+    if e.vx>0 then
+      e.vx=math.max(e.vx-ENT_DRG,0)
     else
-      ent.vx=math.min(ent.vx+ENT_DRG,0)
+      e.vx=math.min(e.vx+ENT_DRG,0)
     end
-    ent.isDeAcc=ent.vx~=0
+    e.isDeAcc=e.vx~=0
   end
 
-  if ent.vx>0 then
-    ent.flip=0
-  elseif ent.vx<0 then
-    ent.flip=1
+  if e.vx>0 then
+    e.flip=0
+  elseif e.vx<0 then
+    e.flip=1
   end
 end
 
-function entSetSpr(ent)
-  if not ent.onLdr and not ent.onFlr then
-    ent.s=ent.bs+5
-  elseif ent.vx==0 and ent.onLdr and not ent.onFlr then
-    if ent.vy==0 then
-      ent.s=ent.bs+6
+function entSetPos(e)
+  e.x=e.x+e.vx
+  e.y=e.y+e.vy
+end
+
+function entSetSpr(e)
+  if not e.onLdr and not e.onFlr then
+    e.s=e.bs+5
+  elseif e.vx==0 and e.onLdr and not e.onFlr then
+    if e.vy==0 then
+      e.s=e.bs+6
     else
       if (str.t%16)//8==0 then
-        ent.s=ent.bs+6
+        e.s=e.bs+6
       else
-        ent.s=ent.bs+7
+        e.s=e.bs+7
       end
     end
-  elseif ent.vx==0 then
-    ent.s=ent.bs
-  elseif ent.isAcc then
-    ent.s=ent.bs+3
-  elseif ent.isDeAcc then
-    ent.s=ent.bs+4
+  elseif e.vx==0 then
+    e.s=e.bs
+  elseif e.isAcc then
+    e.s=e.bs+3
+  elseif e.isDeAcc then
+    e.s=e.bs+4
   else
     if (str.t%12)//6==0 then
-      ent.s=ent.bs+1
+      e.s=e.bs+1
     else
-      ent.s=ent.bs+2
+      e.s=e.bs+2
     end
   end
 end
 
-function entKpInShip(ent)
-  if ent.y>234 then
-    if ent.x<292 then ent.x=292 end
-    if ent.x>668 then ent.x=668 end
-  elseif ent.y>202 then
-    if ent.x<268 then ent.x=268 end
-    if ent.x>684 then ent.x=684 end
+function entKpInShip(e)
+  if e.y>234 then
+    if e.x<292 then e.x=292 end
+    if e.x>668 then e.x=668 end
+  elseif e.y>202 then
+    if e.x<268 then e.x=268 end
+    if e.x>684 then e.x=684 end
   else
-    if ent.x<268 then ent.x=268 end
-    if ent.x>700 then ent.x=700 end
+    if e.x<268 then e.x=268 end
+    if e.x>700 then e.x=700 end
   end
 
-  if ent.y>257 then ent.y=257 end
-  if ent.y<176 then ent.y=176 end
+  if e.y>257 then e.y=257 end
+  if e.y<176 then e.y=176 end
 end
 
 function doRepairs()
@@ -668,7 +747,7 @@ function playAmbientChannel(ch,comps,count)
 	nearest=nil
 	for i=1,count do
 		item=comps[i]
-		soundPos=scaleV2(bbCenter(item.c.bb),8)
+		soundPos=scaleV2(bbCntr(item.c.bb),8)
 		soundDis=sqrDistance({x=p.x,y=p.y},soundPos)
 		if soundDis<nearDis then
 			nearDis=soundDis
@@ -700,7 +779,7 @@ function drwShipSt()
 	print(string.format("Resources: %d%%",resources),180,1,6,false,1,true)
 
 	if s.pos.z<1 and s.spd<1 and resources<1 then
-		endScreen=true
+		--endScreen=true
 	end
 end
 
@@ -874,7 +953,8 @@ function drwShip()
 		drwCom(drw,yDown)
 	end
 
-  spr(g.s,g.x-cam.x-4,g.y-cam.y-9+yDown,0,1,g.flip,0,1,2)
+  if gremlinInSight then spr(g.s,g.x-cam.x-4,g.y-cam.y-9+yDown,0,1,g.flip,0,1,2) end
+  --spr(g.s,g.x-cam.x-4,g.y-cam.y-9+yDown,0,1,g.flip,0,1,2)
 	spr(p.s,p.x-cam.x-4,p.y-cam.y-9+yDown,0,1,p.flip,0,1,2)
 
 	for i,drw in pairs(drw2) do
@@ -1176,8 +1256,8 @@ function torqueSupply()
 		sply.NM.gen=dmd.NM.gen
 		sply.NM.hydPump=dmd.NM.hydPump
 	else
-		genPrct=dmd.NM.gen/torqueDmd
-		pumpPrct=dmd.NM.hydPump/torqueDmd
+		genPrct=safeDivide(dmd.NM.gen,torqueDmd)
+		pumpPrct=safeDivide(dmd.NM.hydPump,torqueDmd)
 		sply.NM.gen=torqueSpld*genPrct
 		sply.NM.hydPump=torqueSpld*pumpPrct
 	end
@@ -1197,12 +1277,12 @@ function hydSupply()
 		sply.kNSM.prp1=dmd.kNSM.prp1
 		sply.kNSM.prp2=dmd.kNSM.prp2
 	elseif avlb4Use.kNSM>0 then
-		rtrs1Prct=dmd.kNSM.rtr1/tlPrssDmd
-		rtrs2Prct=dmd.kNSM.rtr2/tlPrssDmd
-		rtrs3Prct=dmd.kNSM.rtr3/tlPrssDmd
-		rtrs4Prct=dmd.kNSM.rtr4/tlPrssDmd
-		prps1Prct=dmd.kNSM.prp1/tlPrssDmd
-		prps2Prct=dmd.kNSM.prp2/tlPrssDmd
+		rtrs1Prct=safeDivide(dmd.kNSM.rtr1,tlPrssDmd)
+		rtrs2Prct=safeDivide(dmd.kNSM.rtr2,tlPrssDmd)
+		rtrs3Prct=safeDivide(dmd.kNSM.rtr3,tlPrssDmd)
+		rtrs4Prct=safeDivide(dmd.kNSM.rtr4,tlPrssDmd)
+		prps1Prct=safeDivide(dmd.kNSM.prp1,tlPrssDmd)
+		prps2Prct=safeDivide(dmd.kNSM.prp2,tlPrssDmd)
 
 		sply.kNSM.rtr1=rtrs1Prct*avlb4Use.kNSM
 		sply.kNSM.rtr2=rtrs2Prct*avlb4Use.kNSM
@@ -1248,17 +1328,17 @@ function pwrSupply()
 		btryUse=ttlPwrDmd-genPwr
 		avlb4Stg.kW=avlb4Stg.kW-btryUse
 	else
-		dispsPrct=dmd.kW.disps/ttlPwrDmd
-		rtrs1Prct=dmd.kW.rtr1/ttlPwrDmd
-		rtrs2Prct=dmd.kW.rtr2/ttlPwrDmd
-		rtrs3Prct=dmd.kW.rtr3/ttlPwrDmd
-		rtrs4Prct=dmd.kW.rtr4/ttlPwrDmd
-		prps1Prct=dmd.kW.prp1/ttlPwrDmd
-		prps2Prct=dmd.kW.prp2/ttlPwrDmd
-		spltrPrct=dmd.kW.spltr/ttlPwrDmd
-		H2OAccPrct=dmd.kW.H2OAcc/ttlPwrDmd
-		CH4AccPrct=dmd.kW.CH4Acc/ttlPwrDmd
-		btryPrct=dmd.kW.btry/ttlPwrDmd
+		dispsPrct=safeDivide(dmd.kW.disps,ttlPwrDmd)
+		rtrs1Prct=safeDivide(dmd.kW.rtr1,ttlPwrDmd)
+		rtrs2Prct=safeDivide(dmd.kW.rtr2,ttlPwrDmd)
+		rtrs3Prct=safeDivide(dmd.kW.rtr3,ttlPwrDmd)
+		rtrs4Prct=safeDivide(dmd.kW.rtr4,ttlPwrDmd)
+		prps1Prct=safeDivide(dmd.kW.prp1,ttlPwrDmd)
+		prps2Prct=safeDivide(dmd.kW.prp2,ttlPwrDmd)
+		spltrPrct=safeDivide(dmd.kW.spltr,ttlPwrDmd)
+		H2OAccPrct=safeDivide(dmd.kW.H2OAcc,ttlPwrDmd)
+		CH4AccPrct=safeDivide(dmd.kW.CH4Acc,ttlPwrDmd)
+		btryPrct=safeDivide(dmd.kW.btry,ttlPwrDmd)
 
 		ttlPwrAvlb=genPwr+btryPwr
 
@@ -1490,6 +1570,17 @@ function rotProp(spl,prop)
 	return rotThrster('prps',spl,prop,PROP_MAX_HYD_DMD_KNSM,PROP_MAX_ROTATE_SPD_D)
 end
 
+function isLinThFlr(lx1,ly1,lx2,ly2)
+  local chkCnt=distance({x=lx1,y=ly1},{x=lx2,y=ly2})//8
+  for i=0,chkCnt do
+    local tId=mget(lerp(lx1,lx2,i/chkCnt)//8,lerp(ly1,ly2,i/chkCnt)//8)
+    if tId==16 or tId==189 or tId==158 then
+      return true
+    end
+  end
+  return false
+end
+
 function randRangeF(min,max)
   return lerp(min,max,math.random())
 end
@@ -1546,9 +1637,14 @@ function joinBBs(bbs)
 	return {min_x=min_x,min_y=min_y,max_x=max_x,max_y=max_y}
 end
 
-function bbCenter(bbs)
+function bbHorPxlCntr(bbs)
+  local bb=joinBBs(bbs)
+  return {x=((bb.max_x+1-bb.min_x)/2+bb.min_x)*8,y=(bb.max_y+1)*8-1}
+end
+
+function bbCntr(bbs)
 	local bb=joinBBs(bbs)
-	return {x=(bb.max_x-bb.min_x)/2+bb.min_x,y=(bb.max_y-bb.min_y)/2+bb.min_y}
+	return {x=(bb.max_x+1-bb.min_x)/2+bb.min_x,y=(bb.max_y-bb.min_y)/2+bb.min_y}
 end
 
 function rotV2(vec,angle)
