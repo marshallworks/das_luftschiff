@@ -70,9 +70,10 @@ H2O_ACC_PER_TIC=12
 CH4_ACC_PER_TIC=20
 
 str={
-	t= 0,
-	x= 60,
-	y= 42
+	t=0,
+	x=60,
+	y=42,
+  gremlinSightings=0
 }
 
 gg={
@@ -98,6 +99,7 @@ strScreen=true
 endScreen=false
 showControls=false
 showMap=false
+gremlinSpawned=false
 gremlinInSight=false
 gremlinLastSeen=0
 controlType=0
@@ -118,7 +120,7 @@ function updCam(x,y)
 end
 
 function initCam()
-  cam={t=0,x=0,y=0,xCell=0,yCell=0,xOff=0,yOff=0}
+  cam={x=0,y=0,xCell=0,yCell=0,xOff=0,yOff=0}
   updCam(p.x-120,136)
 end
 
@@ -406,6 +408,7 @@ function TIC()
 		else
 			print(string.format("Distance: %dkm",s.dis//1000),84,84)
 		end
+    print(string.format("Gremlin Sightings: %d",str.gremlinSightings//1),84,98)
 		sfx(-1,"D#1",-1,0,0,0)
 	else
 		music()
@@ -441,14 +444,16 @@ function TIC()
 			{c=rtr2,id=4,nt="C-1"}
 		},4)
 
-    if (distance(p,g)<120 and not isLinThFlr(p.x,p.y-7,g.x,g.y-1)) or str.t-gremlinLastSeen<60 then
-      gremlinInSight=true
-      if gremlinLastSeen==0 then
-        gremlinLastSeen=str.t
+    if gremlinSpawned then
+      if (distance(p,g)<120 and not isLinThFlr(p.x,p.y-7,g.x,g.y-1)) or str.t-gremlinLastSeen<60 then
+        gremlinInSight=true
+        if gremlinLastSeen==0 then
+          gremlinLastSeen=str.t
+        end
+      else
+        gremlinInSight=false
+        gremlinLastSeen=0
       end
-    else
-      gremlinInSight=false
-      gremlinLastSeen=0
     end
 
 		if showControls then
@@ -487,7 +492,13 @@ function TIC()
 		else
 			playerMovement()
 		end
-    gremlinMovement()
+    if gremlinSpawned then
+      gremlinMovement()
+      gremlinSpawned=distance(p,g)>2
+      if not gremlinSpawned then doGremlinVanishAnim(g) end
+    else
+      maybeSpawnGremlin()
+    end
 
 		cls(0)
 		simulate()
@@ -502,8 +513,36 @@ function TIC()
 		end
 
 		drwShipSt()
+    drwParticles()
 	end
 	str.t=str.t+1
+end
+
+function doGremlinVanishAnim(pos)
+  particles={}
+  for i=1,32 do
+    path=rotV2({x=1,y=1},math.random(359))
+    particles[i]={x=pos.x,y=pos.y,lt=12,dir=path,spd=math.random(1,4)}
+  end
+end
+
+function drwParticles()
+  local hasPart=false
+  if particles~=nil then
+    for i=1,#particles do
+      part=particles[i]
+      part.lt=part.lt-1
+      if part.lt>0 then
+        hasPart=true
+        trv=scaleV2(part.dir,part.spd/6)
+        part.x=part.x+trv.x
+        part.y=part.y+trv.y
+        pix(part.x-cam.x,part.y-cam.y,1)
+      else
+      end
+    end
+  end
+  if not hasPart then particles=nil end
 end
 
 function playerMovement()
@@ -516,6 +555,16 @@ function playerMovement()
   entSetPos(p)
   updCam(lerp(cam.x,p.x-120,0.15),lerp(cam.y,136,0.15))
   entKpInShip(p)
+end
+
+function maybeSpawnGremlin()
+  spwChnc=lerp(99990,99910,clamp01(invLerp(0,8000000,s.dis)))
+  gremlinSpawned = math.random(100000)>spwChnc
+  if gremlinSpawned then
+    g.x=g.x+math.random(-100,100)
+    g.y=g.y+math.random(-60,60)
+    str.gremlinSightings=str.gremlinSightings+1
+  end
 end
 
 function gremlinTarget()
@@ -779,7 +828,7 @@ function drwShipSt()
 	print(string.format("Resources: %d%%",resources),180,1,6,false,1,true)
 
 	if s.pos.z<1 and s.spd<1 and resources<1 then
-		--endScreen=true
+		endScreen=true
 	end
 end
 
@@ -953,8 +1002,7 @@ function drwShip()
 		drwCom(drw,yDown)
 	end
 
-  if gremlinInSight then spr(g.s,g.x-cam.x-4,g.y-cam.y-9+yDown,0,1,g.flip,0,1,2) end
-  --spr(g.s,g.x-cam.x-4,g.y-cam.y-9+yDown,0,1,g.flip,0,1,2)
+  if gremlinSpawned and gremlinInSight then spr(g.s,g.x-cam.x-4,g.y-cam.y-9+yDown,0,1,g.flip,0,1,2) end
 	spr(p.s,p.x-cam.x-4,p.y-cam.y-9+yDown,0,1,p.flip,0,1,2)
 
 	for i,drw in pairs(drw2) do
