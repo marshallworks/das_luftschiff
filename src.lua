@@ -925,7 +925,7 @@ function drwGame()
 	if showControls then
 		map(0,125,30,11,0,48)
 
-		print("DLS Radar",8,57,15,false,1,true)
+		print("Resource Radar",7,57,15,false,1,true)
 		print("RTR",78,57,6,false,1,true)
 		print("Angl",74,65,6,false,1,true)
 		print("VS",100,57,6,false,1,true)
@@ -987,12 +987,14 @@ function drwGame()
       drwBarSt(cl.bar,cl.lvl,CLL_MAX_M3)
     end
 
+    clip(6,64,50,63)
 		drwMap(5,7,16,72)
     sHCent={x=32,y=96}
     local pt1=rotV2Ct(sHCent,{x=32,y=92},s.hdg)
     local pt2=rotV2Ct(sHCent,{x=30,y=100},s.hdg)
     local pt3=rotV2Ct(sHCent,{x=34,y=100},s.hdg)
     tri(pt1.x,pt1.y,pt2.x,pt2.y,pt3.x,pt3.y,5)
+    clip()
 
 		if controlType==0 then
 			rectb(71,63,26,34,7)
