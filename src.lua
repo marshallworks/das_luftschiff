@@ -1602,11 +1602,22 @@ function rotThrster(type,spl,thrst,maxDmd,maxSpd)
 		aglAvl=hydAvl*maxSpd
 		dsrdAngl=s.con.rot[type]-thrst.rot
 		moveAngl=math.min(aglAvl,math.abs(dsrdAngl))
-		if dsrdAngl<0 then
-			thrst.rot=thrst.rot-moveAngl
-		else
-			thrst.rot=thrst.rot+moveAngl
+
+    if thrst.rot<s.con.rot[type] then
+      if math.abs(thrst.rot-s.con.rot[type])<180 then
+        thrst.rot=thrst.rot+moveAngl
+      else
+        thrst.rot=thrst.rot-moveAngl
+      end
+    else
+      if math.abs(thrst.rot-s.con.rot[type])<180 then
+        thrst.rot=thrst.rot-moveAngl
+      else
+        thrst.rot=thrst.rot+moveAngl
+      end
 		end
+    if thrst.rot>=360 then thrst.rot=thrst.rot-360 end
+    if thrst.rot<0 then thrst.rot=360+thrst.rot end
 	end
 end
 
