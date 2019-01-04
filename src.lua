@@ -73,7 +73,7 @@ str={
 	t=0,
 	x=60,
 	y=42,
-  gremlinSightings=0
+  endTimeOut=0
 }
 
 gg={
@@ -119,6 +119,16 @@ function updCam(x,y)
   cam.yOff=-(y%8)
 end
 
+function rstStr()
+  music(0)
+  str.x=60
+  str.y=42
+end
+
+function initStats()
+  sta={dis=0,gremlinSightings=0}
+end
+
 function initCam()
   cam={x=0,y=0,xCell=0,yCell=0,xOff=0,yOff=0}
   updCam(p.x-120,136)
@@ -144,6 +154,15 @@ function initGame()
   initGrmln()
   initCam()
 	initShip()
+  initStats()
+end
+
+function rstGame()
+  initPlyr()
+  initGrmln()
+  initCam()
+  initShip()
+  initStats()
 end
 
 function initShip()
@@ -402,13 +421,25 @@ function TIC()
 		print("A Repair/Activate",84,106)
 	elseif endScreen then
 		cls()
+    if btnp(5) then
+      rstGame()
+      endScreen=false
+    end
+    if (str.t-str.endTimeOut)>18000 then
+      rstStr()
+      rstGame()
+      endScreen=false
+      strScreen=true
+    end
 		print("Game Over",84,70)
 		if s.dis<10000 then
 			print(string.format("Distance: %dm",s.dis//1),84,84)
 		else
 			print(string.format("Distance: %dkm",s.dis//1000),84,84)
 		end
-    print(string.format("Gremlin Sightings: %d",str.gremlinSightings//1),84,98)
+    print(string.format("Gremlin Sightings: %d",sta.gremlinSightings//1),84,98)
+    print("X Restart",84,112)
+
 		sfx(-1,"D#1",-1,0,0,0)
 	else
 		music()
@@ -563,7 +594,7 @@ function maybeSpawnGremlin()
   if gremlinSpawned then
     g.x=g.x+math.random(-100,100)
     g.y=g.y+math.random(-60,60)
-    str.gremlinSightings=str.gremlinSightings+1
+    sta.gremlinSightings=sta.gremlinSightings+1
   end
 end
 
@@ -829,6 +860,7 @@ function drwShipSt()
 
 	if s.pos.z<1 and s.spd<1 and resources<1 then
 		endScreen=true
+    str.endTimeOut=str.t
 	end
 end
 
@@ -956,15 +988,11 @@ function drwGame()
     end
 
 		drwMap(5,7,16,72)
-		sHRot=0
-		if s.hdg>=45 and s.hdg<135 then
-			sHRot=1
-		elseif s.hdg>=135 and s.hdg<225 then
-			sHRot=2
-		elseif s.hdg>=225 and s.hdg<315 then
-			sHRot=3
-		end
-		spr(422,28,92,0,1,0,sHRot)
+    sHCent={x=32,y=96}
+    local pt1=rotV2Ct(sHCent,{x=32,y=92},s.hdg)
+    local pt2=rotV2Ct(sHCent,{x=30,y=100},s.hdg)
+    local pt3=rotV2Ct(sHCent,{x=34,y=100},s.hdg)
+    tri(pt1.x,pt1.y,pt2.x,pt2.y,pt3.x,pt3.y,5)
 
 		if controlType==0 then
 			rectb(71,63,26,34,7)
@@ -1514,6 +1542,7 @@ function applyForces()
 	s.pos.x=s.pos.x+changeX
 	s.pos.y=s.pos.y+changeY
 	s.dis=s.dis+math.sqrt(changeX*changeX+changeY*changeY)
+  sta.dis=s.dis
 
 	ttlHydrogenLiftForce=(ttlAirWeight-ttlHydrogenWeight)*KG_TO_N*HYDROGEN_LIFT_ADJ
 	ttlWingLiftForce=s.spd*WING_LIFT*altAdj
@@ -1706,11 +1735,16 @@ function bbCntr(bbs)
 	return {x=(bb.max_x+1-bb.min_x)/2+bb.min_x,y=(bb.max_y-bb.min_y)/2+bb.min_y}
 end
 
-function rotV2(vec,angle)
-	r=math.rad(angle)
+function rotV2(vec,angl)
+	r=math.rad(angl)
 	aSin=math.sin(r)
 	aCos=math.cos(r)
 	return {x=vec.x*aCos-vec.y*aSin,y=vec.y*aCos+vec.x*aSin}
+end
+
+function rotV2Ct(cnt,vec,angl)
+  r=rotV2({x=vec.x-cnt.x,y=vec.y-cnt.y},angl)
+  return {x=r.x+cnt.x,y=r.y+cnt.y}
 end
 
 function contains(bb,pos)
