@@ -97,7 +97,8 @@ gg={
 
 strScreen=true
 endScreen=false
-showControls=false
+showNav=false
+showSta=false
 showMap=false
 gremlinSpawned=false
 gremlinInSight=false
@@ -155,6 +156,7 @@ function initGame()
   initCam()
 	initShip()
   initStats()
+  dmgPart={}
 end
 
 function rstGame()
@@ -163,6 +165,7 @@ function rstGame()
   initCam()
   initShip()
   initStats()
+  dmgPart={}
 end
 
 function initShip()
@@ -176,34 +179,38 @@ function initShip()
     },
     env={Atmo=SEA_LEVEL_AIR_DENSITY,H2O=0.0,CH4=0.0}
   }
-  clDrw={s=482,w=5,h=2,rx=3}
-  prpDrw={s=400,w=2,h=3}
-  rtr1Drw={s=434,w=6,h=1}
-  rtr2Drw={s=420,w=2,h=1}
+  clDrw={s=370,w=5,h=2,rx=3}
+  prpDrw={s=288,w=2,h=3}
+  rtr1Drw={s=322,w=6,h=1}
+  rtr2Drw={s=308,w=2,h=1}
 	accH2O={
 		st=1,
 		wr=randRangeF(0.00001,0.00003),
 		bb={{min_x=85,min_y=23,max_x=86,max_y=24}},
-		drw={{s=430,w=2,h=2}}
+		drw={{s=318,w=2,h=2}},
+    dmg={{efct="elec",emi=nil,x=.6,y=.6,xR=.6,yR=.6}}
 	}
 	accCH4={
 		st=1,
 		wr=randRangeF(0.00001,0.00003),
 		bb={{min_x=83,min_y=27,max_x=84,max_y=28}},
-		drw={{s=428,w=2,h=2}}
+		drw={{s=316,w=2,h=2}},
+    dmg={{efct="elec",emi=nil,x=.6,y=.6,xR=.6,yR=.6}}
 	}
 	btry={
 		st=1,
 		wr=randRangeF(0.000003,0.000007),
 		lvl=BTRY_MAX_CHARGE_KW,
 		bb={{min_x=42,min_y=23,max_x=47,max_y=24}},
-		drw={{s=448,w=3,h=2,rx=2}}
+		drw={{s=336,w=3,h=2,rx=2}},
+    dmg={{efct="elec",emi=nil,x=.5,y=.6,xR=3,yR=.6}}
 	}
 	bilr={
 		st=1,
 		wr=randRangeF(0.000015,0.00003),
 		bb={{min_x=48,min_y=27,max_x=51,max_y=28}},
-		drw={{s=459,w=3,h=2,rx=2}}
+		drw={{s=347,w=3,h=2,rx=2}},
+    dmg={{efct="fire",emi=nil,x=.8,y=.5,xR=.5,yR=.8}}
 	}
 	cl1={
 		st=1,
@@ -212,7 +219,8 @@ function initShip()
 		vent=0.0,
 		bb={{min_x=77,min_y=21,max_x=84,max_y=22}},
 		drw={clDrw},
-    bar={x=202,y=108,w=4,h=16,c=5}
+    bar={x=202,y=108,w=4,h=16,c=5},
+    dmg={{efct="hydrogen",emi=nil,x=.5,y=.5,xR=4,yR=1}}
 	}
 	cl2={
 		st=1,
@@ -221,7 +229,8 @@ function initShip()
 		vent=0.0,
 		bb={{min_x=68,min_y=21,max_x=75,max_y=22}},
 		drw={clDrw},
-    bar={x=210,y=108,w=4,h=16,c=5}
+    bar={x=210,y=108,w=4,h=16,c=5},
+    dmg={{efct="hydrogen",emi=nil,x=.5,y=.5,xR=4,yR=1}}
 	}
 	cl3={
 		st=1,
@@ -230,7 +239,8 @@ function initShip()
 		vent=0.0,
 		bb={{min_x=44,min_y=21,max_x=51,max_y=22}},
 		drw={clDrw},
-    bar={x=218,y=108,w=4,h=16,c=5}
+    bar={x=218,y=108,w=4,h=16,c=5},
+    dmg={{efct="hydrogen",emi=nil,x=.5,y=.5,xR=4,yR=1}}
 	}
 	cl4={
 		st=1,
@@ -239,32 +249,42 @@ function initShip()
 		vent=0.0,
 		bb={{min_x=35,min_y=21,max_x=42,max_y=22}},
 		drw={clDrw},
-    bar={x=226,y=108,w=4,h=16,c=5}
+    bar={x=226,y=108,w=4,h=16,c=5},
+    dmg={{efct="hydrogen",emi=nil,x=.5,y=.5,xR=4,yR=1}}
 	}
-	disps={
+	dispNav={
 		st=1,
 		on=true,
 		bb={{min_x=56,min_y=23,max_x=59,max_y=24}},
-		drw={{s=424,w=4,h=2}}
+		drw={{s=312,w=4,h=2}}
 	}
+  dispSta={
+    st=1,
+    on=true,
+    bb={{min_x=60,min_y=23,max_x=63,max_y=24}},
+    drw={{s=424,w=4,h=2}}
+  }
 	hydPump={
 		st=1,
 		wr=randRangeF(0.000015,0.00003),
 		bb={{min_x=37,min_y=27,max_x=38,max_y=28}},
-		drw={{s=451,w=2,h=2}}
+		drw={{s=339,w=2,h=2}},
+    dmg={{efct="hydraulics",emi=nil,x=.4,y=.6,xR=.5,yR=.45}}
 	}
 	hydRes={
 		st=1,
 		wr=randRangeF(0.000002,0.000004),
 		lvl=HYD_MAX_KNSM,
 		bb={{min_x=37,min_y=23,max_x=38,max_y=24}},
-		drw={{s=480,w=2,h=2}}
+		drw={{s=368,w=2,h=2}},
+    dmg={{efct="hydraulics",emi=nil,x=.5,y=.6,xR=.5,yR=.45}}
 	}
 	gen={
 		st=1,
 		wr=randRangeF(0.000015,0.00003),
 		bb={{min_x=40,min_y=27,max_x=43,max_y=28}},
-		drw={{s=453,w=4,h=2}}
+		drw={{s=341,w=4,h=2}},
+    dmg={{efct="elec",emi=nil,x=.5,y=.5,xR=1,yR=1}}
 	}
 	prp1={
 		st=1,
@@ -274,7 +294,8 @@ function initShip()
 		bb={{min_x=33,min_y=22,max_x=34,max_y=24}},
 		drw={prpDrw},
     ndl={x=169,y=113,c=5},
-    bar={x=161,y=108,w=2,h=11,c=5}
+    bar={x=161,y=108,w=2,h=11,c=5},
+    dmg={{efct="elec",emi=nil,x=.7,y=.5,xR=.8,yR=.6}}
 	}
 	prp2={
 		st=1,
@@ -284,15 +305,16 @@ function initShip()
 		bb={{min_x=33,min_y=26,max_x=34,max_y=28}},
 		drw={prpDrw},
     ndl={x=185,y=113,c=5},
-    bar={x=177,y=108,w=2,h=11,c=5}
+    bar={x=177,y=108,w=2,h=11,c=5},
+    dmg={{efct="elec",emi=nil,x=.7,y=.5,xR=.8,yR=.6}}
 	}
 	pto1={
 		bb={{min_x=39,min_y=27,max_x=39,max_y=27},{min_x=39,min_y=28,max_x=39,max_y=28}},
-		drw={{s=462,w=1,h=1},{s=463,w=1,h=1}}
+		drw={{s=350,w=1,h=1},{s=351,w=1,h=1}}
 	}
 	pto2={
 		bb={{min_x=44,min_y=27,max_x=45,max_y=27},{min_x=44,min_y=28,max_x=45,max_y=28}},
-		drw={{s=462,w=1,h=1},{s=463,w=1,h=1}}
+		drw={{s=350,w=1,h=1},{s=351,w=1,h=1}}
 	}
 	rtr1={
 		st=1,
@@ -302,7 +324,8 @@ function initShip()
 		bb={{min_x=76,min_y=32,max_x=81,max_y=32},{min_x=78,min_y=31,max_x=79,max_y=31}},
 		drw={rtr1Drw,rtr2Drw},
     ndl={ x=85,y=110,c=5},
-    bar={x=73,y=108,w=2,h=11,c=5}
+    bar={x=73,y=108,w=2,h=11,c=5},
+    dmg={{efct="elec",emi=nil,x=.5,y=.5,xR=1,yR=1}}
 	}
 	rtr2={
 		st=1,
@@ -312,7 +335,8 @@ function initShip()
 		bb={{min_x=66,min_y=32,max_x=71,max_y=32},{min_x=68,min_y=31,max_x=69,max_y=31}},
 		drw={rtr1Drw,rtr2Drw},
     ndl={x=101,y=110,c=5},
-    bar={x=89,y=108,w=2,h=11,c=5}
+    bar={x=89,y=108,w=2,h=11,c=5},
+    dmg={{efct="elec",emi=nil,x=.5,y=.5,xR=1,yR=1}}
 	}
 	rtr3={
 		st=1,
@@ -322,7 +346,8 @@ function initShip()
 		bb={{min_x=48,min_y=32,max_x=53,max_y=32},{min_x=50,min_y=31,max_x=51,max_y=31}},
 		drw={rtr1Drw,rtr2Drw},
     ndl={x=133,y=110,c=5},
-    bar={x=121,y=108,w=2,h=11,c=5}
+    bar={x=121,y=108,w=2,h=11,c=5},
+    dmg={{efct="elec",emi=nil,x=.5,y=.5,xR=1,yR=1}}
 	}
 	rtr4={
 		st=1,
@@ -332,51 +357,58 @@ function initShip()
 		bb={{min_x=38,min_y=32,max_x=43,max_y=32},{min_x=40,min_y=31,max_x=41,max_y=31}},
 		drw={rtr1Drw,rtr2Drw},
     ndl={x=149,y=110,c=5},
-    bar={x=137,y=108,w=2,h=11,c=5}
+    bar={x=137,y=108,w=2,h=11,c=5},
+    dmg={{efct="elec",emi=nil,x=.5,y=.5,xR=1,yR=1}}
 	}
 	spltr={
 		st=1,
 		wr=randRangeF(0.000015,0.00003),
 		bb={{min_x=62,min_y=28,max_x=63,max_y=28}},
-		drw={{s=418,w=2,h=1}}
+		drw={{s=306,w=2,h=1}},
+    dmg={{efct="elec",emi=nil,x=.5,y=.6,xR=.4,yR=.4}}
 	}
 	tkH={
 		st=1,
 		wr=randRangeF(0.000001,0.000002),
 		lvl=H_TANK_MAX_KG,
 		bb={{min_x=58,min_y=26,max_x=61,max_y=29}},
-		drw={{s=478,w=2,h=3,ry=2}}
+		drw={{s=366,w=2,h=3,ry=2}},
+    dmg={{efct="hydrogen",emi=nil,x=.5,y=.6,xR=1.2,yR=1.8}}
 	}
 	tkO={
 		st=1,
 		wr=randRangeF(0.000001,0.000002),
 		lvl=O_TANK_MAX_KG,
 		bb={{min_x=58,min_y=31,max_x=61,max_y=32}},
-		drw={{s=492,w=2,h=2}}
+		drw={{s=380,w=2,h=2}},
+    dmg={{efct="oxygen",emi=nil,x=.5,y=.5,xR=1,yR=1}}
 	}
 	tkH2O={
 		st=1,
 		wr=randRangeF(0.000001,0.000002),
 		lvl=H2O_TANK_MAX_KG,
 		bb={{min_x=68,min_y=27,max_x=73,max_y=28}},
-		drw={{s=487,w=3,h=2,rx=2}},
-    bar={x=202,y=68,w=4,h=24,c=5}
+		drw={{s=375,w=3,h=2,rx=2}},
+    bar={x=202,y=68,w=4,h=24,c=5},
+    dmg={{efct="water",emi=nil,x=.5,y=.6,xR=1.5,yR=.45}}
 	}
 	tkCH4={
 		st=1,
 		wr=randRangeF(0.000001,0.000002),
 		lvl=CH4_TANK_MAX_KG,
 		bb={{min_x=75,min_y=27,max_x=80,max_y=28}},
-		drw={{s=490,w=2,h=2}},
-    bar={x=218,y=68,w=4,h=24,c=5}
+		drw={{s=378,w=2,h=2}},
+    bar={x=218,y=68,w=4,h=24,c=5},
+    dmg={{efct="methane",emi=nil,x=.5,y=.4,xR=2.2,yR=.6}}
 	}
 	turb={
 		st=1,
 		wr=randRangeF(0.000015,0.00003),
 		bb={{min_x=46,min_y=27,max_x=47,max_y=28}},
-		drw={{s=457,w=2,h=2}}
+		drw={{s=345,w=2,h=2}},
+    dmg={{efct="steam",emi=nil,x=.5,y=.5,xR=1,yR=1}}
 	}
-	drw1={disps,bilr,turb,hydRes,hydPump,gen,rtr1,rtr3,prp1,prp2,accH2O,accCH4,spltr,tkO,tkH2O,pto1,pto2}
+	drw1={dispNav,dispSta,bilr,turb,hydRes,hydPump,gen,rtr1,rtr3,prp1,prp2,accH2O,accCH4,spltr,tkO,tkH2O,pto1,pto2}
 	drw2={cl1,cl2,cl3,cl4,rtr2,rtr4,tkH,tkCH4,btry}
 	wear={bilr,turb,hydRes,hydPump,gen,rtr1,rtr2,rtr3,rtr4,prp1,prp2,accH2O,accCH4,cl1,cl2,cl3,cl4,btry,spltr,tkH,tkO,tkH2O,tkCH4}
   ggPrp={prp1,prp2}
@@ -445,18 +477,21 @@ function TIC()
 		music()
 		--if btnp(5) then showMap=not showMap end
 
-		if comContains(disps.bb,{x=p.x,y=p.y}) then
-			if btnp(6) then showControls=not showControls end
+		if comContains(dispNav.bb,p) then
+			if btnp(6) then showNav=not showNav end
 		end
+    if comContains(dispSta.bb,p) then
+      if btnp(6) then showSta=not showSta end
+    end
 		doRepairs()
 
-		if not showControls and btn(6) then
+		if not showNav and btn(6) then
 			if (str.t%16)==0 then
-				sfx(2,24,4,3,4,2)
+				--sfx(2,24,4,3,4,2)
 			end
 		end
 
-		sfx(0,"D#1",-1,0,10,0)
+		--sfx(0,"D#1",-1,0,10,0)
 
 		playAmbientChannel(1,{
 			{c=accH2O,id=6,nt="D#3"},
@@ -487,7 +522,7 @@ function TIC()
       end
     end
 
-		if showControls then
+		if showNav then
 			if btnp(2) then controlType=controlType-1 end
 			if btnp(3) then controlType=controlType+1 end
 
@@ -544,6 +579,7 @@ function TIC()
 		end
 
 		drwShipSt()
+    drwDmgCom()
     drwParticles()
 	end
 	str.t=str.t+1
@@ -554,6 +590,64 @@ function doGremlinVanishAnim(pos)
   for i=1,32 do
     path=rotV2({x=1,y=1},math.random(359))
     particles[i]={x=pos.x,y=pos.y,lt=12,dir=path,spd=math.random(1,4)}
+  end
+end
+
+function addNxtSprPrt(stts,emi,bb)
+  local x=emi.x+(randRangeF(emi.xR*-8,emi.xR*8))//1
+  local y=emi.y+(randRangeF(emi.yR*-8,emi.yR*8))//1
+  emi.nxt=time()+math.random((emi.spwMin*1000*math.max(stts,.1))//1,(emi.spwMax*1000*math.max(stts,.1))//1)
+  local sprId=emi.sprs[math.random(1,#emi.sprs)]
+  if sprId==408 or sprId==409 or sprId==411 or sprId==412 then y=(emi.y+emi.yR*8)//1 end
+  table.insert(dmgPart,{spr=sprId,x=x,y=y,vx=randRangeF(-emi.vx,emi.vx),vy=randRangeF(-emi.vy,emi.vy),flk=emi.flk,rot=emi.rot,t=0,lt=math.random(emi.ltMin*60//1,emi.ltMax*60//1),grv=emi.grv})
+end
+
+function addDmgSprPrtEmi(sprIds,spwMin,spwMax,ltMin,ltMax,grv,vx,vy,flk,rot,dmg,bb)
+  local x=(bb.max_x-bb.min_x)*dmg.x+bb.min_x-4
+  local y=(bb.max_y-bb.min_y)*dmg.y+bb.min_y-4
+  dmg.emi={sprs=sprIds,spwMin=spwMin,spwMax=spwMax,ltMin=ltMin,ltMax=ltMax,t=time(),nxt=time()+10,x=x,y=y,xR=dmg.xR,yR=dmg.yR,vx=vx,vy=vy,flk=flk,rot=rot,grv=grv}
+end
+
+function drwDmg(stts,dmg,bb)
+  if dmg.efct=="steam" then
+    addDmgSprPrtEmi({402,403},.002,.006,.06,.25,-1,.1,.1,true,true,dmg,bb)
+  elseif dmg.efct=="water" then
+    addDmgSprPrtEmi({407,408,409},2.4,7.2,4.2,6.8,0,0,0,false,false,dmg,bb)
+  elseif dmg.efct=="methane" then
+    addDmgSprPrtEmi({404},.008,.012,.06,.25,-.6,.1,.1,true,true,dmg,bb)
+  elseif dmg.efct=="oxygen" then
+    addDmgSprPrtEmi({403,404},.04,.08,.06,.25,-.5,.15,.15,true,true,dmg,bb)
+  elseif dmg.efct=="hydrogen" then
+    addDmgSprPrtEmi({405,406},.008,.048,.12,.5,-0.1,.08,.08,true,true,dmg,bb)
+  elseif dmg.efct=="elec" then
+    addDmgSprPrtEmi({413,414,415},.16,.32,.12,.5,0,.002,.002,true,true,dmg,bb)
+  elseif dmg.efct=="hydraulics" then
+    addDmgSprPrtEmi({410,411,412},2.2,6.8,3.8,6.2,0,0,0,false,false,dmg,bb)
+  elseif dmg.efct=="fire" then
+    addDmgSprPrtEmi({422,423},.64,1.28,.76,2,0,.001,0,false,false,dmg,bb)
+  end
+end
+
+function drwDmgCom()
+  for i,com in pairs(wear) do
+    if com.dmg~=nil then
+      if com.st<.5 then
+        for i=1,#com.dmg do
+          local emi=com.dmg[i].emi
+          if emi==nil then
+            drwDmg(com.st,com.dmg[i],joinPxlBB(com.bb))
+          else
+            if time()>=emi.nxt then
+              addNxtSprPrt(com.st,emi,joinPxlBB(com.bb))
+            end
+          end
+        end
+      else
+        for i=1,#com.dmg do
+          com.dmg[i].emi=nil
+        end
+      end
+    end
   end
 end
 
@@ -574,6 +668,25 @@ function drwParticles()
     end
   end
   if not hasPart then particles=nil end
+
+  for i=1,#dmgPart do
+    dp=dmgPart[i]
+    if dp~=nil then
+      dp.lt=dp.lt-1
+      if dp.lt>0 then
+        dp.x=dp.x+dp.vx
+        dp.y=dp.y+dp.vy+dp.grv
+        dp.t=dp.t+1
+        if not dp.flk or (dp.t%2==0) then
+          local rot=0
+          if dp.rot then rot=math.random(3) end
+          spr(dp.spr,dp.x-cam.x,dp.y-cam.y,0,1,rot)
+        end
+      else
+        table.remove(dmgPart,i)
+      end
+    end
+  end
 end
 
 function playerMovement()
@@ -581,7 +694,7 @@ function playerMovement()
   entMv(p,btn(0),btn(1),btn(2),btn(3),.06,.8,.04,.3,1.2)
   entSetSpr(p)
 	if p.onFlr and p.vx~=0 and (str.t%12)==0 then
-		sfx(2,48,3,3,4,3)
+		--sfx(2,48,3,3,4,3)
 	end
   entSetPos(p)
   updCam(lerp(cam.x,p.x-120,0.15),lerp(cam.y,136,0.15))
@@ -809,7 +922,7 @@ end
 function applyWear()
 	for i,com in pairs(wear) do
 		if com.st~=nil and com.wr~=nil then
-			com.st=com.st-com.wr
+			com.st=clamp01(com.st-com.wr)
 		end
 	end
 end
@@ -819,7 +932,7 @@ function maybeDoRepair(c,p)
 end
 
 function playAmbient(c,dis,channel,id,note)
-	sfx(id,note,-1,channel,clamp01(invLerp(2000,0,dis))*12//1,0)
+	--sfx(id,note,-1,channel,clamp01(invLerp(2000,0,dis))*12//1,0)
 end
 
 function playAmbientChannel(ch,comps,count)
@@ -841,7 +954,7 @@ function playAmbientChannel(ch,comps,count)
 end
 
 function drwShipSt()
-	repair=math.max((math.min(disps.st,bilr.st,turb.st,hydRes.st,hydPump.st,
+	repair=math.max((math.min(dispNav.st,dispSta.st,bilr.st,turb.st,hydRes.st,hydPump.st,
       gen.st,rtr1.st,rtr2.st,rtr3.st,rtr4.st,prp1.st,prp2.st,accH2O.st,
       accCH4.st,cl1.st,cl2.st,cl3.st,cl4.st,btry.st,spltr.st,tkH.st,tkO.st,
 			tkH2O.st,tkCH4.st)*100+0.5)//1,0)
@@ -859,8 +972,8 @@ function drwShipSt()
 	print(string.format("Resources: %d%%",resources),180,1,6,false,1,true)
 
 	if s.pos.z<1 and s.spd<1 and resources<1 then
-		endScreen=true
-    str.endTimeOut=str.t
+		--endScreen=true
+    --str.endTimeOut=str.t
 	end
 end
 
@@ -922,7 +1035,7 @@ function drwGame()
   drwEnv()
 	drwShip()
 
-	if showControls then
+	if showNav then
 		map(0,125,30,11,0,48)
 
 		print("Resource Radar",7,57,15,false,1,true)
@@ -1020,7 +1133,7 @@ end
 function drwShip()
 	maxMapHeight=18
 	mapYAdjust=0
-	if showControls then
+	if showNav then
 		maxMapHeight=6
 		mapYAdjust=3
 	end
@@ -1042,25 +1155,19 @@ end
 
 function drwCom(com,yDown)
 	for i,bb in pairs(com.bb) do
-		drwPart(bb,com.drw[i],yDown)
-	end
-
-	if com.st~=nil then
-		local bb=joinBBs(com.bb)
-    local posX=(bb.min_x-cam.xCell)*8+cam.xOff
-		baseY=(bb.max_y*8-cam.y+9)
-		baseX=posX+((bb.max_x-bb.min_x)/2)*8-4
-		sW=(lerp(0,16,com.st)+0.5)//1
-		rect(baseX,baseY,sW,2,6)
-		rect(baseX+sW,baseY,16-sW,2,5)
+    local dmged=false
+    if com.st~=nil and com.st<.25 then dmged=true end
+		drwPart(bb,com.drw[i],yDown,dmged)
 	end
 end
 
-function drwPart(bb,drw,yDown)
+function drwPart(bb,drw,yDown,dmged)
   local posX=bb.min_x-cam.xCell
   local posY=bb.min_y-cam.yCell
   local reqX=bb.max_x-bb.min_x
   local reqY=bb.max_y-bb.min_y
+  local dmgedOff=0
+  if dmged then dmgedOff=112 end
 
   local ySub=0
   for y=0,reqY do
@@ -1085,7 +1192,7 @@ function drwPart(bb,drw,yDown)
       else
         xOff=x%drw.w
       end
-      spr(drw.s+yOff+xOff,(posX+x)*8+cam.xOff,(posY+y)*8+cam.yOff+yDown,0)
+      spr(drw.s+yOff+xOff+dmgedOff,(posX+x)*8+cam.xOff,(posY+y)*8+cam.yOff+yDown,0)
     end
   end
 end
@@ -1137,14 +1244,14 @@ end
 function dmgSysts(vSpeed)
   for i,com in pairs(wear) do
     if math.random()>clamp01(invLerp(-16,0,vSpeed)) then
-      com.st=math.max(com.st-clamp01(invLerp(0,-8,vSpeed)),0)
+      com.st=clamp01(math.max(com.st-clamp01(invLerp(0,-8,vSpeed)),0))
     end
   end
 end
 
 function simulate()
 	dmd={
-		kW={disps=0,rtr1=0,rtr2=0,rtr3=0,rtr4=0,prp1=0,prp2=0,spltr=0,H2OAcc=0,CH4Acc=0,btry=0},
+		kW={dispNav=0,dispSta=0,rtr1=0,rtr2=0,rtr3=0,rtr4=0,prp1=0,prp2=0,spltr=0,H2OAcc=0,CH4Acc=0,btry=0},
 		kNSM={hydRes=0,rtr1=0,rtr2=0,rtr3=0,rtr4=0,prp1=0,prp2=0},
 		NM={hydPump=0,gen=0},
 		H2O={tank=0,bilr=0,spltr=0},
@@ -1155,7 +1262,7 @@ function simulate()
 		steam=0
 	}
 	sply={
-		kW={disps=0,rtr1=0,rtr2=0,rtr3=0,rtr4=0,prp1=0,prp2=0,spltr=0,H2OAcc=0,CH4Acc=0,btry=0},
+		kW={dispNav=0,dispSta=0,rtr1=0,rtr2=0,rtr3=0,rtr4=0,prp1=0,prp2=0,spltr=0,H2OAcc=0,CH4Acc=0,btry=0},
 		kNSM={hydRes=0,rtr1=0,rtr2=0,rtr3=0,rtr4=0,prp1=0,prp2=0},
 		NM={hydPump=0,gen=0},
 		H2O={tank=0,bilr=0,spltr=0},
@@ -1201,22 +1308,23 @@ function simulate()
 end
 
 function cntrlsPwrDmd()
-	dmd.kW.disps=DISPLAYS_PWR_DMD_KW
-	dmd.kW.rtr1=RTR_MAX_PWR_DMD_KW*rtr1.st*s.con.thrt.rtrs
-	dmd.kW.rtr2=RTR_MAX_PWR_DMD_KW*rtr2.st*s.con.thrt.rtrs
-	dmd.kW.rtr3=RTR_MAX_PWR_DMD_KW*rtr3.st*s.con.thrt.rtrs
-	dmd.kW.rtr4=RTR_MAX_PWR_DMD_KW*rtr4.st*s.con.thrt.rtrs
-	dmd.kW.prp1=PROP_MAX_PWR_DMD_KW*prp1.st*s.con.thrt.prps
-	dmd.kW.prp2=PROP_MAX_PWR_DMD_KW*prp2.st*s.con.thrt.prps
+	dmd.kW.dispNav=DISPLAYS_PWR_DMD_KW
+  dmd.kW.dispSta=DISPLAYS_PWR_DMD_KW
+	dmd.kW.rtr1=RTR_MAX_PWR_DMD_KW*stToEf(rtr1.st)*s.con.thrt.rtrs
+	dmd.kW.rtr2=RTR_MAX_PWR_DMD_KW*stToEf(rtr2.st)*s.con.thrt.rtrs
+	dmd.kW.rtr3=RTR_MAX_PWR_DMD_KW*stToEf(rtr3.st)*s.con.thrt.rtrs
+	dmd.kW.rtr4=RTR_MAX_PWR_DMD_KW*stToEf(rtr4.st)*s.con.thrt.rtrs
+	dmd.kW.prp1=PROP_MAX_PWR_DMD_KW*stToEf(prp1.st)*s.con.thrt.prps
+	dmd.kW.prp2=PROP_MAX_PWR_DMD_KW*stToEf(prp2.st)*s.con.thrt.prps
 end
 
 function cntrlsHydDmd()
-	dmd.kNSM.rtr1=calcHydDmd(rtr1.rot,s.con.rot.rtrs,rtr1.st,RTR_MAX_ROTATE_SPD_D,RTR_MAX_HYD_DMD_KNSM)
-	dmd.kNSM.rtr2=calcHydDmd(rtr2.rot,s.con.rot.rtrs,rtr2.st,RTR_MAX_ROTATE_SPD_D,RTR_MAX_HYD_DMD_KNSM)
-	dmd.kNSM.rtr3=calcHydDmd(rtr3.rot,s.con.rot.rtrs,rtr3.st,RTR_MAX_ROTATE_SPD_D,RTR_MAX_HYD_DMD_KNSM)
-	dmd.kNSM.rtr4=calcHydDmd(rtr4.rot,s.con.rot.rtrs,rtr4.st,RTR_MAX_ROTATE_SPD_D,RTR_MAX_HYD_DMD_KNSM)
-	dmd.kNSM.prp1=calcHydDmd(prp1.rot,s.con.rot.prps,prp1.st,PROP_MAX_ROTATE_SPD_D,PROP_MAX_HYD_DMD_KNSM)
-	dmd.kNSM.prp2=calcHydDmd(prp2.rot,s.con.rot.prps,prp2.st,PROP_MAX_ROTATE_SPD_D,PROP_MAX_HYD_DMD_KNSM)
+	dmd.kNSM.rtr1=calcHydDmd(rtr1.rot,s.con.rot.rtrs,stToEf(rtr1.st),RTR_MAX_ROTATE_SPD_D,RTR_MAX_HYD_DMD_KNSM)
+	dmd.kNSM.rtr2=calcHydDmd(rtr2.rot,s.con.rot.rtrs,stToEf(rtr2.st),RTR_MAX_ROTATE_SPD_D,RTR_MAX_HYD_DMD_KNSM)
+	dmd.kNSM.rtr3=calcHydDmd(rtr3.rot,s.con.rot.rtrs,stToEf(rtr3.st),RTR_MAX_ROTATE_SPD_D,RTR_MAX_HYD_DMD_KNSM)
+	dmd.kNSM.rtr4=calcHydDmd(rtr4.rot,s.con.rot.rtrs,stToEf(rtr4.st),RTR_MAX_ROTATE_SPD_D,RTR_MAX_HYD_DMD_KNSM)
+	dmd.kNSM.prp1=calcHydDmd(prp1.rot,s.con.rot.prps,stToEf(prp1.st),PROP_MAX_ROTATE_SPD_D,PROP_MAX_HYD_DMD_KNSM)
+	dmd.kNSM.prp2=calcHydDmd(prp2.rot,s.con.rot.prps,stToEf(prp2.st),PROP_MAX_ROTATE_SPD_D,PROP_MAX_HYD_DMD_KNSM)
 end
 
 function strgTanksDmd()
@@ -1234,7 +1342,7 @@ function cellDmd()
 end
 
 function btryHydDmd()
-	btryStateDmd=math.min(BTRY_MAX_CHARGE_RATE_KW,BTRY_MAX_CHARGE_KW*btry.st-btry.lvl)
+	btryStateDmd=math.min(BTRY_MAX_CHARGE_RATE_KW,BTRY_MAX_CHARGE_KW*stToEf(btry.st)-btry.lvl)
 	dmd.kW.btry=math.max(btryStateDmd,0)
   dmd.kNSM.hydRes=HYD_MAX_KNSM-hydRes.lvl
   dmd.NM.hydPump=math.min(HYD_PUMP_MAX_NM,dmd.kNSM.hydRes*HYD_PUMP_NM_PER_KNSM)
@@ -1242,28 +1350,28 @@ end
 
 function spltrAccDmd()
 	if dmd.H_M.tank>0 or dmd.O.tank>0 then
-		dmd.kW.spltr=SPLTR_PWR_DMD_KW*spltr.st
-		dmd.H2O.spltr=SPLTR_MAX_H2O*spltr.st
+		dmd.kW.spltr=SPLTR_PWR_DMD_KW*stToEf(spltr.st)
+		dmd.H2O.spltr=SPLTR_MAX_H2O*stToEf(spltr.st)
 	end
-	if dmd.H2O.tank>0 then dmd.kW.H2OAcc=H2O_ACC_PWR_DMD_KW*accH2O.st end
-  if dmd.CH4.tank>0 then dmd.kW.CH4Acc=CH4_ACC_PWR_DMD_KW*accCH4.st end
+	if dmd.H2O.tank>0 then dmd.kW.H2OAcc=H2O_ACC_PWR_DMD_KW*stToEf(accH2O.st) end
+  if dmd.CH4.tank>0 then dmd.kW.CH4Acc=CH4_ACC_PWR_DMD_KW*stToEf(accCH4.st) end
 end
 
 function genTurbDmd()
-	ttlPwrDmd=math.min(GEN_MAX_KW*gen.st,dmd.kW.disps+dmd.kW.rtr1+dmd.kW.rtr2+
-      dmd.kW.rtr3+dmd.kW.rtr4+dmd.kW.prp1+dmd.kW.prp2+dmd.kW.spltr+
-      dmd.kW.H2OAcc+dmd.kW.CH4Acc+dmd.kW.btry)
+	ttlPwrDmd=math.min(GEN_MAX_KW*stToEf(gen.st),dmd.kW.dispNav+dmd.kW.dispSta+
+      dmd.kW.rtr1+dmd.kW.rtr2+dmd.kW.rtr3+dmd.kW.rtr4+dmd.kW.prp1+dmd.kW.prp2+
+      dmd.kW.spltr+dmd.kW.H2OAcc+dmd.kW.CH4Acc+dmd.kW.btry)
 	dmd.NM.gen=(ttlPwrDmd/GEN_MAX_KW)*GEN_MAX_NM
-  ttlTorqueDmd=math.min(TURB_MAX_NM*turb.st,dmd.NM.gen+dmd.NM.hydPump)
+  ttlTorqueDmd=math.min(TURB_MAX_NM*stToEf(turb.st),dmd.NM.gen+dmd.NM.hydPump)
   dmd.steam=(ttlTorqueDmd/TURB_MAX_NM)*TURB_MAX_STEAM_KNSM
 end
 
 function bilrDmd()
 	superSteamDmd=0
 	if dmd.steam >= BILR_MAX_REG_STEAM_KNSM then
-		superSteamDmd=(dmd.steam-BILR_MAX_REG_STEAM_KNSM)*bilr.st
+		superSteamDmd=(dmd.steam-BILR_MAX_REG_STEAM_KNSM)*stToEf(bilr.st)
 	end
-	steamDmd=math.min(BILR_MAX_STEAM_KNSM*bilr.st,dmd.steam)
+	steamDmd=math.min(BILR_MAX_STEAM_KNSM*stToEf(bilr.st),dmd.steam)
 	dmd.H2O.bilr=steamDmd*BILR_H2O_KG_PER_KNSM
 	dmd.CH4.bilr=steamDmd*BILR_CH4_KG_PER_KNSM
 	dmd.O.bilr=superSteamDmd*BILR_O_KG_PER_KNSM
@@ -1374,12 +1482,13 @@ end
 function pwrSupply()
 	genPwr=GEN_MAX_KW*(sply.NM.gen/GEN_MAX_NM)
 	btryPwr=avlb4Use.kW
-	ttlPwrDmd=dmd.kW.disps+dmd.kW.btry+dmd.kW.rtr1+dmd.kW.rtr2+dmd.kW.rtr3+
+	ttlPwrDmd=dmd.kW.dispNav+dmd.kW.dispSta+dmd.kW.btry+dmd.kW.rtr1+dmd.kW.rtr2+dmd.kW.rtr3+
             dmd.kW.rtr4+dmd.kW.prp1+dmd.kW.prp2+dmd.kW.spltr+dmd.kW.H2OAcc+
             dmd.kW.CH4Acc
 
 	if ttlPwrDmd<=genPwr then
-		sply.kW.disps=dmd.kW.disps
+		sply.kW.dispNav=dmd.kW.dispNav
+    sply.kW.dispSta=dmd.kW.dispSta
 		sply.kW.rtr1=dmd.kW.rtr1
 		sply.kW.rtr2=dmd.kW.rtr2
 		sply.kW.rtr3=dmd.kW.rtr3
@@ -1391,7 +1500,8 @@ function pwrSupply()
 		sply.kW.CH4Acc=dmd.kW.CH4Acc
 		sply.kW.btry=dmd.kW.btry
 	elseif ttlPwrDmd<=(genPwr+btryPwr) then
-		sply.kW.disps= dmd.kW.disps
+		sply.kW.dispNav=dmd.kW.dispNav
+    sply.kW.dispSta=dmd.kW.dispSta
 		sply.kW.rtr1=dmd.kW.rtr1
 		sply.kW.rtr2=dmd.kW.rtr2
 		sply.kW.rtr3=dmd.kW.rtr3
@@ -1406,7 +1516,8 @@ function pwrSupply()
 		btryUse=ttlPwrDmd-genPwr
 		avlb4Stg.kW=avlb4Stg.kW-btryUse
 	else
-		dispsPrct=safeDivide(dmd.kW.disps,ttlPwrDmd)
+		dispNavPrct=safeDivide(dmd.kW.dispNav,ttlPwrDmd)
+    dispStaPrct=safeDivide(dmd.kW.dispSta,ttlPwrDmd)
 		rtrs1Prct=safeDivide(dmd.kW.rtr1,ttlPwrDmd)
 		rtrs2Prct=safeDivide(dmd.kW.rtr2,ttlPwrDmd)
 		rtrs3Prct=safeDivide(dmd.kW.rtr3,ttlPwrDmd)
@@ -1420,7 +1531,8 @@ function pwrSupply()
 
 		ttlPwrAvlb=genPwr+btryPwr
 
-		sply.kW.disps=dispsPrct*ttlPwrAvlb
+		sply.kW.dispNav=dispNavPrct*ttlPwrAvlb
+    sply.kW.dispSta=dispStaPrct*ttlPwrAvlb
 		sply.kW.rtr1=rtrs1Prct*ttlPwrAvlb
 		sply.kW.rtr2=rtrs2Prct*ttlPwrAvlb
 		sply.kW.rtr3=rtrs3Prct*ttlPwrAvlb
@@ -1449,7 +1561,8 @@ function distPwr()
 	altAdj=clamp01(5000/(s.pos.z+5000))
 	spdAdj=clamp(nroot(6.6,s.spd)-1,0.2,1.2)
 	intakeAdj=altAdj*spdAdj
-	disps.on=(sply.kW.disps>=dmd.kW.disps)
+	dispNav.on=(sply.kW.dispNav>=dmd.kW.dispNav)
+  dispSta.on=(sply.kW.dispSta>=dmd.kW.dispSta)
 	if sply.kW.spltr>0 then
 		pwrPrct=sply.kW.spltr/SPLTR_PWR_DMD_KW
 		h2oPrct=sply.H2O.spltr/SPLTR_MAX_H2O
@@ -1474,10 +1587,10 @@ function distPwr()
 end
 
 function drainTanks()
-	cl1.lvl=cl1.lvl-math.max(math.max(0.01,1-cl1.st)*CLL_MAX_VENT_M3F,cl1.vent)
-	cl2.lvl=cl2.lvl-math.max(math.max(0.01,1-cl2.st)*CLL_MAX_VENT_M3F,cl2.vent)
-	cl3.lvl=cl3.lvl-math.max(math.max(0.01,1-cl3.st)*CLL_MAX_VENT_M3F,cl3.vent)
-	cl4.lvl=cl4.lvl-math.max(math.max(0.01,1-cl4.st)*CLL_MAX_VENT_M3F,cl4.vent)
+	cl1.lvl=cl1.lvl-math.max(math.max(0.01,1-stToEf(cl1.st))*CLL_MAX_VENT_M3F,cl1.vent)
+	cl2.lvl=cl2.lvl-math.max(math.max(0.01,1-stToEf(cl2.st))*CLL_MAX_VENT_M3F,cl2.vent)
+	cl3.lvl=cl3.lvl-math.max(math.max(0.01,1-stToEf(cl3.st))*CLL_MAX_VENT_M3F,cl3.vent)
+	cl4.lvl=cl4.lvl-math.max(math.max(0.01,1-stToEf(cl4.st))*CLL_MAX_VENT_M3F,cl4.vent)
 
 	tkH.lvl=tkH.lvl-sply.H_V.cl1/H_MASS_TO_VOL-sply.H_V.cl2/H_MASS_TO_VOL-sply.H_V.cl3/H_MASS_TO_VOL-sply.H_V.cl4/H_MASS_TO_VOL
 	tkO.lvl=tkO.lvl-sply.O.bilr
@@ -1671,6 +1784,10 @@ function isLinThFlr(lx1,ly1,lx2,ly2)
   return false
 end
 
+function stToEf(val)
+  return clamp01(1-(1/(1+(-val-.7)^16)))
+end
+
 function randRangeF(min,max)
   return lerp(min,max,math.random())
 end
@@ -1725,6 +1842,11 @@ function joinBBs(bbs)
 		if bb.max_y>max_y then max_y=bb.max_y end
 	end
 	return {min_x=min_x,min_y=min_y,max_x=max_x,max_y=max_y}
+end
+
+function joinPxlBB(bbs)
+  local bb=joinBBs(bbs)
+  return {min_x=bb.min_x*8,min_y=bb.min_y*8,max_x=bb.max_x*8+7,max_y=bb.max_y*8+7}
 end
 
 function bbHorPxlCntr(bbs)
