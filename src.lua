@@ -73,7 +73,7 @@ str={
 	t=0,
 	x=60,
 	y=42,
-  endTimeOut=0
+	endTimeOut=0
 }
 
 gg={
@@ -94,7 +94,7 @@ gg={
 		spd={x=138,y=68,w=4,h=24,c=5}
 	}
 }
-
+sDspIn={x=9,y=56}
 strScreen=true
 endScreen=false
 showNav=false
@@ -112,36 +112,36 @@ CH4pts={}
 H2Opts={}
 
 function updCam(x,y)
-  cam.x=x
-  cam.y=y
-  cam.xCell=x//8
-  cam.yCell=y//8
-  cam.xOff=-(x%8)
-  cam.yOff=-(y%8)
+	cam.x=x
+	cam.y=y
+	cam.xCell=x//8
+	cam.yCell=y//8
+	cam.xOff=-(x%8)
+	cam.yOff=-(y%8)
 end
 
 function rstStr()
-  music(0)
-  str.x=60
-  str.y=42
+	music(0)
+	str.x=60
+	str.y=42
 end
 
 function initStats()
-  sta={dis=0,gremlinSightings=0}
+	sta={dis=0,gremlinSightings=0}
 end
 
 function initCam()
-  cam={x=0,y=0,xCell=0,yCell=0,xOff=0,yOff=0}
-  updCam(p.x-120,136)
+	cam={x=0,y=0,xCell=0,yCell=0,xOff=0,yOff=0}
+	updCam(p.x-120,136)
 end
 
 function initPlyr()
-  p={bs=256,s=256,x=492,y=190,vx=0,vy=0,isAcc=false,isDeAcc=false,flip=0,onFlr=false,onLdr=false,hasMoLdr=false,inCil=false}
+	p={bs=256,s=256,x=492,y=190,vx=0,vy=0,isAcc=false,isDeAcc=false,flip=0,onFlr=false,onLdr=false,hasMoLdr=false,inCil=false}
 end
 
 function initGrmln()
-  g={bs=264,s=264,x=508,y=190,vx=0,vy=0,isAcc=false,isDeAcc=false,flip=0,onFlr=false,onLdr=false,hasMoLdr=false,inCil=false}
-  gb={up=false,dwn=false,lft=false,rgt=false,srchDir=0,trgt=nil,trgtT=0}
+	g={bs=264,s=264,x=508,y=190,vx=0,vy=0,isAcc=false,isDeAcc=false,flip=0,onFlr=false,onLdr=false,hasMoLdr=false,inCil=false}
+	gb={up=false,dwn=false,lft=false,rgt=false,srchDir=0,trgt=nil,trgtT=0}
 end
 
 function initGame()
@@ -151,269 +151,297 @@ function initGame()
 
 	buildMap()
 	music(0)
-  initPlyr()
-  initGrmln()
-  initCam()
+	initPlyr()
+	initGrmln()
+	initCam()
 	initShip()
-  initStats()
-  dmgPart={}
+	initStats()
+	dmgPart={}
 end
 
 function rstGame()
-  initPlyr()
-  initGrmln()
-  initCam()
-  initShip()
-  initStats()
-  dmgPart={}
+	initPlyr()
+	initGrmln()
+	initCam()
+	initShip()
+	initStats()
+	dmgPart={}
 end
 
 function initShip()
-  s={
-    spd=SHIP_STRT_SPD,accl=0,hdg=0,rot=0,vsi=0,setVsi=0,isCrash=false,dis=0,
-    pos={x=0,y=0,z=1000},
-    con={
-      alt=1000,vsi=0.2,
-      thrt={prps=0.3,rtrs=0.7},
-      rot={prps=0,rtrs=0}
-    },
-    env={Atmo=SEA_LEVEL_AIR_DENSITY,H2O=0.0,CH4=0.0}
-  }
-  clDrw={s=370,w=5,h=2,rx=3}
-  prpDrw={s=288,w=2,h=3}
-  rtr1Drw={s=322,w=6,h=1}
-  rtr2Drw={s=308,w=2,h=1}
+	s={
+		spd=SHIP_STRT_SPD,accl=0,hdg=0,rot=0,vsi=0,setVsi=0,isCrash=false,dis=0,
+		pos={x=0,y=0,z=1000},
+		con={
+			alt=1000,vsi=0.2,
+			thrt={prps=0.3,rtrs=0.7},
+			rot={prps=0,rtrs=0}
+		},
+		env={Atmo=SEA_LEVEL_AIR_DENSITY,H2O=0.0,CH4=0.0}
+	}
+	clDrw={s=370,w=5,h=2,rx=3}
+	prpDrw={s=288,w=2,h=3}
+	rtr1Drw={s=322,w=6,h=1}
+	rtr2Drw={s=308,w=2,h=1}
 	accH2O={
-		st=1,
+		st=1,effc=1,
 		wr=randRangeF(0.00001,0.00003),
-		bb={{min_x=85,min_y=23,max_x=86,max_y=24}},
+		bb={{minX=85,minY=23,maxX=86,maxY=24}},
 		drw={{s=318,w=2,h=2}},
-    dmg={{efct="elec",emi=nil,x=.6,y=.6,xR=.6,yR=.6}}
+		sdsp={{x=169,y=29,minX=240,minY=145,maxX=252,maxY=159,lbl="Acc",lblOff=1,c=4}},
+		dmg={{efct="elec",emi=nil,x=.6,y=.6,xR=.6,yR=.6}}
 	}
 	accCH4={
-		st=1,
+		st=1,effc=1,
 		wr=randRangeF(0.00001,0.00003),
-		bb={{min_x=83,min_y=27,max_x=84,max_y=28}},
+		bb={{minX=83,minY=27,maxX=84,maxY=28}},
 		drw={{s=316,w=2,h=2}},
-    dmg={{efct="elec",emi=nil,x=.6,y=.6,xR=.6,yR=.6}}
+		sdsp={{x=169,y=54,minX=225,minY=145,maxX=237,maxY=159,lbl="Acc",lblOff=1,c=4}},
+		dmg={{efct="elec",emi=nil,x=.6,y=.6,xR=.6,yR=.6}}
 	}
 	btry={
-		st=1,
+		st=1,effc=1,
 		wr=randRangeF(0.000003,0.000007),
 		lvl=BTRY_MAX_CHARGE_KW,
-		bb={{min_x=42,min_y=23,max_x=47,max_y=24}},
+		bb={{minX=42,minY=23,maxX=47,maxY=24}},
 		drw={{s=336,w=3,h=2,rx=2}},
-    dmg={{efct="elec",emi=nil,x=.5,y=.6,xR=3,yR=.6}}
+		sdsp={{x=40,y=5,minX=129,minY=164,maxX=150,maxY=175,lbl="Battery",lblOff=-3,c=4}},
+		dmg={{efct="elec",emi=nil,x=.5,y=.6,xR=3,yR=.6}}
 	}
 	bilr={
-		st=1,
+		st=1,effc=1,
 		wr=randRangeF(0.000015,0.00003),
-		bb={{min_x=48,min_y=27,max_x=51,max_y=28}},
+		bb={{minX=48,minY=27,maxX=51,maxY=28}},
 		drw={{s=347,w=3,h=2,rx=2}},
-    dmg={{efct="fire",emi=nil,x=.8,y=.5,xR=.5,yR=.8}}
+		sdsp={{x=124,y=54,minX=219,minY=161,maxX=239,maxY=175,lbl="Boiler",c=1}},
+		dmg={{efct="fire",emi=nil,x=.8,y=.5,xR=.5,yR=.8}}
 	}
 	cl1={
-		st=1,
+		st=1,effc=1,
 		wr=randRangeF(0.00001,0.00004),
 		lvl=CLL_MAX_M3*.7,
 		vent=0.0,
-		bb={{min_x=77,min_y=21,max_x=84,max_y=22}},
+		bb={{minX=77,minY=21,maxX=84,maxY=22}},
 		drw={clDrw},
-    bar={x=202,y=108,w=4,h=16,c=5},
-    dmg={{efct="hydrogen",emi=nil,x=.5,y=.5,xR=4,yR=1}}
+		sdsp={{x=154,y=5,minX=145,minY=177,maxX=158,maxY=190,lbl="Cell 1",lblOff=4,c=3},
+					{x=168,y=5,minX=169,minY=177,maxX=182,maxY=190,lbl="",c=3}},
+		bar={x=202,y=108,w=4,h=16,c=5},
+		dmg={{efct="hydrogen",emi=nil,x=.5,y=.5,xR=4,yR=1}}
 	}
 	cl2={
-		st=1,
+		st=1,effc=1,
 		wr=randRangeF(0.00001,0.00004),
 		lvl=CLL_MAX_M3*.7,
 		vent=0.0,
-		bb={{min_x=68,min_y=21,max_x=75,max_y=22}},
+		bb={{minX=68,minY=21,maxX=75,maxY=22}},
 		drw={clDrw},
-    bar={x=210,y=108,w=4,h=16,c=5},
-    dmg={{efct="hydrogen",emi=nil,x=.5,y=.5,xR=4,yR=1}}
+		sdsp={{x=124,y=5,minX=145,minY=177,maxX=158,maxY=190,lbl="Cell 2",lblOff=4,c=3},
+					{x=138,y=5,minX=169,minY=177,maxX=182,maxY=190,lbl="",c=3}},
+		bar={x=210,y=108,w=4,h=16,c=5},
+		dmg={{efct="hydrogen",emi=nil,x=.5,y=.5,xR=4,yR=1}}
 	}
 	cl3={
-		st=1,
+		st=1,effc=1,
 		wr=randRangeF(0.00001,0.00004),
 		lvl=CLL_MAX_M3*.7,
 		vent=0.0,
-		bb={{min_x=44,min_y=21,max_x=51,max_y=22}},
+		bb={{minX=44,minY=21,maxX=51,maxY=22}},
 		drw={clDrw},
-    bar={x=218,y=108,w=4,h=16,c=5},
-    dmg={{efct="hydrogen",emi=nil,x=.5,y=.5,xR=4,yR=1}}
+		sdsp={{x=94,y=5,minX=145,minY=177,maxX=158,maxY=190,lbl="Cell 3",lblOff=4,c=3},
+					{x=108,y=5,minX=169,minY=177,maxX=182,maxY=190,lbl="",c=3}},
+		bar={x=218,y=108,w=4,h=16,c=5},
+		dmg={{efct="hydrogen",emi=nil,x=.5,y=.5,xR=4,yR=1}}
 	}
 	cl4={
-		st=1,
+		st=1,effc=1,
 		wr=randRangeF(0.00001,0.00004),
 		lvl=CLL_MAX_M3*.7,
 		vent=0.0,
-		bb={{min_x=35,min_y=21,max_x=42,max_y=22}},
+		bb={{minX=35,minY=21,maxX=42,maxY=22}},
 		drw={clDrw},
-    bar={x=226,y=108,w=4,h=16,c=5},
-    dmg={{efct="hydrogen",emi=nil,x=.5,y=.5,xR=4,yR=1}}
+		sdsp={{x=64,y=5,minX=145,minY=177,maxX=158,maxY=190,lbl="Cell 4",lblOff=4,c=3},
+					{x=78,y=5,minX=169,minY=177,maxX=182,maxY=190,lbl="",c=3}},
+		bar={x=226,y=108,w=4,h=16,c=5},
+		dmg={{efct="hydrogen",emi=nil,x=.5,y=.5,xR=4,yR=1}}
 	}
 	dispNav={
 		st=1,
 		on=true,
-		bb={{min_x=56,min_y=23,max_x=59,max_y=24}},
+		bb={{minX=56,minY=23,maxX=59,maxY=24}},
 		drw={{s=312,w=4,h=2}}
 	}
-  dispSta={
-    st=1,
-    on=true,
-    bb={{min_x=60,min_y=23,max_x=63,max_y=24}},
-    drw={{s=424,w=4,h=2}}
-  }
-	hydPump={
+	dispSta={
 		st=1,
+		on=true,
+		bb={{minX=60,minY=23,maxX=63,maxY=24}},
+		drw={{s=424,w=4,h=2}}
+	}
+	hydPump={
+		st=1,effc=1,
 		wr=randRangeF(0.000015,0.00003),
-		bb={{min_x=37,min_y=27,max_x=38,max_y=28}},
+		bb={{minX=37,minY=27,maxX=38,maxY=28}},
 		drw={{s=339,w=2,h=2}},
-    dmg={{efct="hydraulics",emi=nil,x=.4,y=.6,xR=.5,yR=.45}}
+		sdsp={{x=21,y=29,minX=152,minY=161,maxX=167,maxY=175,lbl="Pump",c=6}},
+		dmg={{efct="hydraulics",emi=nil,x=.4,y=.6,xR=.5,yR=.45}}
 	}
 	hydRes={
-		st=1,
+		st=1,effc=1,
 		wr=randRangeF(0.000002,0.000004),
 		lvl=HYD_MAX_KNSM,
-		bb={{min_x=37,min_y=23,max_x=38,max_y=24}},
+		bb={{minX=37,minY=23,maxX=38,maxY=24}},
 		drw={{s=368,w=2,h=2}},
-    dmg={{efct="hydraulics",emi=nil,x=.5,y=.6,xR=.5,yR=.45}}
+		sdsp={{x=22,y=5,minX=130,minY=179,maxX=141,maxY=190,lbl="Res",c=5}},
+		dmg={{efct="hydraulics",emi=nil,x=.5,y=.6,xR=.5,yR=.45}}
 	}
 	gen={
-		st=1,
+		st=1,effc=1,
 		wr=randRangeF(0.000015,0.00003),
-		bb={{min_x=40,min_y=27,max_x=43,max_y=28}},
+		bb={{minX=40,minY=27,maxX=43,maxY=28}},
 		drw={{s=341,w=4,h=2}},
-    dmg={{efct="elec",emi=nil,x=.5,y=.5,xR=1,yR=1}}
+		sdsp={{x=39,y=29,minX=169,minY=161,maxX=200,maxY=175,lbl="Generator",lblOff=-2,c=6}},
+		dmg={{efct="elec",emi=nil,x=.5,y=.5,xR=1,yR=1}}
 	}
 	prp1={
-		st=1,
+		st=1,effc=1,
 		wr=randRangeF(0.000015,0.00003),
 		rot=0,
 		thrst=0,
-		bb={{min_x=33,min_y=22,max_x=34,max_y=24}},
+		bb={{minX=33,minY=22,maxX=34,maxY=24}},
 		drw={prpDrw},
-    ndl={x=169,y=113,c=5},
-    bar={x=161,y=108,w=2,h=11,c=5},
-    dmg={{efct="elec",emi=nil,x=.7,y=.5,xR=.8,yR=.6}}
+		sdsp={{x=0,y=5,minX=129,minY=142,maxX=142,maxY=153,lbl="Prop1",c=4}},
+		ndl={x=169,y=113,c=5},
+		bar={x=161,y=108,w=2,h=11,c=5},
+		dmg={{efct="elec",emi=nil,x=.7,y=.5,xR=.8,yR=.6}}
 	}
 	prp2={
-		st=1,
+		st=1,effc=1,
 		wr=randRangeF(0.000015,0.00003),
 		rot=0,
 		thrst=0,
-		bb={{min_x=33,min_y=26,max_x=34,max_y=28}},
+		bb={{minX=33,minY=26,maxX=34,maxY=28}},
 		drw={prpDrw},
-    ndl={x=185,y=113,c=5},
-    bar={x=177,y=108,w=2,h=11,c=5},
-    dmg={{efct="elec",emi=nil,x=.7,y=.5,xR=.8,yR=.6}}
+		sdsp={{x=0,y=29,minX=129,minY=142,maxX=142,maxY=153,lbl="Prop2",c=4}},
+		ndl={x=185,y=113,c=5},
+		bar={x=177,y=108,w=2,h=11,c=5},
+		dmg={{efct="elec",emi=nil,x=.7,y=.5,xR=.8,yR=.6}}
 	}
 	pto1={
-		bb={{min_x=39,min_y=27,max_x=39,max_y=27},{min_x=39,min_y=28,max_x=39,max_y=28}},
+		bb={{minX=39,minY=27,maxX=39,maxY=27},{minX=39,minY=28,maxX=39,maxY=28}},
 		drw={{s=350,w=1,h=1},{s=351,w=1,h=1}}
 	}
 	pto2={
-		bb={{min_x=44,min_y=27,max_x=45,max_y=27},{min_x=44,min_y=28,max_x=45,max_y=28}},
+		bb={{minX=44,minY=27,maxX=45,maxY=27},{minX=44,minY=28,maxX=45,maxY=28}},
 		drw={{s=350,w=1,h=1},{s=351,w=1,h=1}}
 	}
 	rtr1={
-		st=1,
+		st=1,effc=1,
 		wr=randRangeF(0.000015,0.00003),
 		rot=0,
 		thrst=0,
-		bb={{min_x=76,min_y=32,max_x=81,max_y=32},{min_x=78,min_y=31,max_x=79,max_y=31}},
+		bb={{minX=76,minY=32,maxX=81,maxY=32},{minX=78,minY=31,maxX=79,maxY=31}},
 		drw={rtr1Drw,rtr2Drw},
-    ndl={ x=85,y=110,c=5},
-    bar={x=73,y=108,w=2,h=11,c=5},
-    dmg={{efct="elec",emi=nil,x=.5,y=.5,xR=1,yR=1}}
+		sdsp={{x=60,y=54,minX=162,minY=145,maxX=173,maxY=158,lbl="Rtr1",c=4}},
+		ndl={x=85,y=110,c=5},
+		bar={x=73,y=108,w=2,h=11,c=5},
+		dmg={{efct="elec",emi=nil,x=.5,y=.5,xR=1,yR=1}}
 	}
 	rtr2={
-		st=1,
+		st=1,effc=1,
 		wr=randRangeF(0.000015,0.00003),
 		rot=0,
 		thrst=0,
-		bb={{min_x=66,min_y=32,max_x=71,max_y=32},{min_x=68,min_y=31,max_x=69,max_y=31}},
+		bb={{minX=66,minY=32,maxX=71,maxY=32},{minX=68,minY=31,maxX=69,maxY=31}},
 		drw={rtr1Drw,rtr2Drw},
-    ndl={x=101,y=110,c=5},
-    bar={x=89,y=108,w=2,h=11,c=5},
-    dmg={{efct="elec",emi=nil,x=.5,y=.5,xR=1,yR=1}}
+		sdsp={{x=40,y=54,minX=162,minY=145,maxX=173,maxY=158,lbl="Rtr2",c=4}},
+		ndl={x=101,y=110,c=5},
+		bar={x=89,y=108,w=2,h=11,c=5},
+		dmg={{efct="elec",emi=nil,x=.5,y=.5,xR=1,yR=1}}
 	}
 	rtr3={
-		st=1,
+		st=1,effc=1,
 		wr=randRangeF(0.000015,0.00003),
 		rot=0,
 		thrst=0,
-		bb={{min_x=48,min_y=32,max_x=53,max_y=32},{min_x=50,min_y=31,max_x=51,max_y=31}},
+		bb={{minX=48,minY=32,maxX=53,maxY=32},{minX=50,minY=31,maxX=51,maxY=31}},
 		drw={rtr1Drw,rtr2Drw},
-    ndl={x=133,y=110,c=5},
-    bar={x=121,y=108,w=2,h=11,c=5},
-    dmg={{efct="elec",emi=nil,x=.5,y=.5,xR=1,yR=1}}
+		sdsp={{x=20,y=54,minX=162,minY=145,maxX=173,maxY=158,lbl="Rtr3",c=4}},
+		ndl={x=133,y=110,c=5},
+		bar={x=121,y=108,w=2,h=11,c=5},
+		dmg={{efct="elec",emi=nil,x=.5,y=.5,xR=1,yR=1}}
 	}
 	rtr4={
-		st=1,
+		st=1,effc=1,
 		wr=randRangeF(0.000015,0.00003),
 		rot=0,
 		thrst=0,
-		bb={{min_x=38,min_y=32,max_x=43,max_y=32},{min_x=40,min_y=31,max_x=41,max_y=31}},
+		bb={{minX=38,minY=32,maxX=43,maxY=32},{minX=40,minY=31,maxX=41,maxY=31}},
 		drw={rtr1Drw,rtr2Drw},
-    ndl={x=149,y=110,c=5},
-    bar={x=137,y=108,w=2,h=11,c=5},
-    dmg={{efct="elec",emi=nil,x=.5,y=.5,xR=1,yR=1}}
+		sdsp={{x=0,y=54,minX=162,minY=145,maxX=173,maxY=158,lbl="Rtr4",c=4}},
+		ndl={x=149,y=110,c=5},
+		bar={x=137,y=108,w=2,h=11,c=5},
+		dmg={{efct="elec",emi=nil,x=.5,y=.5,xR=1,yR=1}}
 	}
 	spltr={
-		st=1,
+		st=1,effc=1,
 		wr=randRangeF(0.000015,0.00003),
-		bb={{min_x=62,min_y=28,max_x=63,max_y=28}},
+		bb={{minX=62,minY=28,maxX=63,maxY=28}},
 		drw={{s=306,w=2,h=1}},
-    dmg={{efct="elec",emi=nil,x=.5,y=.6,xR=.4,yR=.4}}
+		sdsp={{x=126,y=29,minX=145,minY=144,maxX=158,maxY=150,lbl="Splitter",lblOff=-8,c=4}},
+		dmg={{efct="elec",emi=nil,x=.5,y=.6,xR=.4,yR=.4}}
 	}
 	tkH={
-		st=1,
+		st=1,effc=1,
 		wr=randRangeF(0.000001,0.000002),
 		lvl=H_TANK_MAX_KG,
-		bb={{min_x=58,min_y=26,max_x=61,max_y=29}},
+		bb={{minX=58,minY=26,maxX=61,maxY=29}},
 		drw={{s=366,w=2,h=3,ry=2}},
-    dmg={{efct="hydrogen",emi=nil,x=.5,y=.6,xR=1.2,yR=1.8}}
+		sdsp={{x=94,y=29,minX=242,minY=169,maxX=253,maxY=190,lbl="H",lblOff=6,c=3}},
+		dmg={{efct="hydrogen",emi=nil,x=.5,y=.6,xR=1.2,yR=1.8}}
 	}
 	tkO={
-		st=1,
+		st=1,effc=1,
 		wr=randRangeF(0.000001,0.000002),
 		lvl=O_TANK_MAX_KG,
-		bb={{min_x=58,min_y=31,max_x=61,max_y=32}},
+		bb={{minX=58,minY=31,maxX=61,maxY=32}},
 		drw={{s=380,w=2,h=2}},
-    dmg={{efct="oxygen",emi=nil,x=.5,y=.5,xR=1,yR=1}}
+		sdsp={{x=108,y=29,minX=226,minY=177,maxX=237,maxY=191,lbl="O",lblOff=4,c=13}},
+		dmg={{efct="oxygen",emi=nil,x=.5,y=.5,xR=1,yR=1}}
 	}
 	tkH2O={
-		st=1,
+		st=1,effc=1,
 		wr=randRangeF(0.000001,0.000002),
 		lvl=H2O_TANK_MAX_KG,
-		bb={{min_x=68,min_y=27,max_x=73,max_y=28}},
+		bb={{minX=68,minY=27,maxX=73,maxY=28}},
 		drw={{s=375,w=3,h=2,rx=2}},
-    bar={x=202,y=68,w=4,h=24,c=5},
-    dmg={{efct="water",emi=nil,x=.5,y=.6,xR=1.5,yR=.45}}
+		sdsp={{x=145,y=29,minX=185,minY=178,maxX=206,maxY=191,lbl="H2O",lblOff=5,c=7}},
+		bar={x=202,y=68,w=4,h=24,c=5},
+		dmg={{efct="water",emi=nil,x=.5,y=.6,xR=1.5,yR=.45}}
 	}
 	tkCH4={
-		st=1,
+		st=1,effc=1,
 		wr=randRangeF(0.000001,0.000002),
 		lvl=CH4_TANK_MAX_KG,
-		bb={{min_x=75,min_y=27,max_x=80,max_y=28}},
+		bb={{minX=75,minY=27,maxX=80,maxY=28}},
 		drw={{s=378,w=2,h=2}},
-    bar={x=218,y=68,w=4,h=24,c=5},
-    dmg={{efct="methane",emi=nil,x=.5,y=.4,xR=2.2,yR=.6}}
+		sdsp={{x=151,y=53,minX=208,minY=176,maxX=223,maxY=191,lbl="CH4",lblOff=2,c=1}},
+		bar={x=218,y=68,w=4,h=24,c=5},
+		dmg={{efct="methane",emi=nil,x=.5,y=.4,xR=2.2,yR=.6}}
 	}
 	turb={
-		st=1,
+		st=1,effc=1,
 		wr=randRangeF(0.000015,0.00003),
-		bb={{min_x=46,min_y=27,max_x=47,max_y=28}},
+		bb={{minX=46,minY=27,maxX=47,maxY=28}},
 		drw={{s=345,w=2,h=2}},
-    dmg={{efct="steam",emi=nil,x=.5,y=.5,xR=1,yR=1}}
+		sdsp={{x=75,y=29,minX=200,minY=161,maxX=215,maxY=175,lbl="Turbine",lblOff=-2,c=15}},
+		dmg={{efct="steam",emi=nil,x=.5,y=.5,xR=1,yR=1}}
 	}
 	drw1={dispNav,dispSta,bilr,turb,hydRes,hydPump,gen,rtr1,rtr3,prp1,prp2,accH2O,accCH4,spltr,tkO,tkH2O,pto1,pto2}
 	drw2={cl1,cl2,cl3,cl4,rtr2,rtr4,tkH,tkCH4,btry}
+	sDsps={bilr,turb,hydRes,hydPump,gen,rtr1,rtr2,rtr3,rtr4,prp1,prp2,accH2O,accCH4,cl1,cl2,cl3,cl4,btry,spltr,tkH,tkO,tkH2O,tkCH4}
 	wear={bilr,turb,hydRes,hydPump,gen,rtr1,rtr2,rtr3,rtr4,prp1,prp2,accH2O,accCH4,cl1,cl2,cl3,cl4,btry,spltr,tkH,tkO,tkH2O,tkCH4}
-  ggPrp={prp1,prp2}
-  ggRtr={rtr1,rtr2,rtr3,rtr4}
-  ggCl={cl1,cl2,cl3,cl4}
+	ggPrp={prp1,prp2}
+	ggRtr={rtr1,rtr2,rtr3,rtr4}
+	ggCl={cl1,cl2,cl3,cl4}
 end
 
 function buildMap()
@@ -424,9 +452,9 @@ function buildMap()
 end
 
 function mapVertLoc()
-  xLoc=((s.dis/1000)%(240*8))+cam.x
-  yLoc=lerp(102*8,51*8,clamp01(invLerp(0,SHIP_MAX_ALT,s.pos.z)))
-  return {x=xLoc,y=yLoc}
+	xLoc=((s.dis/1000)%(240*8))+cam.x
+	yLoc=lerp(102*8,51*8,clamp01(invLerp(0,SHIP_MAX_ALT,s.pos.z)))
+	return {x=xLoc,y=yLoc}
 end
 
 function TIC()
@@ -453,24 +481,24 @@ function TIC()
 		print("A Repair/Activate",84,106)
 	elseif endScreen then
 		cls()
-    if btnp(5) then
-      rstGame()
-      endScreen=false
-    end
-    if (str.t-str.endTimeOut)>18000 then
-      rstStr()
-      rstGame()
-      endScreen=false
-      strScreen=true
-    end
+		if btnp(5) then
+			rstGame()
+			endScreen=false
+		end
+		if (str.t-str.endTimeOut)>18000 then
+			rstStr()
+			rstGame()
+			endScreen=false
+			strScreen=true
+		end
 		print("Game Over",84,70)
 		if s.dis<10000 then
 			print(string.format("Distance: %dm",s.dis//1),84,84)
 		else
 			print(string.format("Distance: %dkm",s.dis//1000),84,84)
 		end
-    print(string.format("Gremlin Sightings: %d",sta.gremlinSightings//1),84,98)
-    print("X Restart",84,112)
+		print(string.format("Gremlin Sightings: %d",sta.gremlinSightings//1),84,98)
+		print("X Restart",84,112)
 
 		sfx(-1,"D#1",-1,0,0,0)
 	else
@@ -480,9 +508,9 @@ function TIC()
 		if comContains(dispNav.bb,p) then
 			if btnp(6) then showNav=not showNav end
 		end
-    if comContains(dispSta.bb,p) then
-      if btnp(6) then showSta=not showSta end
-    end
+		if comContains(dispSta.bb,p) then
+			if btnp(6) then showSta=not showSta end
+		end
 		doRepairs()
 
 		if not showNav and btn(6) then
@@ -510,17 +538,17 @@ function TIC()
 			{c=rtr2,id=4,nt="C-1"}
 		},4)
 
-    if gremlinSpawned then
-      if (distance(p,g)<120 and not isLinThFlr(p.x,p.y-7,g.x,g.y-1)) or str.t-gremlinLastSeen<60 then
-        gremlinInSight=true
-        if gremlinLastSeen==0 then
-          gremlinLastSeen=str.t
-        end
-      else
-        gremlinInSight=false
-        gremlinLastSeen=0
-      end
-    end
+		if gremlinSpawned then
+			if (distance(p,g)<120 and not isLinThFlr(p.x,p.y-7,g.x,g.y-1)) or str.t-gremlinLastSeen<60 then
+				gremlinInSight=true
+				if gremlinLastSeen==0 then
+					gremlinLastSeen=str.t
+				end
+			else
+				gremlinInSight=false
+				gremlinLastSeen=0
+			end
+		end
 
 		if showNav then
 			if btnp(2) then controlType=controlType-1 end
@@ -555,16 +583,18 @@ function TIC()
 				if s.con.rot.prps<0 then s.con.rot.prps=360 end
 				if s.con.rot.prps>360 then s.con.rot.prps=s.con.rot.prps-360 end
 			end
+		elseif showSta then
+
 		else
 			playerMovement()
 		end
-    if gremlinSpawned then
-      gremlinMovement()
-      gremlinSpawned=distance(p,g)>2
-      if not gremlinSpawned then doGremlinVanishAnim(g) end
-    else
-      maybeSpawnGremlin()
-    end
+		if gremlinSpawned then
+			gremlinMovement()
+			gremlinSpawned=distance(p,g)>2
+			if not gremlinSpawned then doGremlinVanishAnim(g) end
+		else
+			maybeSpawnGremlin()
+		end
 
 		cls(0)
 		simulate()
@@ -579,335 +609,335 @@ function TIC()
 		end
 
 		drwShipSt()
-    drwDmgCom()
-    drwParticles()
+		drwDmgCom()
+		drwParticles()
 	end
 	str.t=str.t+1
 end
 
 function doGremlinVanishAnim(pos)
-  particles={}
-  for i=1,32 do
-    path=rotV2({x=1,y=1},math.random(359))
-    particles[i]={x=pos.x,y=pos.y,lt=12,dir=path,spd=math.random(1,4)}
-  end
+	particles={}
+	for i=1,32 do
+		path=rotV2({x=1,y=1},math.random(359))
+		particles[i]={x=pos.x,y=pos.y,lt=12,dir=path,spd=math.random(1,4)}
+	end
 end
 
 function addNxtSprPrt(stts,emi,bb)
-  local x=emi.x+(randRangeF(emi.xR*-8,emi.xR*8))//1
-  local y=emi.y+(randRangeF(emi.yR*-8,emi.yR*8))//1
-  emi.nxt=time()+math.random((emi.spwMin*1000*math.max(stts,.1))//1,(emi.spwMax*1000*math.max(stts,.1))//1)
-  local sprId=emi.sprs[math.random(1,#emi.sprs)]
-  if sprId==408 or sprId==409 or sprId==411 or sprId==412 then y=(emi.y+emi.yR*8)//1 end
-  table.insert(dmgPart,{spr=sprId,x=x,y=y,vx=randRangeF(-emi.vx,emi.vx),vy=randRangeF(-emi.vy,emi.vy),flk=emi.flk,rot=emi.rot,t=0,lt=math.random(emi.ltMin*60//1,emi.ltMax*60//1),grv=emi.grv})
+	local x=emi.x+(randRangeF(emi.xR*-8,emi.xR*8))//1
+	local y=emi.y+(randRangeF(emi.yR*-8,emi.yR*8))//1
+	emi.nxt=time()+math.random((emi.spwMin*1000*math.max(stts,.1))//1,(emi.spwMax*1000*math.max(stts,.1))//1)
+	local sprId=emi.sprs[math.random(1,#emi.sprs)]
+	if sprId==408 or sprId==409 or sprId==411 or sprId==412 then y=(emi.y+emi.yR*8)//1 end
+	table.insert(dmgPart,{spr=sprId,x=x,y=y,vx=randRangeF(-emi.vx,emi.vx),vy=randRangeF(-emi.vy,emi.vy),flk=emi.flk,rot=emi.rot,t=0,lt=math.random(emi.ltMin*60//1,emi.ltMax*60//1),grv=emi.grv})
 end
 
 function addDmgSprPrtEmi(sprIds,spwMin,spwMax,ltMin,ltMax,grv,vx,vy,flk,rot,dmg,bb)
-  local x=(bb.max_x-bb.min_x)*dmg.x+bb.min_x-4
-  local y=(bb.max_y-bb.min_y)*dmg.y+bb.min_y-4
-  dmg.emi={sprs=sprIds,spwMin=spwMin,spwMax=spwMax,ltMin=ltMin,ltMax=ltMax,t=time(),nxt=time()+10,x=x,y=y,xR=dmg.xR,yR=dmg.yR,vx=vx,vy=vy,flk=flk,rot=rot,grv=grv}
+	local x=(bb.maxX-bb.minX)*dmg.x+bb.minX-4
+	local y=(bb.maxY-bb.minY)*dmg.y+bb.minY-4
+	dmg.emi={sprs=sprIds,spwMin=spwMin,spwMax=spwMax,ltMin=ltMin,ltMax=ltMax,t=time(),nxt=time()+10,x=x,y=y,xR=dmg.xR,yR=dmg.yR,vx=vx,vy=vy,flk=flk,rot=rot,grv=grv}
 end
 
 function drwDmg(stts,dmg,bb)
-  if dmg.efct=="steam" then
-    addDmgSprPrtEmi({402,403},.002,.006,.06,.25,-1,.1,.1,true,true,dmg,bb)
-  elseif dmg.efct=="water" then
-    addDmgSprPrtEmi({407,408,409},2.4,7.2,4.2,6.8,0,0,0,false,false,dmg,bb)
-  elseif dmg.efct=="methane" then
-    addDmgSprPrtEmi({404},.008,.012,.06,.25,-.6,.1,.1,true,true,dmg,bb)
-  elseif dmg.efct=="oxygen" then
-    addDmgSprPrtEmi({403,404},.04,.08,.06,.25,-.5,.15,.15,true,true,dmg,bb)
-  elseif dmg.efct=="hydrogen" then
-    addDmgSprPrtEmi({405,406},.008,.048,.12,.5,-0.1,.08,.08,true,true,dmg,bb)
-  elseif dmg.efct=="elec" then
-    addDmgSprPrtEmi({413,414,415},.16,.32,.12,.5,0,.002,.002,true,true,dmg,bb)
-  elseif dmg.efct=="hydraulics" then
-    addDmgSprPrtEmi({410,411,412},2.2,6.8,3.8,6.2,0,0,0,false,false,dmg,bb)
-  elseif dmg.efct=="fire" then
-    addDmgSprPrtEmi({422,423},.64,1.28,.76,2,0,.001,0,false,false,dmg,bb)
-  end
+	if dmg.efct=="steam" then
+		addDmgSprPrtEmi({402,403},.002,.006,.06,.25,-1,.1,.1,true,true,dmg,bb)
+	elseif dmg.efct=="water" then
+		addDmgSprPrtEmi({407,408,409},2.4,7.2,4.2,6.8,0,0,0,false,false,dmg,bb)
+	elseif dmg.efct=="methane" then
+		addDmgSprPrtEmi({404},.008,.012,.06,.25,-.6,.1,.1,true,true,dmg,bb)
+	elseif dmg.efct=="oxygen" then
+		addDmgSprPrtEmi({403,404},.04,.08,.06,.25,-.5,.15,.15,true,true,dmg,bb)
+	elseif dmg.efct=="hydrogen" then
+		addDmgSprPrtEmi({405,406},.008,.048,.12,.5,-0.1,.08,.08,true,true,dmg,bb)
+	elseif dmg.efct=="elec" then
+		addDmgSprPrtEmi({413,414,415},.16,.32,.12,.5,0,.002,.002,true,true,dmg,bb)
+	elseif dmg.efct=="hydraulics" then
+		addDmgSprPrtEmi({410,411,412},2.2,6.8,3.8,6.2,0,0,0,false,false,dmg,bb)
+	elseif dmg.efct=="fire" then
+		addDmgSprPrtEmi({422,423},.64,1.28,.76,2,0,.001,0,false,false,dmg,bb)
+	end
 end
 
 function drwDmgCom()
-  for i,com in pairs(wear) do
-    if com.dmg~=nil then
-      if com.st<.5 then
-        for i=1,#com.dmg do
-          local emi=com.dmg[i].emi
-          if emi==nil then
-            drwDmg(com.st,com.dmg[i],joinPxlBB(com.bb))
-          else
-            if time()>=emi.nxt then
-              addNxtSprPrt(com.st,emi,joinPxlBB(com.bb))
-            end
-          end
-        end
-      else
-        for i=1,#com.dmg do
-          com.dmg[i].emi=nil
-        end
-      end
-    end
-  end
+	for i,com in pairs(wear) do
+		if com.dmg~=nil then
+			if com.st<.5 then
+				for i=1,#com.dmg do
+					local emi=com.dmg[i].emi
+					if emi==nil then
+						drwDmg(com.st,com.dmg[i],joinPxlBB(com.bb))
+					else
+						if time()>=emi.nxt then
+							addNxtSprPrt(com.st,emi,joinPxlBB(com.bb))
+						end
+					end
+				end
+			else
+				for i=1,#com.dmg do
+					com.dmg[i].emi=nil
+				end
+			end
+		end
+	end
 end
 
 function drwParticles()
-  local hasPart=false
-  if particles~=nil then
-    for i=1,#particles do
-      part=particles[i]
-      part.lt=part.lt-1
-      if part.lt>0 then
-        hasPart=true
-        trv=scaleV2(part.dir,part.spd/6)
-        part.x=part.x+trv.x
-        part.y=part.y+trv.y
-        pix(part.x-cam.x,part.y-cam.y,1)
-      else
-      end
-    end
-  end
-  if not hasPart then particles=nil end
+	local hasPart=false
+	if particles~=nil then
+		for i=1,#particles do
+			part=particles[i]
+			part.lt=part.lt-1
+			if part.lt>0 then
+				hasPart=true
+				trv=scaleV2(part.dir,part.spd/6)
+				part.x=part.x+trv.x
+				part.y=part.y+trv.y
+				pix(part.x-cam.x,part.y-cam.y,1)
+			else
+			end
+		end
+	end
+	if not hasPart then particles=nil end
 
-  for i=1,#dmgPart do
-    dp=dmgPart[i]
-    if dp~=nil then
-      dp.lt=dp.lt-1
-      if dp.lt>0 then
-        dp.x=dp.x+dp.vx
-        dp.y=dp.y+dp.vy+dp.grv
-        dp.t=dp.t+1
-        if not dp.flk or (dp.t%2==0) then
-          local rot=0
-          if dp.rot then rot=math.random(3) end
-          spr(dp.spr,dp.x-cam.x,dp.y-cam.y,0,1,rot)
-        end
-      else
-        table.remove(dmgPart,i)
-      end
-    end
-  end
+	for i=1,#dmgPart do
+		dp=dmgPart[i]
+		if dp~=nil then
+			dp.lt=dp.lt-1
+			if dp.lt>0 then
+				dp.x=dp.x+dp.vx
+				dp.y=dp.y+dp.vy+dp.grv
+				dp.t=dp.t+1
+				if not dp.flk or (dp.t%2==0) then
+					local rot=0
+					if dp.rot then rot=math.random(3) end
+					spr(dp.spr,dp.x-cam.x,dp.y-cam.y,0,1,rot)
+				end
+			else
+				table.remove(dmgPart,i)
+			end
+		end
+	end
 end
 
 function playerMovement()
-  entStUpd(p)
-  entMv(p,btn(0),btn(1),btn(2),btn(3),.06,.8,.04,.3,1.2)
-  entSetSpr(p)
+	entStUpd(p)
+	entMv(p,btn(0),btn(1),btn(2),btn(3),.06,.8,.04,.3,1.2)
+	entSetSpr(p)
 	if p.onFlr and p.vx~=0 and (str.t%12)==0 then
 		--sfx(2,48,3,3,4,3)
 	end
-  entSetPos(p)
-  updCam(lerp(cam.x,p.x-120,0.15),lerp(cam.y,136,0.15))
-  entKpInShip(p)
+	entSetPos(p)
+	updCam(lerp(cam.x,p.x-120,0.15),lerp(cam.y,136,0.15))
+	entKpInShip(p)
 end
 
 function maybeSpawnGremlin()
-  spwChnc=lerp(99990,99910,clamp01(invLerp(0,8000000,s.dis)))
-  gremlinSpawned = math.random(100000)>spwChnc
-  if gremlinSpawned then
-    g.x=g.x+math.random(-100,100)
-    g.y=g.y+math.random(-60,60)
-    sta.gremlinSightings=sta.gremlinSightings+1
-  end
+	spwChnc=lerp(99990,99910,clamp01(invLerp(0,8000000,s.dis)))
+	gremlinSpawned = math.random(100000)>spwChnc
+	if gremlinSpawned then
+		g.x=g.x+math.random(-100,100)
+		g.y=g.y+math.random(-60,60)
+		sta.gremlinSightings=sta.gremlinSightings+1
+	end
 end
 
 function gremlinTarget()
-  local count=#wear
-  local tries=count
-  while true do
-    local com=wear[math.random(count)]
-    if com.st>0 then return com end
-    tries=tries-1
-    if tries<=0 then return nil end
-  end
+	local count=#wear
+	local tries=count
+	while true do
+		local com=wear[math.random(count)]
+		if com.st>0 then return com end
+		tries=tries-1
+		if tries<=0 then return nil end
+	end
 end
 
 function gremlinMovement()
-  entStUpd(g)
-  gb.up=false
-  gb.dwn=false
-  gb.lft=false
-  gb.rgt=false
-  if gb.trgt==nil then
-    gb.trgt=gremlinTarget()
-    gb.trgtT=str.t
-  end
-  if gremlinInSight then
-    gb.srchDir=0
-    if distance(p,g)<62 then
-      if g.onLdr and math.abs(p.y-g.y)>2 then
-        if g.y>p.y and not g.onFlr then gb.dwn=true end
-        if g.y<p.y and g.hasMoLdr then gb.up=true end
-      end
-      if not gb.dwn and not gb.up then
-        if g.x>p.x then gb.rgt=true end
-        if g.x<p.x then gb.lft=true end
-      end
-    elseif distance(p,g)>100 then
-      if g.onLdr and math.abs(p.y-g.y)>2 then
-        if g.y>p.y and g.hasMoLdr then gb.up=true end
-        if g.y<p.y and not g.onFlr then gb.dwn=true end
-      end
-      if not gb.dwn and not gb.up then
-        if g.x>p.x then gb.lft=true end
-        if g.x<p.x then gb.rgt=true end
-      end
-    end
-  else
-    if gb.trgt~=nil and comContains(gb.trgt.bb,g) and gb.trgt.st>0 then
-      gb.trgt.st=math.max(gb.trgt.st-.0004,0)
-      gb.trgtT=str.t
-    elseif gb.trgt~=nil and gb.trgt.st>0 then
-      local go2=bbHorPxlCntr(gb.trgt.bb)
-      if math.abs(go2.y-(g.y+6))>1 then
-        if g.onLdr then
-          if g.y+6>go2.y and g.hasMoLdr then gb.up=true end
-          if g.y+6<go2.y and not g.onFlr then gb.dwn=true end
-        end
-        if not gb.up and not gb.dwn then
-          if gb.srchDir<0 then
-            gb.lft=true
-            if g.x<37*8 then gb.srchDir=1 end
-          elseif gb.srchDir>0 then
-            gb.rgt=true
-            if g.x>82*8 then gb.srchDir=-1 end
-          else
-            if g.x>=60*8 then gb.srchDir=-1 else gb.srchDir=1 end
-          end
-        end
-      else
-        if not gb.dwn and not gb.up then
-          if g.x>go2.x then gb.lft=true end
-          if g.x<go2.x then gb.rgt=true end
-        end
-      end
-      if str.t-gb.trgtT>1100 then
-        gb.trgt=nil
-        gb.trgtT=0
-        gb.srchDir=0
-      end
-    else
-      gb.trgt=nil
-      gb.trgtT=0
-      gb.srchDir=0
-    end
-  end
-  entMv(g,gb.up,gb.dwn,gb.lft,gb.rgt,.08,.55,.03,.2,1.2)
-  entSetSpr(g)
-  entSetPos(g)
-  entKpInShip(g)
+	entStUpd(g)
+	gb.up=false
+	gb.dwn=false
+	gb.lft=false
+	gb.rgt=false
+	if gb.trgt==nil then
+		gb.trgt=gremlinTarget()
+		gb.trgtT=str.t
+	end
+	if gremlinInSight then
+		gb.srchDir=0
+		if distance(p,g)<62 then
+			if g.onLdr and math.abs(p.y-g.y)>2 then
+				if g.y>p.y and not g.onFlr then gb.dwn=true end
+				if g.y<p.y and g.hasMoLdr then gb.up=true end
+			end
+			if not gb.dwn and not gb.up then
+				if g.x>p.x then gb.rgt=true end
+				if g.x<p.x then gb.lft=true end
+			end
+		elseif distance(p,g)>100 then
+			if g.onLdr and math.abs(p.y-g.y)>2 then
+				if g.y>p.y and g.hasMoLdr then gb.up=true end
+				if g.y<p.y and not g.onFlr then gb.dwn=true end
+			end
+			if not gb.dwn and not gb.up then
+				if g.x>p.x then gb.lft=true end
+				if g.x<p.x then gb.rgt=true end
+			end
+		end
+	else
+		if gb.trgt~=nil and comContains(gb.trgt.bb,g) and gb.trgt.st>0 then
+			gb.trgt.st=math.max(gb.trgt.st-.0004,0)
+			gb.trgtT=str.t
+		elseif gb.trgt~=nil and gb.trgt.st>0 then
+			local go2=bbHorPxlCntr(gb.trgt.bb)
+			if math.abs(go2.y-(g.y+6))>1 then
+				if g.onLdr then
+					if g.y+6>go2.y and g.hasMoLdr then gb.up=true end
+					if g.y+6<go2.y and not g.onFlr then gb.dwn=true end
+				end
+				if not gb.up and not gb.dwn then
+					if gb.srchDir<0 then
+						gb.lft=true
+						if g.x<37*8 then gb.srchDir=1 end
+					elseif gb.srchDir>0 then
+						gb.rgt=true
+						if g.x>82*8 then gb.srchDir=-1 end
+					else
+						if g.x>=60*8 then gb.srchDir=-1 else gb.srchDir=1 end
+					end
+				end
+			else
+				if not gb.dwn and not gb.up then
+					if g.x>go2.x then gb.lft=true end
+					if g.x<go2.x then gb.rgt=true end
+				end
+			end
+			if str.t-gb.trgtT>1100 then
+				gb.trgt=nil
+				gb.trgtT=0
+				gb.srchDir=0
+			end
+		else
+			gb.trgt=nil
+			gb.trgtT=0
+			gb.srchDir=0
+		end
+	end
+	entMv(g,gb.up,gb.dwn,gb.lft,gb.rgt,.08,.55,.03,.2,1.2)
+	entSetSpr(g)
+	entSetPos(g)
+	entKpInShip(g)
 end
 
 function entStUpd(ent)
-  ent.onFlr=false
-  ent.inCil=false
-  ent.onLdr=false
-  ent.hasMoLdr=false
-  local testX=ent.x//8
-  local testY=ent.y//8
-  local testYD=testY+1
-  local testYU=testY-1
-  local onId=mget(testX,testY)
-  local downId=mget(testX,testYD)
-  if downId==16 or downId==80 or downId==81 or downId==189 or downId==158 then ent.onFlr=true end
-  if mget(testX,testYU)==16 then ent.inCil=true end
-  if onId==32 or mget(testX,testYD)==32 then ent.onLdr=true end
-  if onId==32 or mget(testX,(ent.y-4)//8)==32 then ent.hasMoLdr=true end
+	ent.onFlr=false
+	ent.inCil=false
+	ent.onLdr=false
+	ent.hasMoLdr=false
+	local testX=ent.x//8
+	local testY=ent.y//8
+	local testYD=testY+1
+	local testYU=testY-1
+	local onId=mget(testX,testY)
+	local downId=mget(testX,testYD)
+	if downId==16 or downId==80 or downId==81 or downId==189 or downId==158 then ent.onFlr=true end
+	if mget(testX,testYU)==16 then ent.inCil=true end
+	if onId==32 or mget(testX,testYD)==32 then ent.onLdr=true end
+	if onId==32 or mget(testX,(ent.y-4)//8)==32 then ent.hasMoLdr=true end
 end
 
 function entMv(e,up,dwn,lft,rgt,xAcc,xMax,yAcc,yMax,yBurst)
-  if up and e.onLdr then
-    e.vy=math.max(e.vy-yAcc,-yMax)
-  elseif dwn and e.onLdr and not e.onFlr then
-    e.vy=math.max(e.vy+yAcc,yMax)
-  elseif e.onLdr then
-    e.vy=0
-  elseif up and e.onFlr then
-    e.vy=-yBurst
-  elseif e.vy==0 and e.onFlr then
-    e.y=(e.y//8)*8+1
-    e.vy=math.min(e.vy,0)
-  elseif not e.onFlr then
-    e.vy=math.min(e.vy+ENT_DWN_ACC,ENT_DWN_TRM_V)
-  else
-    e.vy=0
-  end
-  if e.inCil and e.vy<0 then
-    e.vy=-e.vy
-  end
+	if up and e.onLdr then
+		e.vy=math.max(e.vy-yAcc,-yMax)
+	elseif dwn and e.onLdr and not e.onFlr then
+		e.vy=math.max(e.vy+yAcc,yMax)
+	elseif e.onLdr then
+		e.vy=0
+	elseif up and e.onFlr then
+		e.vy=-yBurst
+	elseif e.vy==0 and e.onFlr then
+		e.y=(e.y//8)*8+1
+		e.vy=math.min(e.vy,0)
+	elseif not e.onFlr then
+		e.vy=math.min(e.vy+ENT_DWN_ACC,ENT_DWN_TRM_V)
+	else
+		e.vy=0
+	end
+	if e.inCil and e.vy<0 then
+		e.vy=-e.vy
+	end
 
-  e.isAcc=false
-  e.isDeAcc=false
+	e.isAcc=false
+	e.isDeAcc=false
 
-  if lft then
-    e.vx=math.max(e.vx-xAcc,-xMax)
-    e.isAcc=e.vx>-.3
-  elseif rgt then
-    e.vx=math.min(e.vx+xAcc,xMax)
-    e.isAcc=e.vx<.3
-  else
-    if e.vx>0 then
-      e.vx=math.max(e.vx-ENT_DRG,0)
-    else
-      e.vx=math.min(e.vx+ENT_DRG,0)
-    end
-    e.isDeAcc=e.vx~=0
-  end
+	if lft then
+		e.vx=math.max(e.vx-xAcc,-xMax)
+		e.isAcc=e.vx>-.3
+	elseif rgt then
+		e.vx=math.min(e.vx+xAcc,xMax)
+		e.isAcc=e.vx<.3
+	else
+		if e.vx>0 then
+			e.vx=math.max(e.vx-ENT_DRG,0)
+		else
+			e.vx=math.min(e.vx+ENT_DRG,0)
+		end
+		e.isDeAcc=e.vx~=0
+	end
 
-  if e.vx>0 then
-    e.flip=0
-  elseif e.vx<0 then
-    e.flip=1
-  end
+	if e.vx>0 then
+		e.flip=0
+	elseif e.vx<0 then
+		e.flip=1
+	end
 end
 
 function entSetPos(e)
-  e.x=e.x+e.vx
-  e.y=e.y+e.vy
+	e.x=e.x+e.vx
+	e.y=e.y+e.vy
 end
 
 function entSetSpr(e)
-  if not e.onLdr and not e.onFlr then
-    e.s=e.bs+5
-  elseif e.vx==0 and e.onLdr and not e.onFlr then
-    if e.vy==0 then
-      e.s=e.bs+6
-    else
-      if (str.t%16)//8==0 then
-        e.s=e.bs+6
-      else
-        e.s=e.bs+7
-      end
-    end
-  elseif e.vx==0 then
-    e.s=e.bs
-  elseif e.isAcc then
-    e.s=e.bs+3
-  elseif e.isDeAcc then
-    e.s=e.bs+4
-  else
-    if (str.t%12)//6==0 then
-      e.s=e.bs+1
-    else
-      e.s=e.bs+2
-    end
-  end
+	if not e.onLdr and not e.onFlr then
+		e.s=e.bs+5
+	elseif e.vx==0 and e.onLdr and not e.onFlr then
+		if e.vy==0 then
+			e.s=e.bs+6
+		else
+			if (str.t%16)//8==0 then
+				e.s=e.bs+6
+			else
+				e.s=e.bs+7
+			end
+		end
+	elseif e.vx==0 then
+		e.s=e.bs
+	elseif e.isAcc then
+		e.s=e.bs+3
+	elseif e.isDeAcc then
+		e.s=e.bs+4
+	else
+		if (str.t%12)//6==0 then
+			e.s=e.bs+1
+		else
+			e.s=e.bs+2
+		end
+	end
 end
 
 function entKpInShip(e)
-  if e.y>234 then
-    if e.x<292 then e.x=292 end
-    if e.x>668 then e.x=668 end
-  elseif e.y>202 then
-    if e.x<268 then e.x=268 end
-    if e.x>684 then e.x=684 end
-  else
-    if e.x<268 then e.x=268 end
-    if e.x>700 then e.x=700 end
-  end
+	if e.y>234 then
+		if e.x<292 then e.x=292 end
+		if e.x>668 then e.x=668 end
+	elseif e.y>202 then
+		if e.x<268 then e.x=268 end
+		if e.x>684 then e.x=684 end
+	else
+		if e.x<268 then e.x=268 end
+		if e.x>700 then e.x=700 end
+	end
 
-  if e.y>257 then e.y=257 end
-  if e.y<176 then e.y=176 end
+	if e.y>257 then e.y=257 end
+	if e.y<176 then e.y=176 end
 end
 
 function doRepairs()
@@ -955,8 +985,8 @@ end
 
 function drwShipSt()
 	repair=math.max((math.min(dispNav.st,dispSta.st,bilr.st,turb.st,hydRes.st,hydPump.st,
-      gen.st,rtr1.st,rtr2.st,rtr3.st,rtr4.st,prp1.st,prp2.st,accH2O.st,
-      accCH4.st,cl1.st,cl2.st,cl3.st,cl4.st,btry.st,spltr.st,tkH.st,tkO.st,
+			gen.st,rtr1.st,rtr2.st,rtr3.st,rtr4.st,prp1.st,prp2.st,accH2O.st,
+			accCH4.st,cl1.st,cl2.st,cl3.st,cl4.st,btry.st,spltr.st,tkH.st,tkO.st,
 			tkH2O.st,tkCH4.st)*100+0.5)//1,0)
 	resources=(math.min((tkH2O.lvl/H2O_TANK_MAX_KG)*100+0.5,
 											(tkCH4.lvl/CH4_TANK_MAX_KG)*100+0.5))//1
@@ -973,7 +1003,7 @@ function drwShipSt()
 
 	if s.pos.z<1 and s.spd<1 and resources<1 then
 		--endScreen=true
-    --str.endTimeOut=str.t
+		--str.endTimeOut=str.t
 	end
 end
 
@@ -1032,7 +1062,7 @@ function drwMap(xSize,ySize,xOff,yOff)
 end
 
 function drwGame()
-  drwEnv()
+	drwEnv()
 	drwShip()
 
 	if showNav then
@@ -1079,35 +1109,35 @@ function drwGame()
 		print("PRP1",159,100,6,false,1,true)
 		print("PRP2",178,100,6,false,1,true)
 
-    for i,prp in pairs(ggPrp) do
-      drwPropRotSt(prp.ndl,prp.rot)
-      drwPropThrstSt(prp.bar,prp.thrst)
-    end
+		for i,prp in pairs(ggPrp) do
+			drwPropRotSt(prp.ndl,prp.rot)
+			drwPropThrstSt(prp.bar,prp.thrst)
+		end
 
 		print("RTR1",71,100,6,false,1,true)
 		print("RTR2",90,100,6,false,1,true)
 		print("RTR3",119,100,6,false,1,true)
 		print("RTR4",138,100,6,false,1,true)
 
-    for i,rtr in pairs(ggRtr) do
-      drwRtrRotSt(rtr.ndl,rtr.rot)
-      drwRtrThrstSt(rtr.bar,rtr.thrst)
-    end
+		for i,rtr in pairs(ggRtr) do
+			drwRtrRotSt(rtr.ndl,rtr.rot)
+			drwRtrThrstSt(rtr.bar,rtr.thrst)
+		end
 
 		print("Hyd Cells",199,100,6,false,1,true)
 
-    for i,cl in pairs(ggCl) do
-      drwBarSt(cl.bar,cl.lvl,CLL_MAX_M3)
-    end
+		for i,cl in pairs(ggCl) do
+			drwBarSt(cl.bar,cl.lvl,CLL_MAX_M3)
+		end
 
-    clip(6,64,50,63)
+		clip(6,64,50,63)
 		drwMap(5,7,16,72)
-    sHCent={x=32,y=96}
-    local pt1=rotV2Ct(sHCent,{x=32,y=92},s.hdg)
-    local pt2=rotV2Ct(sHCent,{x=30,y=100},s.hdg)
-    local pt3=rotV2Ct(sHCent,{x=34,y=100},s.hdg)
-    tri(pt1.x,pt1.y,pt2.x,pt2.y,pt3.x,pt3.y,5)
-    clip()
+		sHCent={x=32,y=96}
+		local pt1=rotV2Ct(sHCent,{x=32,y=92},s.hdg)
+		local pt2=rotV2Ct(sHCent,{x=30,y=100},s.hdg)
+		local pt3=rotV2Ct(sHCent,{x=34,y=100},s.hdg)
+		tri(pt1.x,pt1.y,pt2.x,pt2.y,pt3.x,pt3.y,5)
+		clip()
 
 		if controlType==0 then
 			rectb(71,63,26,34,7)
@@ -1120,32 +1150,117 @@ function drwGame()
 		elseif controlType==4 then
 			rectb(159,63,34,34,7)
 		end
+	elseif showSta then
+		map(30,125,30,11,0,48)
+		print("Status",193,57,11,false,1,false)
+		print("Steam",193,65,15,false,1,true)
+		print("Torque",193,73,6,false,1,true)
+		print("Electricity",193,81,4,false,1,true)
+		print("Hydraulic",193,89,5,false,1,true)
+		print("Water",193,97,7,false,1,true)
+		print("Methane",193,105,1,false,1,true)
+		print("Hydrogen",193,113,3,false,1,true)
+		print("Oxygen",193,121,13,false,1,true)
+		if str.t%2==0 then
+			rect(87+sDspIn.x,42+sDspIn.y,2,18,15)
+			rect(89+sDspIn.x,58+sDspIn.y,37,2,15)
+			rect(35+sDspIn.x,35+sDspIn.y,42,2,6)
+			rect(26+sDspIn.x,9+sDspIn.y,2,24,5)
+			rect(6+sDspIn.x,9+sDspIn.y,20,2,5)
+			rect(4+sDspIn.x,9+sDspIn.y,2,51,5)
+			rect(6+sDspIn.x,58+sDspIn.y,60,2,5)
+			rect(142+sDspIn.x,39+sDspIn.y,30,2,7)
+			rect(142+sDspIn.x,41+sDspIn.y,2,3,7)
+			rect(128+sDspIn.x,44+sDspIn.y,16,2,7)
+			rect(128+sDspIn.x,46+sDspIn.y,2,10,7)
+			rect(138+sDspIn.x,31+sDspIn.y,10,2,7)
+			rect(143+sDspIn.x,65+sDspIn.y,28,2,1)
+			rect(121+sDspIn.x,31+sDspIn.y,7,2,3)
+			rect(121+sDspIn.x,26+sDspIn.y,2,5,3)
+			rect(105+sDspIn.x,26+sDspIn.y,16,2,3)
+			rect(103+sDspIn.x,26+sDspIn.y,2,8,3)
+			rect(99+sDspIn.x,13+sDspIn.y,2,18,3)
+			rect(90+sDspIn.x,11+sDspIn.y,66,2,3)
+			rect(118+sDspIn.x,34+sDspIn.y,10,2,13)
+			rect(115+sDspIn.x,42+sDspIn.y,2,24,13)
+			rect(117+sDspIn.x,64+sDspIn.y,8,2,13)
+			rect(46+sDspIn.x,13+sDspIn.y,2,20,4)
+			rect(11+sDspIn.x,13+sDspIn.y,2,34,4)
+			rect(7+sDspIn.x,45+sDspIn.y,4,2,4)
+			rect(7+sDspIn.x,47+sDspIn.y,2,7,4)
+			rect(7+sDspIn.x,54+sDspIn.y,68,2,4)
+			rect(75+sDspIn.x,54+sDspIn.y,2,7,4)
+			rect(75+sDspIn.x,61+sDspIn.y,46,2,4)
+			rect(121+sDspIn.x,41+sDspIn.y,2,22,4)
+			rect(123+sDspIn.x,41+sDspIn.y,11,2,4)
+			rect(132+sDspIn.x,26+sDspIn.y,2,17,4)
+			rect(134+sDspIn.x,26+sDspIn.y,35,2,4)
+			rect(167+sDspIn.x,28+sDspIn.y,2,8,4)
+			rect(169+sDspIn.x,34+sDspIn.y,5,2,4)
+			rect(174+sDspIn.x,34+sDspIn.y,2,26,4)
+		end
+		for i,sDsp in pairs(sDsps) do
+			local hDim={w=0,h=0,a=0}
+			for j,sD in pairs(sDsp.sdsp) do
+				hDim.w=hDim.w+sD.maxX-sD.minX
+				hDim.h=sD.maxY-sD.minY
+				hDim.a=hDim.a+1
+				drwSDsp(sDsp.st,sDsp.effc,sD)
+			end
+			baseY=sDspIn.y+sDsp.sdsp[1].y+hDim.h+2
+			baseX=sDspIn.x+sDsp.sdsp[1].x
+			baseWidth=hDim.w+hDim.a
+			sW=(lerp(0,baseWidth,sDsp.st)+0.5)//1
+			rect(baseX,baseY,sW,2,6)
+			rect(baseX+sW,baseY,baseWidth-sW,2,5)
+		end
 	end
 end
 
+function drwSDsp(stts,effc,sdsp)
+	local lblOff=0
+	if sdsp.lblOff~=nil then lblOff=sdsp.lblOff end
+	print(sdsp.lbl,sDspIn.x+sdsp.x+lblOff,sDspIn.y+sdsp.y-6,sdsp.c,false,1,true)
+	for x=sdsp.minX,sdsp.maxX do
+		for y=sdsp.minY,sdsp.maxY do
+			local c=sget(x,y)
+			local sc=8
+			if (1-invLerp(sdsp.minY,sdsp.maxY,y))<=effc then sc=sdsp.c end
+			if c~=0 then
+				pix(x-sdsp.minX+sdsp.x+sDspIn.x,y-sdsp.minY+sdsp.y+sDspIn.y,sc)
+			end
+		end
+	end
+end
+
+function sget(x,y)
+	local addr=0x4000+(x//8+y//8*16)*32
+	return peek4(addr*2+x%8+y%8*8)
+end
+
 function drwEnv()
-  vLoc=mapVertLoc()
-  xDiff=vLoc.x%8
-  yDiff=vLoc.y%8
-  map(vLoc.x//8,vLoc.y//8,31,18,-xDiff,-yDiff)
+	vLoc=mapVertLoc()
+	xDiff=vLoc.x%8
+	yDiff=vLoc.y%8
+	map(vLoc.x//8,vLoc.y//8,31,18,-xDiff,-yDiff)
 end
 
 function drwShip()
 	maxMapHeight=18
 	mapYAdjust=0
-	if showNav then
+	if showNav or showSta then
 		maxMapHeight=6
 		mapYAdjust=3
 	end
-  yDown=mapYAdjust*-8
+	yDown=mapYAdjust*-8
 
-  map(cam.xCell,cam.yCell+mapYAdjust,31,maxMapHeight,cam.xOff,cam.yOff,0)
+	map(cam.xCell,cam.yCell+mapYAdjust,31,maxMapHeight,cam.xOff,cam.yOff,0)
 
 	for i,drw in pairs(drw1) do
 		drwCom(drw,yDown)
 	end
 
-  if gremlinSpawned and gremlinInSight then spr(g.s,g.x-cam.x-4,g.y-cam.y-9+yDown,0,1,g.flip,0,1,2) end
+	if gremlinSpawned and gremlinInSight then spr(g.s,g.x-cam.x-4,g.y-cam.y-9+yDown,0,1,g.flip,0,1,2) end
 	spr(p.s,p.x-cam.x-4,p.y-cam.y-9+yDown,0,1,p.flip,0,1,2)
 
 	for i,drw in pairs(drw2) do
@@ -1155,46 +1270,46 @@ end
 
 function drwCom(com,yDown)
 	for i,bb in pairs(com.bb) do
-    local dmged=false
-    if com.st~=nil and com.st<.25 then dmged=true end
+		local dmged=false
+		if com.st~=nil and com.st<.25 then dmged=true end
 		drwPart(bb,com.drw[i],yDown,dmged)
 	end
 end
 
 function drwPart(bb,drw,yDown,dmged)
-  local posX=bb.min_x-cam.xCell
-  local posY=bb.min_y-cam.yCell
-  local reqX=bb.max_x-bb.min_x
-  local reqY=bb.max_y-bb.min_y
-  local dmgedOff=0
-  if dmged then dmgedOff=112 end
+	local posX=bb.minX-cam.xCell
+	local posY=bb.minY-cam.yCell
+	local reqX=bb.maxX-bb.minX
+	local reqY=bb.maxY-bb.minY
+	local dmgedOff=0
+	if dmged then dmgedOff=112 end
 
-  local ySub=0
-  for y=0,reqY do
-    yAdj=y
-    if drw.ry~=nil and y>=drw.ry-1 and y<reqX-(drw.ry-1) then
-      yAdj=drw.ry-1
-      ySub=ySub+1
-    elseif drw.ry~=nil and y>drw.ry-1 then
-      yAdj=yAdj-ySub
-    else
-      yAdj=y%drw.h
-    end
-    yOff=yAdj*16
-    local xSub=0
-    for x=0,reqX do
-      xOff=x
-      if drw.rx~=nil and x>=drw.rx-1 and x<reqX-(drw.rx-1) then
-        xOff=drw.rx-1
-        xSub=xSub+1
-      elseif drw.rx~=nil and x>drw.rx-1 then
-        xOff=xOff-xSub
-      else
-        xOff=x%drw.w
-      end
-      spr(drw.s+yOff+xOff+dmgedOff,(posX+x)*8+cam.xOff,(posY+y)*8+cam.yOff+yDown,0)
-    end
-  end
+	local ySub=0
+	for y=0,reqY do
+		yAdj=y
+		if drw.ry~=nil and y>=drw.ry-1 and y<reqX-(drw.ry-1) then
+			yAdj=drw.ry-1
+			ySub=ySub+1
+		elseif drw.ry~=nil and y>drw.ry-1 then
+			yAdj=yAdj-ySub
+		else
+			yAdj=y%drw.h
+		end
+		yOff=yAdj*16
+		local xSub=0
+		for x=0,reqX do
+			xOff=x
+			if drw.rx~=nil and x>=drw.rx-1 and x<reqX-(drw.rx-1) then
+				xOff=drw.rx-1
+				xSub=xSub+1
+			elseif drw.rx~=nil and x>drw.rx-1 then
+				xOff=xOff-xSub
+			else
+				xOff=x%drw.w
+			end
+			spr(drw.s+yOff+xOff+dmgedOff,(posX+x)*8+cam.xOff,(posY+y)*8+cam.yOff+yDown,0)
+		end
+	end
 end
 
 function drwNdlAglSt(needle,angle,vec)
@@ -1242,11 +1357,11 @@ function drwRtrThrstSt(bar,thrst)
 end
 
 function dmgSysts(vSpeed)
-  for i,com in pairs(wear) do
-    if math.random()>clamp01(invLerp(-16,0,vSpeed)) then
-      com.st=clamp01(math.max(com.st-clamp01(invLerp(0,-8,vSpeed)),0))
-    end
-  end
+	for i,com in pairs(wear) do
+		if math.random()>clamp01(invLerp(-16,0,vSpeed)) then
+			com.st=clamp01(math.max(com.st-clamp01(invLerp(0,-8,vSpeed)),0))
+		end
+	end
 end
 
 function simulate()
@@ -1309,7 +1424,7 @@ end
 
 function cntrlsPwrDmd()
 	dmd.kW.dispNav=DISPLAYS_PWR_DMD_KW
-  dmd.kW.dispSta=DISPLAYS_PWR_DMD_KW
+	dmd.kW.dispSta=DISPLAYS_PWR_DMD_KW
 	dmd.kW.rtr1=RTR_MAX_PWR_DMD_KW*stToEf(rtr1.st)*s.con.thrt.rtrs
 	dmd.kW.rtr2=RTR_MAX_PWR_DMD_KW*stToEf(rtr2.st)*s.con.thrt.rtrs
 	dmd.kW.rtr3=RTR_MAX_PWR_DMD_KW*stToEf(rtr3.st)*s.con.thrt.rtrs
@@ -1344,8 +1459,8 @@ end
 function btryHydDmd()
 	btryStateDmd=math.min(BTRY_MAX_CHARGE_RATE_KW,BTRY_MAX_CHARGE_KW*stToEf(btry.st)-btry.lvl)
 	dmd.kW.btry=math.max(btryStateDmd,0)
-  dmd.kNSM.hydRes=HYD_MAX_KNSM-hydRes.lvl
-  dmd.NM.hydPump=math.min(HYD_PUMP_MAX_NM,dmd.kNSM.hydRes*HYD_PUMP_NM_PER_KNSM)
+	dmd.kNSM.hydRes=HYD_MAX_KNSM-hydRes.lvl
+	dmd.NM.hydPump=math.min(HYD_PUMP_MAX_NM,dmd.kNSM.hydRes*HYD_PUMP_NM_PER_KNSM)
 end
 
 function spltrAccDmd()
@@ -1354,16 +1469,16 @@ function spltrAccDmd()
 		dmd.H2O.spltr=SPLTR_MAX_H2O*stToEf(spltr.st)
 	end
 	if dmd.H2O.tank>0 then dmd.kW.H2OAcc=H2O_ACC_PWR_DMD_KW*stToEf(accH2O.st) end
-  if dmd.CH4.tank>0 then dmd.kW.CH4Acc=CH4_ACC_PWR_DMD_KW*stToEf(accCH4.st) end
+	if dmd.CH4.tank>0 then dmd.kW.CH4Acc=CH4_ACC_PWR_DMD_KW*stToEf(accCH4.st) end
 end
 
 function genTurbDmd()
 	ttlPwrDmd=math.min(GEN_MAX_KW*stToEf(gen.st),dmd.kW.dispNav+dmd.kW.dispSta+
-      dmd.kW.rtr1+dmd.kW.rtr2+dmd.kW.rtr3+dmd.kW.rtr4+dmd.kW.prp1+dmd.kW.prp2+
-      dmd.kW.spltr+dmd.kW.H2OAcc+dmd.kW.CH4Acc+dmd.kW.btry)
+			dmd.kW.rtr1+dmd.kW.rtr2+dmd.kW.rtr3+dmd.kW.rtr4+dmd.kW.prp1+dmd.kW.prp2+
+			dmd.kW.spltr+dmd.kW.H2OAcc+dmd.kW.CH4Acc+dmd.kW.btry)
 	dmd.NM.gen=(ttlPwrDmd/GEN_MAX_KW)*GEN_MAX_NM
-  ttlTorqueDmd=math.min(TURB_MAX_NM*stToEf(turb.st),dmd.NM.gen+dmd.NM.hydPump)
-  dmd.steam=(ttlTorqueDmd/TURB_MAX_NM)*TURB_MAX_STEAM_KNSM
+	ttlTorqueDmd=math.min(TURB_MAX_NM*stToEf(turb.st),dmd.NM.gen+dmd.NM.hydPump)
+	dmd.steam=(ttlTorqueDmd/TURB_MAX_NM)*TURB_MAX_STEAM_KNSM
 end
 
 function bilrDmd()
@@ -1447,13 +1562,14 @@ function torqueSupply()
 		sply.NM.gen=torqueSpld*genPrct
 		sply.NM.hydPump=torqueSpld*pumpPrct
 	end
+	hydPump.effc=safeUpDivide(dmd.NM.hydPump,sply.NM.hydPump)
 end
 
 function hydSupply()
 	sply.kNSM.hydRes=sply.NM.hydPump*HYD_PUMP_NM_PER_KNSM
 
 	tlPrssDmd=dmd.kNSM.rtr1+dmd.kNSM.rtr2+dmd.kNSM.rtr3+dmd.kNSM.rtr4+
-            dmd.kNSM.prp1+dmd.kNSM.prp2
+						dmd.kNSM.prp1+dmd.kNSM.prp2
 
 	if avlb4Use.kNSM >= tlPrssDmd then
 		sply.kNSM.rtr1=dmd.kNSM.rtr1
@@ -1477,18 +1593,19 @@ function hydSupply()
 		sply.kNSM.prp1=prps1Prct*avlb4Use.kNSM
 		sply.kNSM.prp2=prps2Prct*avlb4Use.kNSM
 	end
+	hydRes.effc=hydRes.lvl/HYD_MAX_KNSM
 end
 
 function pwrSupply()
 	genPwr=GEN_MAX_KW*(sply.NM.gen/GEN_MAX_NM)
 	btryPwr=avlb4Use.kW
 	ttlPwrDmd=dmd.kW.dispNav+dmd.kW.dispSta+dmd.kW.btry+dmd.kW.rtr1+dmd.kW.rtr2+dmd.kW.rtr3+
-            dmd.kW.rtr4+dmd.kW.prp1+dmd.kW.prp2+dmd.kW.spltr+dmd.kW.H2OAcc+
-            dmd.kW.CH4Acc
+						dmd.kW.rtr4+dmd.kW.prp1+dmd.kW.prp2+dmd.kW.spltr+dmd.kW.H2OAcc+
+						dmd.kW.CH4Acc
 
 	if ttlPwrDmd<=genPwr then
 		sply.kW.dispNav=dmd.kW.dispNav
-    sply.kW.dispSta=dmd.kW.dispSta
+		sply.kW.dispSta=dmd.kW.dispSta
 		sply.kW.rtr1=dmd.kW.rtr1
 		sply.kW.rtr2=dmd.kW.rtr2
 		sply.kW.rtr3=dmd.kW.rtr3
@@ -1501,7 +1618,7 @@ function pwrSupply()
 		sply.kW.btry=dmd.kW.btry
 	elseif ttlPwrDmd<=(genPwr+btryPwr) then
 		sply.kW.dispNav=dmd.kW.dispNav
-    sply.kW.dispSta=dmd.kW.dispSta
+		sply.kW.dispSta=dmd.kW.dispSta
 		sply.kW.rtr1=dmd.kW.rtr1
 		sply.kW.rtr2=dmd.kW.rtr2
 		sply.kW.rtr3=dmd.kW.rtr3
@@ -1517,7 +1634,7 @@ function pwrSupply()
 		avlb4Stg.kW=avlb4Stg.kW-btryUse
 	else
 		dispNavPrct=safeDivide(dmd.kW.dispNav,ttlPwrDmd)
-    dispStaPrct=safeDivide(dmd.kW.dispSta,ttlPwrDmd)
+		dispStaPrct=safeDivide(dmd.kW.dispSta,ttlPwrDmd)
 		rtrs1Prct=safeDivide(dmd.kW.rtr1,ttlPwrDmd)
 		rtrs2Prct=safeDivide(dmd.kW.rtr2,ttlPwrDmd)
 		rtrs3Prct=safeDivide(dmd.kW.rtr3,ttlPwrDmd)
@@ -1532,7 +1649,7 @@ function pwrSupply()
 		ttlPwrAvlb=genPwr+btryPwr
 
 		sply.kW.dispNav=dispNavPrct*ttlPwrAvlb
-    sply.kW.dispSta=dispStaPrct*ttlPwrAvlb
+		sply.kW.dispSta=dispStaPrct*ttlPwrAvlb
 		sply.kW.rtr1=rtrs1Prct*ttlPwrAvlb
 		sply.kW.rtr2=rtrs2Prct*ttlPwrAvlb
 		sply.kW.rtr3=rtrs3Prct*ttlPwrAvlb
@@ -1562,7 +1679,7 @@ function distPwr()
 	spdAdj=clamp(nroot(6.6,s.spd)-1,0.2,1.2)
 	intakeAdj=altAdj*spdAdj
 	dispNav.on=(sply.kW.dispNav>=dmd.kW.dispNav)
-  dispSta.on=(sply.kW.dispSta>=dmd.kW.dispSta)
+	dispSta.on=(sply.kW.dispSta>=dmd.kW.dispSta)
 	if sply.kW.spltr>0 then
 		pwrPrct=sply.kW.spltr/SPLTR_PWR_DMD_KW
 		h2oPrct=sply.H2O.spltr/SPLTR_MAX_H2O
@@ -1648,8 +1765,8 @@ function applyForces()
 	drag=DRAG_COEFFICENT*FRONT_DRAG_AREA*0.5*s.env.Atmo *
 			(s.spd*s.spd)
 	s.accl=(prp1.thrst*thrstAdj+prp2.thrst*thrstAdj+rtr1.thrst*rtr1Xcomp+
-      rtr2.thrst*rtr2Xcomp+rtr3.thrst*rtr3Xcomp+rtr4.thrst*rtr4Xcomp-drag) /
-      ttlShipWeightKN
+			rtr2.thrst*rtr2Xcomp+rtr3.thrst*rtr3Xcomp+rtr4.thrst*rtr4Xcomp-drag) /
+			ttlShipWeightKN
 	-- TODO Remove fudge? Acceleration bump,direction rotation.
 	s.spd=s.spd+0.5*s.accl*10*0.00027777777
 	changeX=s.spd*math.sin(math.rad(s.hdg))
@@ -1657,7 +1774,7 @@ function applyForces()
 	s.pos.x=s.pos.x+changeX
 	s.pos.y=s.pos.y+changeY
 	s.dis=s.dis+math.sqrt(changeX*changeX+changeY*changeY)
-  sta.dis=s.dis
+	sta.dis=s.dis
 
 	ttlHydrogenLiftForce=(ttlAirWeight-ttlHydrogenWeight)*KG_TO_N*HYDROGEN_LIFT_ADJ
 	ttlWingLiftForce=s.spd*WING_LIFT*altAdj
@@ -1665,9 +1782,9 @@ function applyForces()
 	s.rot=(rtr1.rot+rtr2.rot+rtr3.rot+rtr4.rot)/4
 	vertDrag=DRAG_COEFFICENT*BOTTOM_DRAG_AREA*0.5*s.env.Atmo*s.vsi*s.vsi
 	vForce=((rtr1.thrst*rtr1Ycomp+
-            rtr2.thrst*rtr2Ycomp+
-            rtr3.thrst*rtr3Ycomp+
-            rtr4.thrst*rtr4Ycomp)+
+						rtr2.thrst*rtr2Ycomp+
+						rtr3.thrst*rtr3Ycomp+
+						rtr4.thrst*rtr4Ycomp)+
 			ttlHydrogenLiftForce+ttlWingLiftForce)/ttlShipWeightKN
 	if s.vsi>0 then
 		vForce=vForce-vertDrag
@@ -1687,18 +1804,18 @@ function applyForces()
 
 	if s.pos.z-100>s.con.alt and s.vsi>-0.2 then
 		altDiff=math.min((s.pos.z-100-s.con.alt)/100,8)*4
-    ttlLvl=safeDivide(1,cl1.lvl+cl2.lvl+cl3.lvl+cl4.lvl)
-    cl1.vent=altDiff*cl1.lvl*ttlLvl
-    cl2.vent=altDiff*cl2.lvl*ttlLvl
-    cl3.vent=altDiff*cl3.lvl*ttlLvl
-    cl4.vent=altDiff*cl4.lvl*ttlLvl
+		ttlLvl=safeDivide(1,cl1.lvl+cl2.lvl+cl3.lvl+cl4.lvl)
+		cl1.vent=altDiff*cl1.lvl*ttlLvl
+		cl2.vent=altDiff*cl2.lvl*ttlLvl
+		cl3.vent=altDiff*cl3.lvl*ttlLvl
+		cl4.vent=altDiff*cl4.lvl*ttlLvl
 	elseif s.pos.z+100<s.con.alt and s.vsi<0.2 then
 		altDiff=math.max((s.pos.z+100-s.con.alt)/100,-8)*4
-    ttlLvl=safeDivide(1,cl1.lvl+cl2.lvl+cl3.lvl+cl4.lvl)
-    cl1.vent=altDiff*(1-cl1.lvl*ttlLvl)
-    cl2.vent=altDiff*(1-cl2.lvl*ttlLvl)
-    cl3.vent=altDiff*(1-cl3.lvl*ttlLvl)
-    cl4.vent=altDiff*(1-cl4.lvl*ttlLvl)
+		ttlLvl=safeDivide(1,cl1.lvl+cl2.lvl+cl3.lvl+cl4.lvl)
+		cl1.vent=altDiff*(1-cl1.lvl*ttlLvl)
+		cl2.vent=altDiff*(1-cl2.lvl*ttlLvl)
+		cl3.vent=altDiff*(1-cl3.lvl*ttlLvl)
+		cl4.vent=altDiff*(1-cl4.lvl*ttlLvl)
 	else
 		cl1.vent=0
 		cl2.vent=0
@@ -1747,21 +1864,21 @@ function rotThrster(type,spl,thrst,maxDmd,maxSpd)
 		dsrdAngl=s.con.rot[type]-thrst.rot
 		moveAngl=math.min(aglAvl,math.abs(dsrdAngl))
 
-    if thrst.rot<s.con.rot[type] then
-      if math.abs(thrst.rot-s.con.rot[type])<180 then
-        thrst.rot=thrst.rot+moveAngl
-      else
-        thrst.rot=thrst.rot-moveAngl
-      end
-    else
-      if math.abs(thrst.rot-s.con.rot[type])<180 then
-        thrst.rot=thrst.rot-moveAngl
-      else
-        thrst.rot=thrst.rot+moveAngl
-      end
+		if thrst.rot<s.con.rot[type] then
+			if math.abs(thrst.rot-s.con.rot[type])<180 then
+				thrst.rot=thrst.rot+moveAngl
+			else
+				thrst.rot=thrst.rot-moveAngl
+			end
+		else
+			if math.abs(thrst.rot-s.con.rot[type])<180 then
+				thrst.rot=thrst.rot-moveAngl
+			else
+				thrst.rot=thrst.rot+moveAngl
+			end
 		end
-    if thrst.rot>=360 then thrst.rot=thrst.rot-360 end
-    if thrst.rot<0 then thrst.rot=360+thrst.rot end
+		if thrst.rot>=360 then thrst.rot=thrst.rot-360 end
+		if thrst.rot<0 then thrst.rot=360+thrst.rot end
 	end
 end
 
@@ -1774,26 +1891,31 @@ function rotProp(spl,prop)
 end
 
 function isLinThFlr(lx1,ly1,lx2,ly2)
-  local chkCnt=distance({x=lx1,y=ly1},{x=lx2,y=ly2})//8
-  for i=0,chkCnt do
-    local tId=mget(lerp(lx1,lx2,i/chkCnt)//8,lerp(ly1,ly2,i/chkCnt)//8)
-    if tId==16 or tId==189 or tId==158 then
-      return true
-    end
-  end
-  return false
+	local chkCnt=distance({x=lx1,y=ly1},{x=lx2,y=ly2})//8
+	for i=0,chkCnt do
+		local tId=mget(lerp(lx1,lx2,i/chkCnt)//8,lerp(ly1,ly2,i/chkCnt)//8)
+		if tId==16 or tId==189 or tId==158 then
+			return true
+		end
+	end
+	return false
 end
 
 function stToEf(val)
-  return clamp01(1-(1/(1+(-val-.7)^16)))
+	return clamp01(1-(1/(1+(-val-.7)^16)))
 end
 
 function randRangeF(min,max)
-  return lerp(min,max,math.random())
+	return lerp(min,max,math.random())
 end
 
 function safeDivide(num,den)
 	return (den>0) and num/den or 0
+end
+
+function safeUpDivide(num,den)
+	if num==0 and den==0 then return 1 end
+	return num/den
 end
 
 function clamp(val,low,high)
@@ -1831,32 +1953,32 @@ function scaleV2(vec,scalar)
 end
 
 function joinBBs(bbs)
-	local min_x=10000
-	local min_y=10000
-	local max_x=-10000
-	local max_y=-10000
+	local minX=10000
+	local minY=10000
+	local maxX=-10000
+	local maxY=-10000
 	for i,bb in pairs(bbs) do
-		if bb.min_x<min_x then min_x=bb.min_x end
-		if bb.min_y<min_y then min_y=bb.min_y end
-		if bb.max_x>max_x then max_x=bb.max_x end
-		if bb.max_y>max_y then max_y=bb.max_y end
+		if bb.minX<minX then minX=bb.minX end
+		if bb.minY<minY then minY=bb.minY end
+		if bb.maxX>maxX then maxX=bb.maxX end
+		if bb.maxY>maxY then maxY=bb.maxY end
 	end
-	return {min_x=min_x,min_y=min_y,max_x=max_x,max_y=max_y}
+	return {minX=minX,minY=minY,maxX=maxX,maxY=maxY}
 end
 
 function joinPxlBB(bbs)
-  local bb=joinBBs(bbs)
-  return {min_x=bb.min_x*8,min_y=bb.min_y*8,max_x=bb.max_x*8+7,max_y=bb.max_y*8+7}
+	local bb=joinBBs(bbs)
+	return {minX=bb.minX*8,minY=bb.minY*8,maxX=bb.maxX*8+7,maxY=bb.maxY*8+7}
 end
 
 function bbHorPxlCntr(bbs)
-  local bb=joinBBs(bbs)
-  return {x=((bb.max_x+1-bb.min_x)/2+bb.min_x)*8,y=(bb.max_y+1)*8-1}
+	local bb=joinBBs(bbs)
+	return {x=((bb.maxX+1-bb.minX)/2+bb.minX)*8,y=(bb.maxY+1)*8-1}
 end
 
 function bbCntr(bbs)
 	local bb=joinBBs(bbs)
-	return {x=(bb.max_x+1-bb.min_x)/2+bb.min_x,y=(bb.max_y-bb.min_y)/2+bb.min_y}
+	return {x=(bb.maxX+1-bb.minX)/2+bb.minX,y=(bb.maxY-bb.minY)/2+bb.minY}
 end
 
 function rotV2(vec,angl)
@@ -1867,16 +1989,16 @@ function rotV2(vec,angl)
 end
 
 function rotV2Ct(cnt,vec,angl)
-  r=rotV2({x=vec.x-cnt.x,y=vec.y-cnt.y},angl)
-  return {x=r.x+cnt.x,y=r.y+cnt.y}
+	r=rotV2({x=vec.x-cnt.x,y=vec.y-cnt.y},angl)
+	return {x=r.x+cnt.x,y=r.y+cnt.y}
 end
 
 function contains(bb,pos)
-	return pos.x>=bb.min_x and pos.y>=bb.min_y and pos.x<=bb.max_x and pos.y<=bb.max_y
+	return pos.x>=bb.minX and pos.y>=bb.minY and pos.x<=bb.maxX and pos.y<=bb.maxY
 end
 
 function mapContains(bb,pos)
-	return contains({min_x=bb.min_x*8,min_y=bb.min_y*8,max_x=bb.max_x*8+7,max_y=bb.max_y*8+7},pos)
+	return contains({minX=bb.minX*8,minY=bb.minY*8,maxX=bb.maxX*8+7,maxY=bb.maxY*8+7},pos)
 end
 
 function comContains(bbs,pos)
