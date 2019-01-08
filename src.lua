@@ -22,7 +22,7 @@ DISPLAYS_PWR_DMD_KW=0.017
 SPLTR_PWR_DMD_KW=0.05
 SPLTR_MAX_H2O=2.4
 SPLTR_PER_TIC_H=0.266
-SPLTR_PER_TIC_O=2.128
+SPLTR_PER_TIC_O=0.628
 
 RTR_MAX_THRST_KN=70000
 RTR_MAX_PWR_DMD_KW=46.4
@@ -42,7 +42,7 @@ BILR_MAX_STEAM_KNSM=172
 BILR_MAX_REG_STEAM_KNSM=104
 BILR_H2O_KG_PER_KNSM=0.0008
 BILR_CH4_KG_PER_KNSM=0.0394
-BILR_O_KG_PER_KNSM=0.0152
+BILR_O_KG_PER_KNSM=0.0252
 
 BTRY_MAX_CHARGE_KW=350
 BTRY_MAX_CHARGE_RATE_KW=0.022
@@ -1224,7 +1224,7 @@ function drwSDsp(stts,effc,sdsp)
 	for x=sdsp.minX,sdsp.maxX do
 		for y=sdsp.minY,sdsp.maxY do
 			local c=sget(x,y)
-			local sc=8
+			local sc=10
 			if (1-invLerp(sdsp.minY,sdsp.maxY,y))<=effc then sc=sdsp.c end
 			if c~=0 then
 				pix(x-sdsp.minX+sdsp.x+sDspIn.x,y-sdsp.minY+sdsp.y+sDspIn.y,sc)
@@ -1366,7 +1366,7 @@ end
 
 function simulate()
 	dmd={
-		kW={dispNav=0,dispSta=0,rtr1=0,rtr2=0,rtr3=0,rtr4=0,prp1=0,prp2=0,spltr=0,H2OAcc=0,CH4Acc=0,btry=0},
+		kW={dispNav=0,dispSta=0,rtr1=0,rtr2=0,rtr3=0,rtr4=0,prp1=0,prp2=0,spltr=0,accH2O=0,accCH4=0,btry=0},
 		kNSM={hydRes=0,rtr1=0,rtr2=0,rtr3=0,rtr4=0,prp1=0,prp2=0},
 		NM={hydPump=0,gen=0},
 		H2O={tank=0,bilr=0,spltr=0},
@@ -1377,7 +1377,7 @@ function simulate()
 		steam=0
 	}
 	sply={
-		kW={dispNav=0,dispSta=0,rtr1=0,rtr2=0,rtr3=0,rtr4=0,prp1=0,prp2=0,spltr=0,H2OAcc=0,CH4Acc=0,btry=0},
+		kW={dispNav=0,dispSta=0,rtr1=0,rtr2=0,rtr3=0,rtr4=0,prp1=0,prp2=0,spltr=0,accH2O=0,accCH4=0,btry=0},
 		kNSM={hydRes=0,rtr1=0,rtr2=0,rtr3=0,rtr4=0,prp1=0,prp2=0},
 		NM={hydPump=0,gen=0},
 		H2O={tank=0,bilr=0,spltr=0},
@@ -1468,14 +1468,14 @@ function spltrAccDmd()
 		dmd.kW.spltr=SPLTR_PWR_DMD_KW*stToEf(spltr.st)
 		dmd.H2O.spltr=SPLTR_MAX_H2O*stToEf(spltr.st)
 	end
-	if dmd.H2O.tank>0 then dmd.kW.H2OAcc=H2O_ACC_PWR_DMD_KW*stToEf(accH2O.st) end
-	if dmd.CH4.tank>0 then dmd.kW.CH4Acc=CH4_ACC_PWR_DMD_KW*stToEf(accCH4.st) end
+	if dmd.H2O.tank>0 then dmd.kW.accH2O=H2O_ACC_PWR_DMD_KW*stToEf(accH2O.st) end
+	if dmd.CH4.tank>0 then dmd.kW.accCH4=CH4_ACC_PWR_DMD_KW*stToEf(accCH4.st) end
 end
 
 function genTurbDmd()
 	ttlPwrDmd=math.min(GEN_MAX_KW*stToEf(gen.st),dmd.kW.dispNav+dmd.kW.dispSta+
 			dmd.kW.rtr1+dmd.kW.rtr2+dmd.kW.rtr3+dmd.kW.rtr4+dmd.kW.prp1+dmd.kW.prp2+
-			dmd.kW.spltr+dmd.kW.H2OAcc+dmd.kW.CH4Acc+dmd.kW.btry)
+			dmd.kW.spltr+dmd.kW.accH2O+dmd.kW.accCH4+dmd.kW.btry)
 	dmd.NM.gen=(ttlPwrDmd/GEN_MAX_KW)*GEN_MAX_NM
 	ttlTorqueDmd=math.min(TURB_MAX_NM*stToEf(turb.st),dmd.NM.gen+dmd.NM.hydPump)
 	dmd.steam=(ttlTorqueDmd/TURB_MAX_NM)*TURB_MAX_STEAM_KNSM
@@ -1547,6 +1547,7 @@ function steamSupply()
 		end
 	end
 	sply.steam=spldKNSM
+	turb.effc=safeUpDivide(sply.steam,dmd.steam)
 end
 
 function torqueSupply()
@@ -1562,12 +1563,12 @@ function torqueSupply()
 		sply.NM.gen=torqueSpld*genPrct
 		sply.NM.hydPump=torqueSpld*pumpPrct
 	end
-	hydPump.effc=safeUpDivide(dmd.NM.hydPump,sply.NM.hydPump)
+	hydPump.effc=safeUpDivide(sply.NM.hydPump,dmd.NM.hydPump)
+	gen.effc=safeUpDivide(sply.NM.gen,dmd.NM.gen)
 end
 
 function hydSupply()
 	sply.kNSM.hydRes=sply.NM.hydPump*HYD_PUMP_NM_PER_KNSM
-
 	tlPrssDmd=dmd.kNSM.rtr1+dmd.kNSM.rtr2+dmd.kNSM.rtr3+dmd.kNSM.rtr4+
 						dmd.kNSM.prp1+dmd.kNSM.prp2
 
@@ -1593,15 +1594,20 @@ function hydSupply()
 		sply.kNSM.prp1=prps1Prct*avlb4Use.kNSM
 		sply.kNSM.prp2=prps2Prct*avlb4Use.kNSM
 	end
-	hydRes.effc=hydRes.lvl/HYD_MAX_KNSM
+	rtr1.effc=safeUpDivide(sply.kNSM.rtr1,dmd.kNSM.rtr1)
+	rtr2.effc=safeUpDivide(sply.kNSM.rtr2,dmd.kNSM.rtr2)
+	rtr3.effc=safeUpDivide(sply.kNSM.rtr3,dmd.kNSM.rtr3)
+	rtr4.effc=safeUpDivide(sply.kNSM.rtr4,dmd.kNSM.rtr4)
+	prp1.effc=safeUpDivide(sply.kNSM.prp1,dmd.kNSM.prp1)
+	prp2.effc=safeUpDivide(sply.kNSM.prp2,dmd.kNSM.prp2)
 end
 
 function pwrSupply()
 	genPwr=GEN_MAX_KW*(sply.NM.gen/GEN_MAX_NM)
 	btryPwr=avlb4Use.kW
 	ttlPwrDmd=dmd.kW.dispNav+dmd.kW.dispSta+dmd.kW.btry+dmd.kW.rtr1+dmd.kW.rtr2+dmd.kW.rtr3+
-						dmd.kW.rtr4+dmd.kW.prp1+dmd.kW.prp2+dmd.kW.spltr+dmd.kW.H2OAcc+
-						dmd.kW.CH4Acc
+						dmd.kW.rtr4+dmd.kW.prp1+dmd.kW.prp2+dmd.kW.spltr+dmd.kW.accH2O+
+						dmd.kW.accCH4
 
 	if ttlPwrDmd<=genPwr then
 		sply.kW.dispNav=dmd.kW.dispNav
@@ -1613,8 +1619,8 @@ function pwrSupply()
 		sply.kW.prp1=dmd.kW.prp1
 		sply.kW.prp2=dmd.kW.prp2
 		sply.kW.spltr=dmd.kW.spltr
-		sply.kW.H2OAcc=dmd.kW.H2OAcc
-		sply.kW.CH4Acc=dmd.kW.CH4Acc
+		sply.kW.accH2O=dmd.kW.accH2O
+		sply.kW.accCH4=dmd.kW.accCH4
 		sply.kW.btry=dmd.kW.btry
 	elseif ttlPwrDmd<=(genPwr+btryPwr) then
 		sply.kW.dispNav=dmd.kW.dispNav
@@ -1626,8 +1632,8 @@ function pwrSupply()
 		sply.kW.prp1=dmd.kW.prp1
 		sply.kW.prp2=dmd.kW.prp2
 		sply.kW.spltr=dmd.kW.spltr
-		sply.kW.H2OAcc=dmd.kW.H2OAcc
-		sply.kW.CH4Acc=dmd.kW.CH4Acc
+		sply.kW.accH2O=dmd.kW.accH2O
+		sply.kW.accCH4=dmd.kW.accCH4
 		sply.kW.btry=dmd.kW.btry
 
 		btryUse=ttlPwrDmd-genPwr
@@ -1642,8 +1648,8 @@ function pwrSupply()
 		prps1Prct=safeDivide(dmd.kW.prp1,ttlPwrDmd)
 		prps2Prct=safeDivide(dmd.kW.prp2,ttlPwrDmd)
 		spltrPrct=safeDivide(dmd.kW.spltr,ttlPwrDmd)
-		H2OAccPrct=safeDivide(dmd.kW.H2OAcc,ttlPwrDmd)
-		CH4AccPrct=safeDivide(dmd.kW.CH4Acc,ttlPwrDmd)
+		accH2OPrct=safeDivide(dmd.kW.accH2O,ttlPwrDmd)
+		accCH4Prct=safeDivide(dmd.kW.accCH4,ttlPwrDmd)
 		btryPrct=safeDivide(dmd.kW.btry,ttlPwrDmd)
 
 		ttlPwrAvlb=genPwr+btryPwr
@@ -1657,12 +1663,21 @@ function pwrSupply()
 		sply.kW.prp1=prps1Prct*ttlPwrAvlb
 		sply.kW.prp2=prps2Prct*ttlPwrAvlb
 		sply.kW.spltr=spltrPrct*ttlPwrAvlb
-		sply.kW.H2OAcc=H2OAccPrct*ttlPwrAvlb
-		sply.kW.CH4Acc=CH4AccPrct*ttlPwrAvlb
+		sply.kW.accH2O=accH2OPrct*ttlPwrAvlb
+		sply.kW.accCH4=accCH4Prct*ttlPwrAvlb
 		sply.kW.btry=btryPrct*ttlPwrAvlb
 
 		avlb4Stg.kW=avlb4Stg.kW-btryPwr
 	end
+	rtr1.effc=math.min(rtr1.effc,safeUpDivide(sply.kW.rtr1,dmd.kW.rtr1))
+	rtr2.effc=math.min(rtr2.effc,safeUpDivide(sply.kW.rtr2,dmd.kW.rtr2))
+	rtr3.effc=math.min(rtr3.effc,safeUpDivide(sply.kW.rtr3,dmd.kW.rtr3))
+	rtr4.effc=math.min(rtr4.effc,safeUpDivide(sply.kW.rtr4,dmd.kW.rtr4))
+	prp1.effc=math.min(prp1.effc,safeUpDivide(sply.kW.prp1,dmd.kW.prp1))
+	prp2.effc=math.min(prp2.effc,safeUpDivide(sply.kW.prp2,dmd.kW.prp2))
+	spltr.effc=safeUpDivide(sply.kW.spltr,dmd.kW.spltr)
+	accH2O.effc=safeUpDivide(sply.kW.accH2O,dmd.kW.accH2O)
+	accCH4.effc=safeUpDivide(sply.kW.accCH4,dmd.kW.accCH4)
 end
 
 function distHyds()
@@ -1692,11 +1707,11 @@ function distPwr()
 		sply.H_M.tank=prodPrct*SPLTR_PER_TIC_H
 		sply.O.tank=prodPrct*SPLTR_PER_TIC_O
 	end
-	if sply.kW.H2OAcc>0 then
-		sply.H2O.tank=(sply.kW.H2OAcc/H2O_ACC_PWR_DMD_KW)*H2O_ACC_PER_TIC*s.env.H2O*intakeAdj
+	if sply.kW.accH2O>0 then
+		sply.H2O.tank=(sply.kW.accH2O/H2O_ACC_PWR_DMD_KW)*H2O_ACC_PER_TIC*s.env.H2O*intakeAdj
 	end
-	if sply.kW.CH4Acc>0 then
-		sply.CH4.tank=(sply.kW.CH4Acc/CH4_ACC_PWR_DMD_KW)*CH4_ACC_PER_TIC*s.env.CH4*intakeAdj
+	if sply.kW.accCH4>0 then
+		sply.CH4.tank=(sply.kW.accCH4/CH4_ACC_PWR_DMD_KW)*CH4_ACC_PER_TIC*s.env.CH4*intakeAdj
 	end
 	if sply.kW.btry>0 then
 		avlb4Stg.kW=avlb4Stg.kW+sply.kW.btry
@@ -1728,6 +1743,17 @@ function fillTanks()
 	tkCH4.lvl=math.min(CH4_TANK_MAX_KG,tkCH4.lvl+sply.CH4.tank)
 	hydRes.lvl=math.min(HYD_MAX_KNSM,hydRes.lvl+sply.kNSM.hydRes)
 	btry.lvl=math.min(BTRY_MAX_CHARGE_KW,btry.lvl+avlb4Stg.kW)
+
+	cl1.effc=cl1.lvl/CLL_MAX_M3
+	cl2.effc=cl2.lvl/CLL_MAX_M3
+	cl3.effc=cl3.lvl/CLL_MAX_M3
+	cl4.effc=cl4.lvl/CLL_MAX_M3
+	tkH.effc=tkH.lvl/H_TANK_MAX_KG
+	tkO.effc=tkO.lvl/O_TANK_MAX_KG
+	tkH2O.effc=tkH2O.lvl/H2O_TANK_MAX_KG
+	tkCH4.effc=tkCH4.lvl/CH4_TANK_MAX_KG
+	hydRes.effc=hydRes.lvl/HYD_MAX_KNSM
+	btry.effc=btry.lvl,BTRY_MAX_CHARGE_KW
 end
 
 function applyThrst()
