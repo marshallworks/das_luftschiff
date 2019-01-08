@@ -610,7 +610,6 @@ function TIC()
 
 		drwShipSt()
 		drwDmgCom()
-		drwParticles()
 	end
 	str.t=str.t+1
 end
@@ -681,7 +680,7 @@ function drwDmgCom()
 	end
 end
 
-function drwParticles()
+function drwParticles(yDown)
 	local hasPart=false
 	if particles~=nil then
 		for i=1,#particles do
@@ -692,7 +691,7 @@ function drwParticles()
 				trv=scaleV2(part.dir,part.spd/6)
 				part.x=part.x+trv.x
 				part.y=part.y+trv.y
-				pix(part.x-cam.x,part.y-cam.y,1)
+				pix(part.x-cam.x,part.y-cam.y+yDown,1)
 			else
 			end
 		end
@@ -1251,6 +1250,7 @@ function drwShip()
 	if showNav or showSta then
 		maxMapHeight=6
 		mapYAdjust=3
+		clip(0,0,240,48)
 	end
 	yDown=mapYAdjust*-8
 
@@ -1266,6 +1266,8 @@ function drwShip()
 	for i,drw in pairs(drw2) do
 		drwCom(drw,yDown)
 	end
+	drwParticles(yDown)
+	clip()
 end
 
 function drwCom(com,yDown)
