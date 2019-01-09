@@ -105,8 +105,11 @@ gremlinInSight=false
 gremlinLastSeen=0
 controlType=0
 
+--temp
+mapXAdjust=0
+--endtemp
+
 RES_PT_COUNT=4200
-MAP_DIM=500
 mapVls={}
 CH4pts={}
 H2Opts={}
@@ -116,8 +119,8 @@ function updCam(x,y)
 	cam.y=y
 	cam.xCell=x//8
 	cam.yCell=y//8
-	cam.xOff=-(x%8)
-	cam.yOff=-(y%8)
+	cam.xOff=-(x%8)//1
+	cam.yOff=-(y%8)//1
 end
 
 function rstStr()
@@ -446,9 +449,13 @@ end
 
 function buildMap()
 	for i=1,RES_PT_COUNT do
-		CH4pts[i]={x=math.random(-MAP_DIM,MAP_DIM),y=math.random(-MAP_DIM,MAP_DIM)}
-		H2Opts[i]={x=math.random(-MAP_DIM,MAP_DIM),y=math.random(-MAP_DIM,MAP_DIM)}
+		CH4pts[i]={x=ranMapCoor(),y=ranMapCoor()}
+		H2Opts[i]={x=ranMapCoor(),y=ranMapCoor()}
 	end
+end
+
+function ranMapCoor()
+	return math.random(-120,120)*8
 end
 
 function mapVertLoc()
@@ -503,7 +510,7 @@ function TIC()
 		sfx(-1,"D#1",-1,0,0,0)
 	else
 		music()
-		--if btnp(5) then showMap=not showMap end
+		if btnp(5) then showMap=not showMap end
 
 		if comContains(dispNav.bb,p) then
 			if btnp(6) then showNav=not showNav end
@@ -838,7 +845,7 @@ function entStUpd(ent)
 	local testYU=testY-1
 	local onId=mget(testX,testY)
 	local downId=mget(testX,testYD)
-	if downId==16 or downId==80 or downId==81 or downId==189 or downId==158 then ent.onFlr=true end
+	if downId==16 or downId==64 or downId==80 or downId==189 or downId==158 then ent.onFlr=true end
 	if mget(testX,testYU)==16 then ent.inCil=true end
 	if onId==32 or mget(testX,testYD)==32 then ent.onLdr=true end
 	if onId==32 or mget(testX,(ent.y-4)//8)==32 then ent.hasMoLdr=true end
@@ -1007,7 +1014,7 @@ function drwShipSt()
 end
 
 function getShipTilePos()
-	return {x=s.pos.x//20000,y=s.pos.y//20000}
+	return {x=s.pos.x//1000,y=s.pos.y//1000}
 end
 
 function getMapTile(pX,pY)
@@ -1048,7 +1055,7 @@ function drwMap(xSize,ySize,xOff,yOff)
 	cYOffset=sP.y-ySize//2
 	cXOffset=sP.x-xSize//2
 	-- print(string.format("%d:%d",cXOffset,cYOffset),2,2,10,false,1,true)
-	-- print(string.format("%d:%d",s.pos.x//1,s.pos.y//1),2,10,10,false,1,true)
+	print(string.format("%d:%d",s.pos.x//1,s.pos.y//1),2,10,10,false,1,true)
 	for cY=cYOffset,ySize+cYOffset do
 		for cX=cXOffset,xSize+cXOffset do
 			mapVl=getMapTile(cX,cY)
@@ -1246,15 +1253,19 @@ end
 
 function drwShip()
 	maxMapHeight=18
+	--mapXAdjust=0
 	mapYAdjust=0
 	if showNav or showSta then
 		maxMapHeight=6
 		mapYAdjust=3
 		clip(0,0,240,48)
 	end
+	if str.t%60==0 then
+		if mapXAdjust==90 then mapXAdjust=0 else mapXAdjust=90 end
+	end
 	yDown=mapYAdjust*-8
 
-	map(cam.xCell,cam.yCell+mapYAdjust,31,maxMapHeight,cam.xOff,cam.yOff,0)
+	map(cam.xCell+mapXAdjust,cam.yCell+mapYAdjust,31,maxMapHeight,cam.xOff,cam.yOff,0)
 
 	for i,drw in pairs(drw1) do
 		drwCom(drw,yDown)
