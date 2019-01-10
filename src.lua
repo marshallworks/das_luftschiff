@@ -64,6 +64,7 @@ O_TANK_MAX_KGF=2.3
 H2O_TANK_MAX_KGF=2.6
 CH4_TANK_MAX_KGF=8.274
 
+LIGHTS_PWR_DMD_KW=0.032
 H2O_ACC_PWR_DMD_KW=0.067
 CH4_ACC_PWR_DMD_KW=0.117
 H2O_ACC_PER_TIC=12
@@ -104,11 +105,6 @@ gremlinSpawned=false
 gremlinInSight=false
 gremlinLastSeen=0
 controlType=0
-
---temp
-mapXAdjust=0
---endtemp
-
 RES_PT_COUNT=4200
 mapVls={}
 CH4pts={}
@@ -173,7 +169,7 @@ end
 
 function initShip()
 	s={
-		spd=SHIP_STRT_SPD,accl=0,hdg=0,rot=0,vsi=0,setVsi=0,isCrash=false,dis=0,
+		spd=SHIP_STRT_SPD,accl=0,hdg=0,rot=0,vsi=0,setVsi=0,isCrash=false,isLit=true,dis=0,
 		pos={x=0,y=0,z=1000},
 		con={
 			alt=1000,vsi=0.2,
@@ -387,7 +383,7 @@ function initShip()
 	spltr={
 		st=1,effc=1,
 		wr=randRangeF(0.000015,0.00003),
-		bb={{minX=62,minY=28,maxX=63,maxY=28}},
+		bb={{minX=62,minY=27,maxX=63,maxY=27}},
 		drw={{s=306,w=2,h=1}},
 		sdsp={{x=126,y=29,minX=145,minY=144,maxX=158,maxY=150,lbl="Splitter",lblOff=-8,c=4}},
 		dmg={{efct="elec",emi=nil,x=.5,y=.6,xR=.4,yR=.4}}
@@ -845,10 +841,10 @@ function entStUpd(ent)
 	local testYU=testY-1
 	local onId=mget(testX,testY)
 	local downId=mget(testX,testYD)
-	if downId==16 or downId==64 or downId==80 or downId==189 or downId==158 then ent.onFlr=true end
+	if downId==16 or downId==31 or downId==64 or downId==79 or downId==80 or downId==95 or downId==189 or downId==158 then ent.onFlr=true end
 	if mget(testX,testYU)==16 then ent.inCil=true end
-	if onId==32 or mget(testX,testYD)==32 then ent.onLdr=true end
-	if onId==32 or mget(testX,(ent.y-4)//8)==32 then ent.hasMoLdr=true end
+	if onId==32 or onId==47 or mget(testX,testYD)==32 or mget(testX,testYD)==47 then ent.onLdr=true end
+	if onId==32 or onId==47 or mget(testX,(ent.y-4)//8)==32 or mget(testX,(ent.y-4)//8)==47 then ent.hasMoLdr=true end
 end
 
 function entMv(e,up,dwn,lft,rgt,xAcc,xMax,yAcc,yMax,yBurst)
@@ -1253,16 +1249,14 @@ end
 
 function drwShip()
 	maxMapHeight=18
-	--mapXAdjust=0
+	mapXAdjust=0
 	mapYAdjust=0
 	if showNav or showSta then
 		maxMapHeight=6
 		mapYAdjust=3
 		clip(0,0,240,48)
 	end
-	if str.t%60==0 then
-		if mapXAdjust==90 then mapXAdjust=0 else mapXAdjust=90 end
-	end
+	if not s.isLit then mapXAdjust=90 end
 	yDown=mapYAdjust*-8
 
 	map(cam.xCell+mapXAdjust,cam.yCell+mapYAdjust,31,maxMapHeight,cam.xOff,cam.yOff,0)
@@ -1379,7 +1373,7 @@ end
 
 function simulate()
 	dmd={
-		kW={dispNav=0,dispSta=0,rtr1=0,rtr2=0,rtr3=0,rtr4=0,prp1=0,prp2=0,spltr=0,accH2O=0,accCH4=0,btry=0},
+		kW={dispNav=0,dispSta=0,rtr1=0,rtr2=0,rtr3=0,rtr4=0,prp1=0,prp2=0,spltr=0,accH2O=0,accCH4=0,lights=0,btry=0},
 		kNSM={hydRes=0,rtr1=0,rtr2=0,rtr3=0,rtr4=0,prp1=0,prp2=0},
 		NM={hydPump=0,gen=0},
 		H2O={tank=0,bilr=0,spltr=0},
@@ -1390,7 +1384,7 @@ function simulate()
 		steam=0
 	}
 	sply={
-		kW={dispNav=0,dispSta=0,rtr1=0,rtr2=0,rtr3=0,rtr4=0,prp1=0,prp2=0,spltr=0,accH2O=0,accCH4=0,btry=0},
+		kW={dispNav=0,dispSta=0,rtr1=0,rtr2=0,rtr3=0,rtr4=0,prp1=0,prp2=0,spltr=0,accH2O=0,accCH4=0,lights=0,btry=0},
 		kNSM={hydRes=0,rtr1=0,rtr2=0,rtr3=0,rtr4=0,prp1=0,prp2=0},
 		NM={hydPump=0,gen=0},
 		H2O={tank=0,bilr=0,spltr=0},
@@ -1438,6 +1432,7 @@ end
 function cntrlsPwrDmd()
 	dmd.kW.dispNav=DISPLAYS_PWR_DMD_KW
 	dmd.kW.dispSta=DISPLAYS_PWR_DMD_KW
+	dmd.kW.lights=LIGHTS_PWR_DMD_KW
 	dmd.kW.rtr1=RTR_MAX_PWR_DMD_KW*stToEf(rtr1.st)*s.con.thrt.rtrs
 	dmd.kW.rtr2=RTR_MAX_PWR_DMD_KW*stToEf(rtr2.st)*s.con.thrt.rtrs
 	dmd.kW.rtr3=RTR_MAX_PWR_DMD_KW*stToEf(rtr3.st)*s.con.thrt.rtrs
@@ -1488,7 +1483,7 @@ end
 function genTurbDmd()
 	ttlPwrDmd=math.min(GEN_MAX_KW*stToEf(gen.st),dmd.kW.dispNav+dmd.kW.dispSta+
 			dmd.kW.rtr1+dmd.kW.rtr2+dmd.kW.rtr3+dmd.kW.rtr4+dmd.kW.prp1+dmd.kW.prp2+
-			dmd.kW.spltr+dmd.kW.accH2O+dmd.kW.accCH4+dmd.kW.btry)
+			dmd.kW.spltr+dmd.kW.accH2O+dmd.kW.accCH4+dmd.kW.lights+dmd.kW.btry)
 	dmd.NM.gen=(ttlPwrDmd/GEN_MAX_KW)*GEN_MAX_NM
 	ttlTorqueDmd=math.min(TURB_MAX_NM*stToEf(turb.st),dmd.NM.gen+dmd.NM.hydPump)
 	dmd.steam=(ttlTorqueDmd/TURB_MAX_NM)*TURB_MAX_STEAM_KNSM
@@ -1620,7 +1615,7 @@ function pwrSupply()
 	btryPwr=avlb4Use.kW
 	ttlPwrDmd=dmd.kW.dispNav+dmd.kW.dispSta+dmd.kW.btry+dmd.kW.rtr1+dmd.kW.rtr2+dmd.kW.rtr3+
 						dmd.kW.rtr4+dmd.kW.prp1+dmd.kW.prp2+dmd.kW.spltr+dmd.kW.accH2O+
-						dmd.kW.accCH4
+						dmd.kW.accCH4+dmd.kW.lights
 
 	if ttlPwrDmd<=genPwr then
 		sply.kW.dispNav=dmd.kW.dispNav
@@ -1634,6 +1629,7 @@ function pwrSupply()
 		sply.kW.spltr=dmd.kW.spltr
 		sply.kW.accH2O=dmd.kW.accH2O
 		sply.kW.accCH4=dmd.kW.accCH4
+		sply.kW.lights=dmd.kW.lights
 		sply.kW.btry=dmd.kW.btry
 	elseif ttlPwrDmd<=(genPwr+btryPwr) then
 		sply.kW.dispNav=dmd.kW.dispNav
@@ -1647,6 +1643,7 @@ function pwrSupply()
 		sply.kW.spltr=dmd.kW.spltr
 		sply.kW.accH2O=dmd.kW.accH2O
 		sply.kW.accCH4=dmd.kW.accCH4
+		sply.kW.lights=dmd.kW.lights
 		sply.kW.btry=dmd.kW.btry
 
 		btryUse=ttlPwrDmd-genPwr
@@ -1663,6 +1660,7 @@ function pwrSupply()
 		spltrPrct=safeDivide(dmd.kW.spltr,ttlPwrDmd)
 		accH2OPrct=safeDivide(dmd.kW.accH2O,ttlPwrDmd)
 		accCH4Prct=safeDivide(dmd.kW.accCH4,ttlPwrDmd)
+		lightsPrct=safeDivide(dmd.kW.lights,ttlPwrDmd)
 		btryPrct=safeDivide(dmd.kW.btry,ttlPwrDmd)
 
 		ttlPwrAvlb=genPwr+btryPwr
@@ -1678,6 +1676,7 @@ function pwrSupply()
 		sply.kW.spltr=spltrPrct*ttlPwrAvlb
 		sply.kW.accH2O=accH2OPrct*ttlPwrAvlb
 		sply.kW.accCH4=accCH4Prct*ttlPwrAvlb
+		sply.kW.lights=lightsPrct*ttlPwrAvlb
 		sply.kW.btry=btryPrct*ttlPwrAvlb
 
 		avlb4Stg.kW=avlb4Stg.kW-btryPwr
@@ -1708,6 +1707,7 @@ function distPwr()
 	intakeAdj=altAdj*spdAdj
 	dispNav.on=(sply.kW.dispNav>=dmd.kW.dispNav)
 	dispSta.on=(sply.kW.dispSta>=dmd.kW.dispSta)
+	s.isLit=(sply.kW.lights>=dmd.kW.lights)
 	if sply.kW.spltr>0 then
 		pwrPrct=sply.kW.spltr/SPLTR_PWR_DMD_KW
 		h2oPrct=sply.H2O.spltr/SPLTR_MAX_H2O
