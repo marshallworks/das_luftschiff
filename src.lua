@@ -110,6 +110,11 @@ mapVls={}
 CH4pts={}
 H2Opts={}
 
+-- temp
+pwrType=0
+PAUSED=false
+-- endtemp
+
 function updCam(x,y)
 	cam.x=x
 	cam.y=y
@@ -602,8 +607,11 @@ function TIC()
 		end
 
 		cls(0)
-		simulate()
-		applyWear()
+    if btnp(6) then PAUSED=not PAUSED end
+    if not PAUSED then
+  		simulate()
+  		applyWear()
+    end
 
 		if not showMap then
 			drwGame()
@@ -1004,7 +1012,25 @@ function drwShipSt()
 	end
 	print(string.format("Repair: %d%%",repair),128,1,6,false,1,true)
 	print(string.format("Resources: %d%%",resources),180,1,6,false,1,true)
-	print(string.format("Batt: %d",btry.lvl*1000//1),180,9,6,false,1,true)
+	print(string.format("Batt: %d",(btry.lvl*1000)//1),180,9,6,false,1,true)
+  print(string.format("genPwr: %d",(genPwr*1000)//1),180,17,6,false,1,true)
+  print(string.format("btryPwr: %d",(btryPwr*1000)//1),180,25,6,false,1,true)
+  print(string.format("emPwrDmd: %d",(emPwrDmd*1000)//1),180,33,6,false,1,true)
+  print(string.format("priPwrDmd: %d",(priPwrDmd*1000)//1),180,41,6,false,1,true)
+  print(string.format("secPwrDmd: %d",(secPwrDmd*1000)//1),180,49,6,false,1,true)
+  print(string.format("ttlPwrDmd: %d",(ttlPwrDmd*1000)//1),180,57,6,false,1,true)
+  if pwrType>3 then
+    print("Full",180,65,6,false,1,true)
+  elseif pwrType>2 then
+    print("Prime",180,65,6,false,1,true)
+    PAUSED=true
+  elseif pwrType>1 then
+    print("Emer",180,65,6,false,1,true)
+  elseif pwrType>0 then
+    print("Res",180,65,6,false,1,true)
+  else
+    print("Unknown",180,65,6,false,1,true)
+  end
 	if s.pos.z<1 and s.spd<1 and resources<1 then
 		--endScreen=true
 		--str.endTimeOut=str.t
@@ -1636,6 +1662,7 @@ function pwrSupply()
 		sply.kW.accCH4=dmd.kW.accCH4
 		sply.kW.lights=dmd.kW.lights
 		sply.kW.btry=dmd.kW.btry
+    pwrType=4
 	elseif genPwr>=priPwrDmd then
 		sply.kW.dispNav=dmd.kW.dispNav
 		sply.kW.dispSta=dmd.kW.dispSta
@@ -1661,6 +1688,7 @@ function pwrSupply()
 		sply.kW.prp1=prps1Prct*remGen
 		sply.kW.prp2=prps2Prct*remGen
 		sply.kW.lights=lightsPrct*remGen
+    pwrType=3
 	elseif genPwr>=emPwrDmd then
 		sply.kW.dispNav=dmd.kW.dispNav
 		sply.kW.dispSta=dmd.kW.dispSta
@@ -1677,6 +1705,7 @@ function pwrSupply()
 		sply.kW.accH2O=accH2OPrct*remPwr
 		sply.kW.accCH4=accCH4Prct*remPwr
 		avlb4Stg.kW=-(sply.kW.spltr+sply.kW.accH2O+sply.kW.accCH4-remGen)
+    pwrType=2
 	else
 		sply.kW.btry=math.min(dmd.kW.btry,genPwr)
 		dispNavPrct=safeDivide(dmd.kW.dispNav,emPwrDmd)
@@ -1687,6 +1716,7 @@ function pwrSupply()
 		sply.kW.dispNav=dispNavPrct*remPwr
 		sply.kW.dispSta=dispStaPrct*remPwr
 		avlb4Stg.kW=-(sply.kW.dispNav+sply.kW.dispSta-remGen)
+    pwrType=1
 	end
 	rtr1.effc=math.min(rtr1.effc,safeUpDivide(sply.kW.rtr1,dmd.kW.rtr1))
 	rtr2.effc=math.min(rtr2.effc,safeUpDivide(sply.kW.rtr2,dmd.kW.rtr2))
