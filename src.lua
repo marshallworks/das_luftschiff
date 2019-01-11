@@ -44,7 +44,7 @@ BILR_H2O_KG_PER_KNSM=0.0008
 BILR_CH4_KG_PER_KNSM=0.0394
 BILR_O_KG_PER_KNSM=0.0252
 
-BTRY_MAX_CHARGE_KW=350
+BTRY_MAX_CHARGE_KW=35000
 BTRY_MAX_CHARGE_RATE_KW=0.022
 
 HYD_MAX_KNSM=32
@@ -183,16 +183,18 @@ function initShip()
 	rtr1Drw={s=322,w=6,h=1}
 	rtr2Drw={s=308,w=2,h=1}
 	accH2O={
-		st=1,effc=1,
-		wr=randRangeF(0.00001,0.00003),
+		st=1,effc=1,wr=0,
+		minWr=randRangeF(0.000001,0.000003),
+		maxWr=randRangeF(0.00002,0.00004),
 		bb={{minX=85,minY=23,maxX=86,maxY=24}},
 		drw={{s=318,w=2,h=2}},
 		sdsp={{x=169,y=29,minX=240,minY=145,maxX=252,maxY=159,lbl="Acc",lblOff=1,c=4}},
 		dmg={{efct="elec",emi=nil,x=.6,y=.6,xR=.6,yR=.6}}
 	}
 	accCH4={
-		st=1,effc=1,
-		wr=randRangeF(0.00001,0.00003),
+		st=1,effc=1,wr=0,
+		minWr=randRangeF(0.000002,0.000006),
+		maxWr=randRangeF(0.00004,0.00008),
 		bb={{minX=83,minY=27,maxX=84,maxY=28}},
 		drw={{s=316,w=2,h=2}},
 		sdsp={{x=169,y=54,minX=225,minY=145,maxX=237,maxY=159,lbl="Acc",lblOff=1,c=4}},
@@ -841,7 +843,7 @@ function entStUpd(ent)
 	local testYU=testY-1
 	local onId=mget(testX,testY)
 	local downId=mget(testX,testYD)
-	if downId==16 or downId==31 or downId==64 or downId==79 or downId==80 or downId==95 or downId==189 or downId==158 then ent.onFlr=true end
+	if downId==16 or downId==31 or downId==64 or downId==79 or downId==80 or downId==95 or downId==189 or downId==158 or downId==223 or downId==254 then ent.onFlr=true end
 	if mget(testX,testYU)==16 then ent.inCil=true end
 	if onId==32 or onId==47 or mget(testX,testYD)==32 or mget(testX,testYD)==47 then ent.onLdr=true end
 	if onId==32 or onId==47 or mget(testX,(ent.y-4)//8)==32 or mget(testX,(ent.y-4)//8)==47 then ent.hasMoLdr=true end
@@ -1002,7 +1004,7 @@ function drwShipSt()
 	end
 	print(string.format("Repair: %d%%",repair),128,1,6,false,1,true)
 	print(string.format("Resources: %d%%",resources),180,1,6,false,1,true)
-
+	print(string.format("Batt: %d",btry.lvl*1000//1),180,9,6,false,1,true)
 	if s.pos.z<1 and s.spd<1 and resources<1 then
 		--endScreen=true
 		--str.endTimeOut=str.t
@@ -1010,7 +1012,7 @@ function drwShipSt()
 end
 
 function getShipTilePos()
-	return {x=s.pos.x//1000,y=s.pos.y//1000}
+	return {x=s.pos.x//10000,y=s.pos.y//10000}
 end
 
 function getMapTile(pX,pY)
@@ -1133,7 +1135,7 @@ function drwGame()
 		end
 
 		clip(6,64,50,63)
-		drwMap(5,7,16,72)
+		if dispNav.on then drwMap(5,7,16,72) end
 		sHCent={x=32,y=96}
 		local pt1=rotV2Ct(sHCent,{x=32,y=92},s.hdg)
 		local pt2=rotV2Ct(sHCent,{x=30,y=100},s.hdg)
@@ -1154,67 +1156,69 @@ function drwGame()
 		end
 	elseif showSta then
 		map(30,125,30,11,0,48)
-		print("Status",193,57,11,false,1,false)
-		print("Steam",193,65,15,false,1,true)
-		print("Torque",193,73,6,false,1,true)
-		print("Electricity",193,81,4,false,1,true)
-		print("Hydraulic",193,89,5,false,1,true)
-		print("Water",193,97,7,false,1,true)
-		print("Methane",193,105,1,false,1,true)
-		print("Hydrogen",193,113,3,false,1,true)
-		print("Oxygen",193,121,13,false,1,true)
-		if str.t%2==0 then
-			rect(87+sDspIn.x,42+sDspIn.y,2,18,15)
-			rect(89+sDspIn.x,58+sDspIn.y,37,2,15)
-			rect(35+sDspIn.x,35+sDspIn.y,42,2,6)
-			rect(26+sDspIn.x,9+sDspIn.y,2,24,5)
-			rect(6+sDspIn.x,9+sDspIn.y,20,2,5)
-			rect(4+sDspIn.x,9+sDspIn.y,2,51,5)
-			rect(6+sDspIn.x,58+sDspIn.y,60,2,5)
-			rect(142+sDspIn.x,39+sDspIn.y,30,2,7)
-			rect(142+sDspIn.x,41+sDspIn.y,2,3,7)
-			rect(128+sDspIn.x,44+sDspIn.y,16,2,7)
-			rect(128+sDspIn.x,46+sDspIn.y,2,10,7)
-			rect(138+sDspIn.x,31+sDspIn.y,10,2,7)
-			rect(143+sDspIn.x,65+sDspIn.y,28,2,1)
-			rect(121+sDspIn.x,31+sDspIn.y,7,2,3)
-			rect(121+sDspIn.x,26+sDspIn.y,2,5,3)
-			rect(105+sDspIn.x,26+sDspIn.y,16,2,3)
-			rect(103+sDspIn.x,26+sDspIn.y,2,8,3)
-			rect(99+sDspIn.x,13+sDspIn.y,2,18,3)
-			rect(90+sDspIn.x,11+sDspIn.y,66,2,3)
-			rect(118+sDspIn.x,34+sDspIn.y,10,2,13)
-			rect(115+sDspIn.x,42+sDspIn.y,2,24,13)
-			rect(117+sDspIn.x,64+sDspIn.y,8,2,13)
-			rect(46+sDspIn.x,13+sDspIn.y,2,20,4)
-			rect(11+sDspIn.x,13+sDspIn.y,2,34,4)
-			rect(7+sDspIn.x,45+sDspIn.y,4,2,4)
-			rect(7+sDspIn.x,47+sDspIn.y,2,7,4)
-			rect(7+sDspIn.x,54+sDspIn.y,68,2,4)
-			rect(75+sDspIn.x,54+sDspIn.y,2,7,4)
-			rect(75+sDspIn.x,61+sDspIn.y,46,2,4)
-			rect(121+sDspIn.x,41+sDspIn.y,2,22,4)
-			rect(123+sDspIn.x,41+sDspIn.y,11,2,4)
-			rect(132+sDspIn.x,26+sDspIn.y,2,17,4)
-			rect(134+sDspIn.x,26+sDspIn.y,35,2,4)
-			rect(167+sDspIn.x,28+sDspIn.y,2,8,4)
-			rect(169+sDspIn.x,34+sDspIn.y,5,2,4)
-			rect(174+sDspIn.x,34+sDspIn.y,2,26,4)
-		end
-		for i,sDsp in pairs(sDsps) do
-			local hDim={w=0,h=0,a=0}
-			for j,sD in pairs(sDsp.sdsp) do
-				hDim.w=hDim.w+sD.maxX-sD.minX
-				hDim.h=sD.maxY-sD.minY
-				hDim.a=hDim.a+1
-				drwSDsp(sDsp.st,sDsp.effc,sD)
+		if dispSta.on then
+			print("Status",193,57,11,false,1,false)
+			print("Steam",193,65,15,false,1,true)
+			print("Torque",193,73,6,false,1,true)
+			print("Electricity",193,81,4,false,1,true)
+			print("Hydraulic",193,89,5,false,1,true)
+			print("Water",193,97,7,false,1,true)
+			print("Methane",193,105,1,false,1,true)
+			print("Hydrogen",193,113,3,false,1,true)
+			print("Oxygen",193,121,13,false,1,true)
+			if str.t%2==0 then
+				rect(87+sDspIn.x,42+sDspIn.y,2,18,15)
+				rect(89+sDspIn.x,58+sDspIn.y,37,2,15)
+				rect(35+sDspIn.x,35+sDspIn.y,42,2,6)
+				rect(26+sDspIn.x,9+sDspIn.y,2,24,5)
+				rect(6+sDspIn.x,9+sDspIn.y,20,2,5)
+				rect(4+sDspIn.x,9+sDspIn.y,2,51,5)
+				rect(6+sDspIn.x,58+sDspIn.y,60,2,5)
+				rect(142+sDspIn.x,39+sDspIn.y,30,2,7)
+				rect(142+sDspIn.x,41+sDspIn.y,2,3,7)
+				rect(128+sDspIn.x,44+sDspIn.y,16,2,7)
+				rect(128+sDspIn.x,46+sDspIn.y,2,10,7)
+				rect(138+sDspIn.x,31+sDspIn.y,10,2,7)
+				rect(143+sDspIn.x,65+sDspIn.y,28,2,1)
+				rect(121+sDspIn.x,31+sDspIn.y,7,2,3)
+				rect(121+sDspIn.x,26+sDspIn.y,2,5,3)
+				rect(105+sDspIn.x,26+sDspIn.y,16,2,3)
+				rect(103+sDspIn.x,26+sDspIn.y,2,8,3)
+				rect(99+sDspIn.x,13+sDspIn.y,2,18,3)
+				rect(90+sDspIn.x,11+sDspIn.y,66,2,3)
+				rect(118+sDspIn.x,34+sDspIn.y,10,2,13)
+				rect(115+sDspIn.x,42+sDspIn.y,2,24,13)
+				rect(117+sDspIn.x,64+sDspIn.y,8,2,13)
+				rect(46+sDspIn.x,13+sDspIn.y,2,20,4)
+				rect(11+sDspIn.x,13+sDspIn.y,2,34,4)
+				rect(7+sDspIn.x,45+sDspIn.y,4,2,4)
+				rect(7+sDspIn.x,47+sDspIn.y,2,7,4)
+				rect(7+sDspIn.x,54+sDspIn.y,68,2,4)
+				rect(75+sDspIn.x,54+sDspIn.y,2,7,4)
+				rect(75+sDspIn.x,61+sDspIn.y,46,2,4)
+				rect(121+sDspIn.x,41+sDspIn.y,2,22,4)
+				rect(123+sDspIn.x,41+sDspIn.y,11,2,4)
+				rect(132+sDspIn.x,26+sDspIn.y,2,17,4)
+				rect(134+sDspIn.x,26+sDspIn.y,35,2,4)
+				rect(167+sDspIn.x,28+sDspIn.y,2,8,4)
+				rect(169+sDspIn.x,34+sDspIn.y,5,2,4)
+				rect(174+sDspIn.x,34+sDspIn.y,2,26,4)
 			end
-			baseY=sDspIn.y+sDsp.sdsp[1].y+hDim.h+2
-			baseX=sDspIn.x+sDsp.sdsp[1].x
-			baseWidth=hDim.w+hDim.a
-			sW=(lerp(0,baseWidth,sDsp.st)+0.5)//1
-			rect(baseX,baseY,sW,2,6)
-			rect(baseX+sW,baseY,baseWidth-sW,2,5)
+			for i,sDsp in pairs(sDsps) do
+				local hDim={w=0,h=0,a=0}
+				for j,sD in pairs(sDsp.sdsp) do
+					hDim.w=hDim.w+sD.maxX-sD.minX
+					hDim.h=sD.maxY-sD.minY
+					hDim.a=hDim.a+1
+					drwSDsp(sDsp.st,sDsp.effc,sD)
+				end
+				baseY=sDspIn.y+sDsp.sdsp[1].y+hDim.h+2
+				baseX=sDspIn.x+sDsp.sdsp[1].x
+				baseWidth=hDim.w+hDim.a
+				sW=(lerp(0,baseWidth,sDsp.st)+0.5)//1
+				rect(baseX,baseY,sW,2,6)
+				rect(baseX+sW,baseY,baseWidth-sW,2,5)
+			end
 		end
 	end
 end
@@ -1613,9 +1617,10 @@ end
 function pwrSupply()
 	genPwr=GEN_MAX_KW*(sply.NM.gen/GEN_MAX_NM)
 	btryPwr=avlb4Use.kW
-	ttlPwrDmd=dmd.kW.dispNav+dmd.kW.dispSta+dmd.kW.btry+dmd.kW.rtr1+dmd.kW.rtr2+dmd.kW.rtr3+
-						dmd.kW.rtr4+dmd.kW.prp1+dmd.kW.prp2+dmd.kW.spltr+dmd.kW.accH2O+
-						dmd.kW.accCH4+dmd.kW.lights
+	emPwrDmd=dmd.kW.dispNav+dmd.kW.dispSta+dmd.kW.btry
+	priPwrDmd=emPwrDmd+dmd.kW.spltr+dmd.kW.accH2O+dmd.kW.accCH4
+	secPwrDmd=dmd.kW.rtr1+dmd.kW.rtr2+dmd.kW.rtr3+dmd.kW.rtr4+dmd.kW.prp1+dmd.kW.prp2+dmd.kW.lights
+	ttlPwrDmd=priPwrDmd+secPwrDmd
 
 	if ttlPwrDmd<=genPwr then
 		sply.kW.dispNav=dmd.kW.dispNav
@@ -1631,55 +1636,57 @@ function pwrSupply()
 		sply.kW.accCH4=dmd.kW.accCH4
 		sply.kW.lights=dmd.kW.lights
 		sply.kW.btry=dmd.kW.btry
-	elseif ttlPwrDmd<=(genPwr+btryPwr) then
+	elseif genPwr>=priPwrDmd then
 		sply.kW.dispNav=dmd.kW.dispNav
 		sply.kW.dispSta=dmd.kW.dispSta
-		sply.kW.rtr1=dmd.kW.rtr1
-		sply.kW.rtr2=dmd.kW.rtr2
-		sply.kW.rtr3=dmd.kW.rtr3
-		sply.kW.rtr4=dmd.kW.rtr4
-		sply.kW.prp1=dmd.kW.prp1
-		sply.kW.prp2=dmd.kW.prp2
 		sply.kW.spltr=dmd.kW.spltr
 		sply.kW.accH2O=dmd.kW.accH2O
 		sply.kW.accCH4=dmd.kW.accCH4
-		sply.kW.lights=dmd.kW.lights
 		sply.kW.btry=dmd.kW.btry
+		remGen=genPwr-priPwrDmd
 
-		btryUse=ttlPwrDmd-genPwr
-		avlb4Stg.kW=avlb4Stg.kW-btryUse
+		dmdPwr=secPwrDmd
+		rtrs1Prct=safeDivide(dmd.kW.rtr1,dmdPwr)
+		rtrs2Prct=safeDivide(dmd.kW.rtr2,dmdPwr)
+		rtrs3Prct=safeDivide(dmd.kW.rtr3,dmdPwr)
+		rtrs4Prct=safeDivide(dmd.kW.rtr4,dmdPwr)
+		prps1Prct=safeDivide(dmd.kW.prp1,dmdPwr)
+		prps2Prct=safeDivide(dmd.kW.prp2,dmdPwr)
+		lightsPrct=safeDivide(dmd.kW.lights,dmdPwr)
+
+		sply.kW.rtr1=rtrs1Prct*remGen
+		sply.kW.rtr2=rtrs2Prct*remGen
+		sply.kW.rtr3=rtrs3Prct*remGen
+		sply.kW.rtr4=rtrs4Prct*remGen
+		sply.kW.prp1=prps1Prct*remGen
+		sply.kW.prp2=prps2Prct*remGen
+		sply.kW.lights=lightsPrct*remGen
+	elseif genPwr>=emPwrDmd then
+		sply.kW.dispNav=dmd.kW.dispNav
+		sply.kW.dispSta=dmd.kW.dispSta
+		sply.kW.btry=dmd.kW.btry
+		remGen=genPwr-emPwrDmd
+
+		dmdPwr=priPwrDmd-emPwrDmd
+		spltrPrct=safeDivide(dmd.kW.spltr,dmdPwr)
+		accH2OPrct=safeDivide(dmd.kW.accH2O,dmdPwr)
+		accCH4Prct=safeDivide(dmd.kW.accCH4,dmdPwr)
+		remPwr=remGen+btryPwr
+
+		sply.kW.spltr=spltrPrct*remPwr
+		sply.kW.accH2O=accH2OPrct*remPwr
+		sply.kW.accCH4=accCH4Prct*remPwr
+		avlb4Stg.kW=-(sply.kW.spltr+sply.kW.accH2O+sply.kW.accCH4-remGen)
 	else
-		dispNavPrct=safeDivide(dmd.kW.dispNav,ttlPwrDmd)
-		dispStaPrct=safeDivide(dmd.kW.dispSta,ttlPwrDmd)
-		rtrs1Prct=safeDivide(dmd.kW.rtr1,ttlPwrDmd)
-		rtrs2Prct=safeDivide(dmd.kW.rtr2,ttlPwrDmd)
-		rtrs3Prct=safeDivide(dmd.kW.rtr3,ttlPwrDmd)
-		rtrs4Prct=safeDivide(dmd.kW.rtr4,ttlPwrDmd)
-		prps1Prct=safeDivide(dmd.kW.prp1,ttlPwrDmd)
-		prps2Prct=safeDivide(dmd.kW.prp2,ttlPwrDmd)
-		spltrPrct=safeDivide(dmd.kW.spltr,ttlPwrDmd)
-		accH2OPrct=safeDivide(dmd.kW.accH2O,ttlPwrDmd)
-		accCH4Prct=safeDivide(dmd.kW.accCH4,ttlPwrDmd)
-		lightsPrct=safeDivide(dmd.kW.lights,ttlPwrDmd)
-		btryPrct=safeDivide(dmd.kW.btry,ttlPwrDmd)
+		sply.kW.btry=math.min(dmd.kW.btry,genPwr)
+		dispNavPrct=safeDivide(dmd.kW.dispNav,emPwrDmd)
+		dispStaPrct=safeDivide(dmd.kW.dispSta,emPwrDmd)
+		remGen=genPwr-sply.kW.btry
+		remPwr=remGen+btryPwr
 
-		ttlPwrAvlb=genPwr+btryPwr
-
-		sply.kW.dispNav=dispNavPrct*ttlPwrAvlb
-		sply.kW.dispSta=dispStaPrct*ttlPwrAvlb
-		sply.kW.rtr1=rtrs1Prct*ttlPwrAvlb
-		sply.kW.rtr2=rtrs2Prct*ttlPwrAvlb
-		sply.kW.rtr3=rtrs3Prct*ttlPwrAvlb
-		sply.kW.rtr4=rtrs4Prct*ttlPwrAvlb
-		sply.kW.prp1=prps1Prct*ttlPwrAvlb
-		sply.kW.prp2=prps2Prct*ttlPwrAvlb
-		sply.kW.spltr=spltrPrct*ttlPwrAvlb
-		sply.kW.accH2O=accH2OPrct*ttlPwrAvlb
-		sply.kW.accCH4=accCH4Prct*ttlPwrAvlb
-		sply.kW.lights=lightsPrct*ttlPwrAvlb
-		sply.kW.btry=btryPrct*ttlPwrAvlb
-
-		avlb4Stg.kW=avlb4Stg.kW-btryPwr
+		sply.kW.dispNav=dispNavPrct*remPwr
+		sply.kW.dispSta=dispStaPrct*remPwr
+		avlb4Stg.kW=-(sply.kW.dispNav+sply.kW.dispSta-remGen)
 	end
 	rtr1.effc=math.min(rtr1.effc,safeUpDivide(sply.kW.rtr1,dmd.kW.rtr1))
 	rtr2.effc=math.min(rtr2.effc,safeUpDivide(sply.kW.rtr2,dmd.kW.rtr2))
@@ -1721,13 +1728,15 @@ function distPwr()
 		sply.O.tank=prodPrct*SPLTR_PER_TIC_O
 	end
 	if sply.kW.accH2O>0 then
+		accH2O.wr=lerp(accH2O.minWr,accH2O.maxWr,sply.kW.accH2O/H2O_ACC_PWR_DMD_KW)
 		sply.H2O.tank=(sply.kW.accH2O/H2O_ACC_PWR_DMD_KW)*H2O_ACC_PER_TIC*s.env.H2O*intakeAdj
 	end
 	if sply.kW.accCH4>0 then
+		accCH4.wr=lerp(accCH4.minWr,accCH4.maxWr,sply.kW.accCH4/CH4_ACC_PWR_DMD_KW)
 		sply.CH4.tank=(sply.kW.accCH4/CH4_ACC_PWR_DMD_KW)*CH4_ACC_PER_TIC*s.env.CH4*intakeAdj
 	end
 	if sply.kW.btry>0 then
-		avlb4Stg.kW=avlb4Stg.kW+sply.kW.btry
+		avlb4Stg.kW=sply.kW.btry+avlb4Stg.kW
 	end
 end
 
@@ -1766,7 +1775,7 @@ function fillTanks()
 	tkH2O.effc=tkH2O.lvl/H2O_TANK_MAX_KG
 	tkCH4.effc=tkCH4.lvl/CH4_TANK_MAX_KG
 	hydRes.effc=hydRes.lvl/HYD_MAX_KNSM
-	btry.effc=btry.lvl,BTRY_MAX_CHARGE_KW
+	btry.effc=btry.lvl/BTRY_MAX_CHARGE_KW
 end
 
 function applyThrst()
@@ -1933,7 +1942,7 @@ function isLinThFlr(lx1,ly1,lx2,ly2)
 	local chkCnt=distance({x=lx1,y=ly1},{x=lx2,y=ly2})//8
 	for i=0,chkCnt do
 		local tId=mget(lerp(lx1,lx2,i/chkCnt)//8,lerp(ly1,ly2,i/chkCnt)//8)
-		if tId==16 or tId==189 or tId==158 then
+		if tId==16 or tId==31 or tId==64 or tId==79 or tId==80 or tId==95 or tId==189 or tId==158 or tId==223 or tId==254 then
 			return true
 		end
 	end
