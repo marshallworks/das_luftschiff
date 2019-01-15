@@ -1715,7 +1715,7 @@ function pwrSupply()
 
 		sply.kW.dispNav=dispNavPrct*remPwr
 		sply.kW.dispSta=dispStaPrct*remPwr
-		avlb4Stg.kW=-(sply.kW.dispNav+sply.kW.dispSta-remGen)
+		avlb4Stg.kW=avlb4Stg.kW-(sply.kW.dispNav+sply.kW.dispSta-remGen)
     pwrType=1
 	end
 	rtr1.effc=math.min(rtr1.effc,safeUpDivide(sply.kW.rtr1,dmd.kW.rtr1))
