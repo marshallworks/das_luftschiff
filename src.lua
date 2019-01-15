@@ -607,7 +607,7 @@ function TIC()
 		end
 
 		cls(0)
-    if btnp(6) then PAUSED=not PAUSED end
+    if btnp(7) then PAUSED=not PAUSED end
     if not PAUSED then
   		simulate()
   		applyWear()
@@ -1012,18 +1012,18 @@ function drwShipSt()
 	end
 	print(string.format("Repair: %d%%",repair),128,1,6,false,1,true)
 	print(string.format("Resources: %d%%",resources),180,1,6,false,1,true)
-	print(string.format("Batt: %d",(btry.lvl*1000)//1),180,9,6,false,1,true)
-  print(string.format("genPwr: %d",(genPwr*1000)//1),180,17,6,false,1,true)
-  print(string.format("btryPwr: %d",(btryPwr*1000)//1),180,25,6,false,1,true)
-  print(string.format("emPwrDmd: %d",(emPwrDmd*1000)//1),180,33,6,false,1,true)
-  print(string.format("priPwrDmd: %d",(priPwrDmd*1000)//1),180,41,6,false,1,true)
-  print(string.format("secPwrDmd: %d",(secPwrDmd*1000)//1),180,49,6,false,1,true)
-  print(string.format("ttlPwrDmd: %d",(ttlPwrDmd*1000)//1),180,57,6,false,1,true)
+	print(string.format("Batt: %d",(btry.lvl*1000)//1),2,9,6,false,1,true)
+  print(string.format("genPwr: %d",(genPwr*1000)//1),2,17,6,false,1,true)
+  print(string.format("btryPwr: %d",(btryPwr*1000)//1),2,25,6,false,1,true)
+  print(string.format("emPwrDmd: %d",(emPwrDmd*1000)//1),2,33,6,false,1,true)
+  print(string.format("priPwrDmd: %d",(priPwrDmd*1000)//1),2,41,6,false,1,true)
+  print(string.format("secPwrDmd: %d",(secPwrDmd*1000)//1),2,49,6,false,1,true)
+  print(string.format("ttlPwrDmd: %d",(ttlPwrDmd*1000)//1),2,57,6,false,1,true)
+  print(string.format("avl4Stg: %f",avlb4Stg.kW),2,65,6,false,1,true)
   if pwrType>3 then
     print("Full",180,65,6,false,1,true)
   elseif pwrType>2 then
     print("Prime",180,65,6,false,1,true)
-    PAUSED=true
   elseif pwrType>1 then
     print("Emer",180,65,6,false,1,true)
   elseif pwrType>0 then
@@ -1031,6 +1031,8 @@ function drwShipSt()
   else
     print("Unknown",180,65,6,false,1,true)
   end
+  if avlb4Stg.kW<0 then PAUSED=true end
+
 	if s.pos.z<1 and s.spd<1 and resources<1 then
 		--endScreen=true
 		--str.endTimeOut=str.t
@@ -1511,10 +1513,10 @@ function spltrAccDmd()
 end
 
 function genTurbDmd()
-	ttlPwrDmd=math.min(GEN_MAX_KW*stToEf(gen.st),dmd.kW.dispNav+dmd.kW.dispSta+
+	ttlPwr=math.min(GEN_MAX_KW*stToEf(gen.st),dmd.kW.dispNav+dmd.kW.dispSta+
 			dmd.kW.rtr1+dmd.kW.rtr2+dmd.kW.rtr3+dmd.kW.rtr4+dmd.kW.prp1+dmd.kW.prp2+
-			dmd.kW.spltr+dmd.kW.accH2O+dmd.kW.accCH4+dmd.kW.lights+dmd.kW.btry)
-	dmd.NM.gen=(ttlPwrDmd/GEN_MAX_KW)*GEN_MAX_NM
+			dmd.kW.spltr+dmd.kW.accH2O+dmd.kW.accCH4+dmd.kW.lights+dmd.kW.btry+1)
+	dmd.NM.gen=(ttlPwr/GEN_MAX_KW)*GEN_MAX_NM
 	ttlTorqueDmd=math.min(TURB_MAX_NM*stToEf(turb.st),dmd.NM.gen+dmd.NM.hydPump)
 	dmd.steam=(ttlTorqueDmd/TURB_MAX_NM)*TURB_MAX_STEAM_KNSM
 end
@@ -1644,9 +1646,9 @@ function pwrSupply()
 	genPwr=GEN_MAX_KW*(sply.NM.gen/GEN_MAX_NM)
 	btryPwr=avlb4Use.kW
 	emPwrDmd=dmd.kW.dispNav+dmd.kW.dispSta+dmd.kW.btry
-	priPwrDmd=emPwrDmd+dmd.kW.spltr+dmd.kW.accH2O+dmd.kW.accCH4
+	priPwrDmd=dmd.kW.spltr+dmd.kW.accH2O+dmd.kW.accCH4
 	secPwrDmd=dmd.kW.rtr1+dmd.kW.rtr2+dmd.kW.rtr3+dmd.kW.rtr4+dmd.kW.prp1+dmd.kW.prp2+dmd.kW.lights
-	ttlPwrDmd=priPwrDmd+secPwrDmd
+	ttlPwrDmd=priPwrDmd+secPwrDmd+emPwrDmd
 
 	if ttlPwrDmd<=genPwr then
 		sply.kW.dispNav=dmd.kW.dispNav
@@ -1663,23 +1665,22 @@ function pwrSupply()
 		sply.kW.lights=dmd.kW.lights
 		sply.kW.btry=dmd.kW.btry
     pwrType=4
-	elseif genPwr>=priPwrDmd then
+	elseif genPwr>=(priPwrDmd+emPwrDmd) then
 		sply.kW.dispNav=dmd.kW.dispNav
 		sply.kW.dispSta=dmd.kW.dispSta
 		sply.kW.spltr=dmd.kW.spltr
 		sply.kW.accH2O=dmd.kW.accH2O
 		sply.kW.accCH4=dmd.kW.accCH4
 		sply.kW.btry=dmd.kW.btry
-		remGen=genPwr-priPwrDmd
+		remGen=genPwr-priPwrDmd-emPwrDmd
 
-		dmdPwr=secPwrDmd
-		rtrs1Prct=safeDivide(dmd.kW.rtr1,dmdPwr)
-		rtrs2Prct=safeDivide(dmd.kW.rtr2,dmdPwr)
-		rtrs3Prct=safeDivide(dmd.kW.rtr3,dmdPwr)
-		rtrs4Prct=safeDivide(dmd.kW.rtr4,dmdPwr)
-		prps1Prct=safeDivide(dmd.kW.prp1,dmdPwr)
-		prps2Prct=safeDivide(dmd.kW.prp2,dmdPwr)
-		lightsPrct=safeDivide(dmd.kW.lights,dmdPwr)
+		rtrs1Prct=safeDivide(dmd.kW.rtr1,secPwrDmd)
+		rtrs2Prct=safeDivide(dmd.kW.rtr2,secPwrDmd)
+		rtrs3Prct=safeDivide(dmd.kW.rtr3,secPwrDmd)
+		rtrs4Prct=safeDivide(dmd.kW.rtr4,secPwrDmd)
+		prps1Prct=safeDivide(dmd.kW.prp1,secPwrDmd)
+		prps2Prct=safeDivide(dmd.kW.prp2,secPwrDmd)
+		lightsPrct=safeDivide(dmd.kW.lights,secPwrDmd)
 
 		sply.kW.rtr1=rtrs1Prct*remGen
 		sply.kW.rtr2=rtrs2Prct*remGen
@@ -1695,10 +1696,9 @@ function pwrSupply()
 		sply.kW.btry=dmd.kW.btry
 		remGen=genPwr-emPwrDmd
 
-		dmdPwr=priPwrDmd-emPwrDmd
-		spltrPrct=safeDivide(dmd.kW.spltr,dmdPwr)
-		accH2OPrct=safeDivide(dmd.kW.accH2O,dmdPwr)
-		accCH4Prct=safeDivide(dmd.kW.accCH4,dmdPwr)
+		spltrPrct=safeDivide(dmd.kW.spltr,priPwrDmd)
+		accH2OPrct=safeDivide(dmd.kW.accH2O,priPwrDmd)
+		accCH4Prct=safeDivide(dmd.kW.accCH4,priPwrDmd)
 		remPwr=remGen+btryPwr
 
 		sply.kW.spltr=spltrPrct*remPwr
