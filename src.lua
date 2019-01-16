@@ -188,7 +188,7 @@ function initShip()
 	rtr1Drw={s=322,w=6,h=1}
 	rtr2Drw={s=308,w=2,h=1}
 	accH2O={
-		st=1,effc=1,wr=0,
+		st=1,effc=1,ut=0,
 		minWr=randRangeF(0.000001,0.000003),
 		maxWr=randRangeF(0.00002,0.00004),
 		bb={{minX=85,minY=23,maxX=86,maxY=24}},
@@ -197,7 +197,7 @@ function initShip()
 		dmg={{efct="elec",emi=nil,x=.6,y=.6,xR=.6,yR=.6}}
 	}
 	accCH4={
-		st=1,effc=1,wr=0,
+		st=1,effc=1,ut=0,
 		minWr=randRangeF(0.000002,0.000006),
 		maxWr=randRangeF(0.00004,0.00008),
 		bb={{minX=83,minY=27,maxX=84,maxY=28}},
@@ -206,8 +206,9 @@ function initShip()
 		dmg={{efct="elec",emi=nil,x=.6,y=.6,xR=.6,yR=.6}}
 	}
 	btry={
-		st=1,effc=1,
-		wr=randRangeF(0.000003,0.000007),
+		st=1,effc=1,ut=0,
+		minWr=randRangeF(0.0000003,0.0000007),
+		maxWr=randRangeF(0.000003,0.000007),
 		lvl=BTRY_MAX_CHARGE_KW,
 		bb={{minX=42,minY=23,maxX=47,maxY=24}},
 		drw={{s=336,w=3,h=2,rx=2}},
@@ -215,16 +216,18 @@ function initShip()
 		dmg={{efct="elec",emi=nil,x=.5,y=.6,xR=3,yR=.6}}
 	}
 	bilr={
-		st=1,effc=1,
-		wr=randRangeF(0.000015,0.00003),
+		st=1,effc=1,ut=0,
+		minWr=randRangeF(0.0000015,0.000003),
+		maxWr=randRangeF(0.000015,0.00003),
 		bb={{minX=48,minY=27,maxX=51,maxY=28}},
 		drw={{s=347,w=3,h=2,rx=2}},
 		sdsp={{x=124,y=54,minX=219,minY=161,maxX=239,maxY=175,lbl="Boiler",c=1}},
 		dmg={{efct="fire",emi=nil,x=.8,y=.5,xR=.5,yR=.8}}
 	}
 	cl1={
-		st=1,effc=1,
-		wr=randRangeF(0.00001,0.00004),
+		st=1,effc=1,ut=0,
+		minWr=randRangeF(0.000001,0.000004),
+		maxWr=randRangeF(0.00001,0.00004),
 		lvl=CLL_MAX_M3*.7,
 		vent=0.0,
 		bb={{minX=77,minY=21,maxX=84,maxY=22}},
@@ -235,8 +238,9 @@ function initShip()
 		dmg={{efct="hydrogen",emi=nil,x=.5,y=.5,xR=4,yR=1}}
 	}
 	cl2={
-		st=1,effc=1,
-		wr=randRangeF(0.00001,0.00004),
+		st=1,effc=1,ut=0,
+		minWr=randRangeF(0.000001,0.000004),
+		maxWr=randRangeF(0.00001,0.00004),
 		lvl=CLL_MAX_M3*.7,
 		vent=0.0,
 		bb={{minX=68,minY=21,maxX=75,maxY=22}},
@@ -247,8 +251,9 @@ function initShip()
 		dmg={{efct="hydrogen",emi=nil,x=.5,y=.5,xR=4,yR=1}}
 	}
 	cl3={
-		st=1,effc=1,
-		wr=randRangeF(0.00001,0.00004),
+		st=1,effc=1,ut=0,
+		minWr=randRangeF(0.000001,0.000004),
+		maxWr=randRangeF(0.00001,0.00004),
 		lvl=CLL_MAX_M3*.7,
 		vent=0.0,
 		bb={{minX=44,minY=21,maxX=51,maxY=22}},
@@ -259,8 +264,9 @@ function initShip()
 		dmg={{efct="hydrogen",emi=nil,x=.5,y=.5,xR=4,yR=1}}
 	}
 	cl4={
-		st=1,effc=1,
-		wr=randRangeF(0.00001,0.00004),
+		st=1,effc=1,ut=0,
+		minWr=randRangeF(0.000001,0.000004),
+		maxWr=randRangeF(0.00001,0.00004),
 		lvl=CLL_MAX_M3*.7,
 		vent=0.0,
 		bb={{minX=35,minY=21,maxX=42,maxY=22}},
@@ -283,16 +289,18 @@ function initShip()
 		drw={{s=424,w=4,h=2}}
 	}
 	hydPump={
-		st=1,effc=1,
-		wr=randRangeF(0.000015,0.00003),
+		st=1,effc=1,ut=0,
+		minWr=randRangeF(0.0000015,0.000003),
+		maxWr=randRangeF(0.000015,0.00003),
 		bb={{minX=37,minY=27,maxX=38,maxY=28}},
 		drw={{s=339,w=2,h=2}},
 		sdsp={{x=21,y=29,minX=152,minY=161,maxX=167,maxY=175,lbl="Pump",c=6}},
 		dmg={{efct="hydraulics",emi=nil,x=.4,y=.6,xR=.5,yR=.45}}
 	}
 	hydRes={
-		st=1,effc=1,
-		wr=randRangeF(0.000002,0.000004),
+		st=1,effc=1,ut=0,
+		minWr=randRangeF(0.0000002,0.0000004),
+		maxWr=randRangeF(0.000002,0.000004),
 		lvl=HYD_MAX_KNSM,
 		bb={{minX=37,minY=23,maxX=38,maxY=24}},
 		drw={{s=368,w=2,h=2}},
@@ -300,16 +308,18 @@ function initShip()
 		dmg={{efct="hydraulics",emi=nil,x=.5,y=.6,xR=.5,yR=.45}}
 	}
 	gen={
-		st=1,effc=1,
-		wr=randRangeF(0.000015,0.00003),
+		st=1,effc=1,ut=0,
+		minWr=randRangeF(0.0000015,0.000003),
+		maxWr=randRangeF(0.000015,0.00003),
 		bb={{minX=40,minY=27,maxX=43,maxY=28}},
 		drw={{s=341,w=4,h=2}},
 		sdsp={{x=39,y=29,minX=169,minY=161,maxX=200,maxY=175,lbl="Generator",lblOff=-2,c=6}},
 		dmg={{efct="elec",emi=nil,x=.5,y=.5,xR=1,yR=1}}
 	}
 	prp1={
-		st=1,effc=1,
-		wr=randRangeF(0.000015,0.00003),
+		st=1,effc=1,ut=0,
+		minWr=randRangeF(0.0000015,0.000003),
+		maxWr=randRangeF(0.000015,0.00003),
 		rot=0,
 		thrst=0,
 		bb={{minX=33,minY=22,maxX=34,maxY=24}},
@@ -320,8 +330,9 @@ function initShip()
 		dmg={{efct="elec",emi=nil,x=.7,y=.5,xR=.8,yR=.6}}
 	}
 	prp2={
-		st=1,effc=1,
-		wr=randRangeF(0.000015,0.00003),
+		st=1,effc=1,ut=0,
+		minWr=randRangeF(0.0000015,0.000003),
+		maxWr=randRangeF(0.000015,0.00003),
 		rot=0,
 		thrst=0,
 		bb={{minX=33,minY=26,maxX=34,maxY=28}},
@@ -340,8 +351,9 @@ function initShip()
 		drw={{s=350,w=1,h=1},{s=351,w=1,h=1}}
 	}
 	rtr1={
-		st=1,effc=1,
-		wr=randRangeF(0.000015,0.00003),
+		st=1,effc=1,ut=0,
+		minWr=randRangeF(0.0000015,0.000003),
+		maxWr=randRangeF(0.000015,0.00003),
 		rot=0,
 		thrst=0,
 		bb={{minX=76,minY=32,maxX=81,maxY=32},{minX=78,minY=31,maxX=79,maxY=31}},
@@ -352,8 +364,9 @@ function initShip()
 		dmg={{efct="elec",emi=nil,x=.5,y=.5,xR=1,yR=1}}
 	}
 	rtr2={
-		st=1,effc=1,
-		wr=randRangeF(0.000015,0.00003),
+		st=1,effc=1,ut=0,
+		minWr=randRangeF(0.0000015,0.000003),
+		maxWr=randRangeF(0.000015,0.00003),
 		rot=0,
 		thrst=0,
 		bb={{minX=66,minY=32,maxX=71,maxY=32},{minX=68,minY=31,maxX=69,maxY=31}},
@@ -364,8 +377,9 @@ function initShip()
 		dmg={{efct="elec",emi=nil,x=.5,y=.5,xR=1,yR=1}}
 	}
 	rtr3={
-		st=1,effc=1,
-		wr=randRangeF(0.000015,0.00003),
+		st=1,effc=1,ut=0,
+		minWr=randRangeF(0.0000015,0.000003),
+		maxWr=randRangeF(0.000015,0.00003),
 		rot=0,
 		thrst=0,
 		bb={{minX=48,minY=32,maxX=53,maxY=32},{minX=50,minY=31,maxX=51,maxY=31}},
@@ -376,8 +390,9 @@ function initShip()
 		dmg={{efct="elec",emi=nil,x=.5,y=.5,xR=1,yR=1}}
 	}
 	rtr4={
-		st=1,effc=1,
-		wr=randRangeF(0.000015,0.00003),
+		st=1,effc=1,ut=0,
+		minWr=randRangeF(0.0000015,0.000003),
+		maxWr=randRangeF(0.000015,0.00003),
 		rot=0,
 		thrst=0,
 		bb={{minX=38,minY=32,maxX=43,maxY=32},{minX=40,minY=31,maxX=41,maxY=31}},
@@ -388,16 +403,18 @@ function initShip()
 		dmg={{efct="elec",emi=nil,x=.5,y=.5,xR=1,yR=1}}
 	}
 	spltr={
-		st=1,effc=1,
-		wr=randRangeF(0.000015,0.00003),
+		st=1,effc=1,ut=0,
+		minWr=randRangeF(0.0000015,0.000003),
+		maxWr=randRangeF(0.000015,0.00003),
 		bb={{minX=62,minY=27,maxX=63,maxY=27}},
 		drw={{s=306,w=2,h=1}},
 		sdsp={{x=126,y=29,minX=145,minY=144,maxX=158,maxY=150,lbl="Splitter",lblOff=-8,c=4}},
 		dmg={{efct="elec",emi=nil,x=.5,y=.6,xR=.4,yR=.4}}
 	}
 	tkH={
-		st=1,effc=1,
-		wr=randRangeF(0.000001,0.000002),
+		st=1,effc=1,ut=0,
+		minWr=randRangeF(0.0000001,0.0000002),
+		maxWr=randRangeF(0.000001,0.000002),
 		lvl=H_TANK_MAX_KG,
 		bb={{minX=58,minY=26,maxX=61,maxY=29}},
 		drw={{s=366,w=2,h=3,ry=2}},
@@ -405,8 +422,9 @@ function initShip()
 		dmg={{efct="hydrogen",emi=nil,x=.5,y=.6,xR=1.2,yR=1.8}}
 	}
 	tkO={
-		st=1,effc=1,
-		wr=randRangeF(0.000001,0.000002),
+		st=1,effc=1,ut=0,
+		minWr=randRangeF(0.0000001,0.0000002),
+		maxWr=randRangeF(0.000001,0.000002),
 		lvl=O_TANK_MAX_KG,
 		bb={{minX=58,minY=31,maxX=61,maxY=32}},
 		drw={{s=380,w=2,h=2}},
@@ -414,8 +432,9 @@ function initShip()
 		dmg={{efct="oxygen",emi=nil,x=.5,y=.5,xR=1,yR=1}}
 	}
 	tkH2O={
-		st=1,effc=1,
-		wr=randRangeF(0.000001,0.000002),
+		st=1,effc=1,ut=0,
+		minWr=randRangeF(0.0000001,0.0000002),
+		maxWr=randRangeF(0.000001,0.000002),
 		lvl=H2O_TANK_MAX_KG,
 		bb={{minX=68,minY=27,maxX=73,maxY=28}},
 		drw={{s=375,w=3,h=2,rx=2}},
@@ -424,8 +443,9 @@ function initShip()
 		dmg={{efct="water",emi=nil,x=.5,y=.6,xR=1.5,yR=.45}}
 	}
 	tkCH4={
-		st=1,effc=1,
-		wr=randRangeF(0.000001,0.000002),
+		st=1,effc=1,ut=0,
+		minWr=randRangeF(0.0000001,0.0000002),
+		maxWr=randRangeF(0.000001,0.000002),
 		lvl=CH4_TANK_MAX_KG,
 		bb={{minX=75,minY=27,maxX=80,maxY=28}},
 		drw={{s=378,w=2,h=2}},
@@ -434,8 +454,9 @@ function initShip()
 		dmg={{efct="methane",emi=nil,x=.5,y=.4,xR=2.2,yR=.6}}
 	}
 	turb={
-		st=1,effc=1,
-		wr=randRangeF(0.000015,0.00003),
+		st=1,effc=1,ut=0,
+		minWr=randRangeF(0.0000015,0.000003),
+		maxWr=randRangeF(0.000015,0.00003),
 		bb={{minX=46,minY=27,maxX=47,maxY=28}},
 		drw={{s=345,w=2,h=2}},
 		sdsp={{x=75,y=29,minX=200,minY=161,maxX=215,maxY=175,lbl="Turbine",lblOff=-2,c=15}},
@@ -963,8 +984,8 @@ end
 
 function applyWear()
 	for i,com in pairs(wear) do
-		if com.st~=nil and com.wr~=nil then
-			com.st=clamp01(com.st-com.wr)
+		if com.st~=nil and com.minWr~=nil and com.maxWr~=nil then
+			com.st=clamp01(com.st-lerp(com.minWr,com.maxWr,com.ut))
 		end
 	end
 end
@@ -1570,10 +1591,11 @@ function steamSupply()
 	end
 	sply.steam=spldKNSM
 	turb.effc=safeUpDivide(sply.steam,dmd.steam)
+	turb.ut=clamp01(sply.steam/TURB_MAX_STEAM_KNSM)
 end
 
 function torqueSupply()
-	torqueSpld=TURB_MAX_NM*(sply.steam/TURB_MAX_STEAM_KNSM)
+	torqueSpld=TURB_MAX_NM*turb.ut
 	torqueDmd=dmd.NM.gen+dmd.NM.hydPump
 
 	if torqueSpld >= torqueDmd then
@@ -1586,7 +1608,9 @@ function torqueSupply()
 		sply.NM.hydPump=torqueSpld*pumpPrct
 	end
 	hydPump.effc=safeUpDivide(sply.NM.hydPump,dmd.NM.hydPump)
+	hydPump.ut=clamp01(sply.NM.hydPump/HYD_PUMP_MAX_NM)
 	gen.effc=safeUpDivide(sply.NM.gen,dmd.NM.gen)
+	gen.ut=clamp01(sply.NM.gen/GEN_MAX_NM)
 end
 
 function hydSupply()
@@ -1622,6 +1646,12 @@ function hydSupply()
 	rtr4.effc=safeUpDivide(sply.kNSM.rtr4,dmd.kNSM.rtr4)
 	prp1.effc=safeUpDivide(sply.kNSM.prp1,dmd.kNSM.prp1)
 	prp2.effc=safeUpDivide(sply.kNSM.prp2,dmd.kNSM.prp2)
+	rtr1.ut=clamp01(sply.kNSM.rtr1/RTR_MAX_HYD_DMD_KNSM)
+	rtr2.ut=clamp01(sply.kNSM.rtr2/RTR_MAX_HYD_DMD_KNSM)
+	rtr3.ut=clamp01(sply.kNSM.rtr3/RTR_MAX_HYD_DMD_KNSM)
+	rtr4.ut=clamp01(sply.kNSM.rtr4/RTR_MAX_HYD_DMD_KNSM)
+	prp1.ut=clamp01(sply.kNSM.prp1/PROP_MAX_HYD_DMD_KNSM)
+	prp2.ut=clamp01(sply.kNSM.prp2/PROP_MAX_HYD_DMD_KNSM)
 end
 
 function pwrSupply()
@@ -1708,9 +1738,18 @@ function pwrSupply()
 	rtr4.effc=math.min(rtr4.effc,safeUpDivide(sply.kW.rtr4,dmd.kW.rtr4))
 	prp1.effc=math.min(prp1.effc,safeUpDivide(sply.kW.prp1,dmd.kW.prp1))
 	prp2.effc=math.min(prp2.effc,safeUpDivide(sply.kW.prp2,dmd.kW.prp2))
+	rtr1.ut=clamp01(rtr1.ut+sply.kW.rtr1/RTR_MAX_PWR_DMD_KW)
+	rtr2.ut=clamp01(rtr2.ut+sply.kW.rtr2/RTR_MAX_PWR_DMD_KW)
+	rtr3.ut=clamp01(rtr3.ut+sply.kW.rtr3/RTR_MAX_PWR_DMD_KW)
+	rtr4.ut=clamp01(rtr4.ut+sply.kW.rtr4/RTR_MAX_PWR_DMD_KW)
+	prp1.ut=clamp01(prp1.ut+sply.kW.prp1/PROP_MAX_PWR_DMD_KW)
+	prp2.ut=clamp01(prp2.ut+sply.kW.prp2/PROP_MAX_PWR_DMD_KW)
 	spltr.effc=safeUpDivide(sply.kW.spltr,dmd.kW.spltr)
 	accH2O.effc=safeUpDivide(sply.kW.accH2O,dmd.kW.accH2O)
 	accCH4.effc=safeUpDivide(sply.kW.accCH4,dmd.kW.accCH4)
+	spltr.ut=clamp01(sply.kW.spltr/SPLTR_PWR_DMD_KW)
+	accH2O.ut=clamp01(sply.kW.accH2O/H2O_ACC_PWR_DMD_KW)
+	accCH4.ut=clamp01(sply.kW.accCH4/CH4_ACC_PWR_DMD_KW)
 end
 
 function distHyds()
@@ -1742,11 +1781,9 @@ function distPwr()
 		sply.O.tank=prodPrct*SPLTR_PER_TIC_O
 	end
 	if sply.kW.accH2O>0 then
-		accH2O.wr=lerp(accH2O.minWr,accH2O.maxWr,sply.kW.accH2O/H2O_ACC_PWR_DMD_KW)
 		sply.H2O.tank=(sply.kW.accH2O/H2O_ACC_PWR_DMD_KW)*H2O_ACC_PER_TIC*s.env.H2O*intakeAdj
 	end
 	if sply.kW.accCH4>0 then
-		accCH4.wr=lerp(accCH4.minWr,accCH4.maxWr,sply.kW.accCH4/CH4_ACC_PWR_DMD_KW)
 		sply.CH4.tank=(sply.kW.accCH4/CH4_ACC_PWR_DMD_KW)*CH4_ACC_PER_TIC*s.env.CH4*intakeAdj
 	end
 	if sply.kW.btry>0 then
@@ -1779,6 +1816,17 @@ function fillTanks()
 	tkCH4.lvl=math.min(CH4_TANK_MAX_KG,tkCH4.lvl+sply.CH4.tank)
 	hydRes.lvl=math.min(HYD_MAX_KNSM,hydRes.lvl+sply.kNSM.hydRes)
 	btry.lvl=math.min(BTRY_MAX_CHARGE_KW,btry.lvl+avlb4Stg.kW)
+
+	cl1.ut=clamp01(sply.H_V.cl1/CLL_MAX_M3F)
+	cl2.ut=clamp01(sply.H_V.cl2/CLL_MAX_M3F)
+	cl3.ut=clamp01(sply.H_V.cl3/CLL_MAX_M3F)
+	cl4.ut=clamp01(sply.H_V.cl4/CLL_MAX_M3F)
+	tkH.ut=clamp01(sply.H_M.tank/H_TANK_MAX_KGF)
+	tkO.ut=clamp01(sply.O.tank/O_TANK_MAX_KGF)
+	tkH2O.ut=clamp01(sply.H2O.tank/H2O_TANK_MAX_KGF)
+	tkCH4.ut=clamp01(sply.CH4.tank/CH4_TANK_MAX_KGF)
+	hydRes.ut=clamp01(sply.kNSM.hydRes/HYD_MAX_KNSM)
+	btry.ut=clamp01(avlb4Stg.kW/BTRY_MAX_CHARGE_RATE_KW)
 
 	cl1.effc=cl1.lvl/CLL_MAX_M3
 	cl2.effc=cl2.lvl/CLL_MAX_M3
