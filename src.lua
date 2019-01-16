@@ -17,7 +17,7 @@ SHIP_MAX_SPD=300
 SHIP_MAX_ALT=10000
 SHIP_DRY_WEIGHT_KG=120000
 
-DISPLAYS_PWR_DMD_KW=0.017
+DISPLAYS_PWR_DMD_KW=0.021
 
 SPLTR_PWR_DMD_KW=0.05
 SPLTR_MAX_H2O=2.4
@@ -44,7 +44,7 @@ BILR_H2O_KG_PER_KNSM=0.0008
 BILR_CH4_KG_PER_KNSM=0.0394
 BILR_O_KG_PER_KNSM=0.0252
 
-BTRY_MAX_CHARGE_KW=35000
+BTRY_MAX_CHARGE_KW=650
 BTRY_MAX_CHARGE_RATE_KW=0.022
 
 HYD_MAX_KNSM=32
@@ -1012,26 +1012,6 @@ function drwShipSt()
 	end
 	print(string.format("Repair: %d%%",repair),128,1,6,false,1,true)
 	print(string.format("Resources: %d%%",resources),180,1,6,false,1,true)
-	print(string.format("Batt: %d",(btry.lvl*1000)//1),2,9,6,false,1,true)
-  print(string.format("genPwr: %d",(genPwr*1000)//1),2,17,6,false,1,true)
-  print(string.format("btryPwr: %d",(btryPwr*1000)//1),2,25,6,false,1,true)
-  print(string.format("emPwrDmd: %d",(emPwrDmd*1000)//1),2,33,6,false,1,true)
-  print(string.format("priPwrDmd: %d",(priPwrDmd*1000)//1),2,41,6,false,1,true)
-  print(string.format("secPwrDmd: %d",(secPwrDmd*1000)//1),2,49,6,false,1,true)
-  print(string.format("ttlPwrDmd: %d",(ttlPwrDmd*1000)//1),2,57,6,false,1,true)
-  print(string.format("avl4Stg: %f",avlb4Stg.kW),2,65,6,false,1,true)
-  if pwrType>3 then
-    print("Full",180,65,6,false,1,true)
-  elseif pwrType>2 then
-    print("Prime",180,65,6,false,1,true)
-  elseif pwrType>1 then
-    print("Emer",180,65,6,false,1,true)
-  elseif pwrType>0 then
-    print("Res",180,65,6,false,1,true)
-  else
-    print("Unknown",180,65,6,false,1,true)
-  end
-  if avlb4Stg.kW<0 then PAUSED=true end
 
 	if s.pos.z<1 and s.spd<1 and resources<1 then
 		--endScreen=true
@@ -1162,14 +1142,16 @@ function drwGame()
 			drwBarSt(cl.bar,cl.lvl,CLL_MAX_M3)
 		end
 
-		clip(6,64,50,63)
-		if dispNav.on then drwMap(5,7,16,72) end
-		sHCent={x=32,y=96}
-		local pt1=rotV2Ct(sHCent,{x=32,y=92},s.hdg)
-		local pt2=rotV2Ct(sHCent,{x=30,y=100},s.hdg)
-		local pt3=rotV2Ct(sHCent,{x=34,y=100},s.hdg)
-		tri(pt1.x,pt1.y,pt2.x,pt2.y,pt3.x,pt3.y,5)
-		clip()
+    if dispNav.on then
+  		clip(6,64,50,63)
+  		drwMap(5,7,16,72)
+  		sHCent={x=32,y=96}
+  		local pt1=rotV2Ct(sHCent,{x=32,y=92},s.hdg)
+  		local pt2=rotV2Ct(sHCent,{x=30,y=100},s.hdg)
+  		local pt3=rotV2Ct(sHCent,{x=34,y=100},s.hdg)
+  		tri(pt1.x,pt1.y,pt2.x,pt2.y,pt3.x,pt3.y,5)
+  		clip()
+    end
 
 		if controlType==0 then
 			rectb(71,63,26,34,7)
@@ -1690,7 +1672,7 @@ function pwrSupply()
 		sply.kW.prp2=prps2Prct*remGen
 		sply.kW.lights=lightsPrct*remGen
     pwrType=3
-	elseif genPwr>=emPwrDmd then
+	elseif genPwr>=emPwrDmd or btryPwr>(BTRY_MAX_CHARGE_KW*.2) then
 		sply.kW.dispNav=dmd.kW.dispNav
 		sply.kW.dispSta=dmd.kW.dispSta
 		sply.kW.btry=dmd.kW.btry
@@ -1699,23 +1681,25 @@ function pwrSupply()
 		spltrPrct=safeDivide(dmd.kW.spltr,priPwrDmd)
 		accH2OPrct=safeDivide(dmd.kW.accH2O,priPwrDmd)
 		accCH4Prct=safeDivide(dmd.kW.accCH4,priPwrDmd)
-		remPwr=remGen+btryPwr
+    battUse=math.min(btryPwr,priPwrDmd-remGen)
+		resPwr=remGen+battUse
 
-		sply.kW.spltr=spltrPrct*remPwr
-		sply.kW.accH2O=accH2OPrct*remPwr
-		sply.kW.accCH4=accCH4Prct*remPwr
-		avlb4Stg.kW=-(sply.kW.spltr+sply.kW.accH2O+sply.kW.accCH4-remGen)
+		sply.kW.spltr=spltrPrct*resPwr
+		sply.kW.accH2O=accH2OPrct*resPwr
+		sply.kW.accCH4=accCH4Prct*resPwr
+		avlb4Stg.kW=-battUse
     pwrType=2
 	else
 		sply.kW.btry=math.min(dmd.kW.btry,genPwr)
 		dispNavPrct=safeDivide(dmd.kW.dispNav,emPwrDmd)
 		dispStaPrct=safeDivide(dmd.kW.dispSta,emPwrDmd)
 		remGen=genPwr-sply.kW.btry
-		remPwr=remGen+btryPwr
+    battUse=math.min(btryPwr,emPwrDmd-remGen)
+    resPwr=remGen+battUse
 
-		sply.kW.dispNav=dispNavPrct*remPwr
-		sply.kW.dispSta=dispStaPrct*remPwr
-		avlb4Stg.kW=avlb4Stg.kW-(sply.kW.dispNav+sply.kW.dispSta-remGen)
+    sply.kW.dispNav=dispNavPrct*resPwr
+    sply.kW.dispSta=dispStaPrct*resPwr
+    avlb4Stg.kW=remGen-sply.kW.dispNav-sply.kW.dispSta
     pwrType=1
 	end
 	rtr1.effc=math.min(rtr1.effc,safeUpDivide(sply.kW.rtr1,dmd.kW.rtr1))
