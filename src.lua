@@ -14,6 +14,7 @@ ENT_DRG=.3
 
 SHIP_STRT_SPD=42
 SHIP_MAX_SPD=300
+SHIP_MAX_VSI=2
 SHIP_MAX_ALT=10000
 SHIP_DRY_WEIGHT_KG=120000
 
@@ -57,8 +58,8 @@ O_TANK_MAX_KG=2800
 H2O_TANK_MAX_KG=16800
 CH4_TANK_MAX_KG=16800
 
-CLL_MAX_VENT_M3F=7
-CLL_MAX_M3F=12.4
+CLL_MAX_VENT_M3F=7.2
+CLL_MAX_M3F=6.1
 H_TANK_MAX_KGF=0.3
 O_TANK_MAX_KGF=2.3
 H2O_TANK_MAX_KGF=2.6
@@ -82,7 +83,7 @@ gg={
 		vsi={x=141,y=79,c=5},
 		hdg={x=215,y=87,c=5},
 		rot={x=140,y=106,c=5},
-		con_vsi={x=141,y=80,c=15},
+		req_vsi={x=141,y=80,c=15},
 		con_hdg={x=216,y=88,c=15},
 		con_rot={x=141,y=107,c=15}
 	},
@@ -104,7 +105,7 @@ showMap=false
 gremlinSpawned=false
 gremlinInSight=false
 gremlinLastSeen=0
-controlType=0
+controlType=1
 RES_PT_COUNT=4200
 mapVls={}
 CH4pts={}
@@ -113,6 +114,7 @@ H2Opts={}
 -- temp
 pwrType=0
 PAUSED=false
+estVsiPerHV=0
 -- endtemp
 
 function updCam(x,y)
@@ -174,10 +176,10 @@ end
 
 function initShip()
 	s={
-		spd=SHIP_STRT_SPD,accl=0,hdg=0,rot=0,vsi=0,setVsi=0,isCrash=false,isLit=true,dis=0,
-		pos={x=0,y=0,z=1000},
+		spd=SHIP_STRT_SPD,accl=0,hdg=0,rot=0,vsi=0,reqVsi=0,reqBou=0,isCrash=false,isLit=true,dis=0,
+		pos={x=0,y=0,z=2000},
 		con={
-			alt=1000,vsi=0.2,
+			alt=2000,
 			thrt={prps=0.3,rtrs=0.7},
 			rot={prps=0,rtrs=0}
 		},
@@ -229,7 +231,7 @@ function initShip()
 		minWr=randRangeF(0.000001,0.000004),
 		maxWr=randRangeF(0.00001,0.00004),
 		lvl=CLL_MAX_M3*.7,
-		vent=0.0,
+		fill=0,
 		bb={{minX=77,minY=21,maxX=84,maxY=22}},
 		drw={clDrw},
 		sdsp={{x=154,y=5,minX=145,minY=177,maxX=158,maxY=190,lbl="Cell 1",lblOff=4,c=3},
@@ -241,7 +243,7 @@ function initShip()
 		minWr=randRangeF(0.000001,0.000004),
 		maxWr=randRangeF(0.00001,0.00004),
 		lvl=CLL_MAX_M3*.7,
-		vent=0.0,
+		fill=0,
 		bb={{minX=68,minY=21,maxX=75,maxY=22}},
 		drw={clDrw},
 		sdsp={{x=124,y=5,minX=145,minY=177,maxX=158,maxY=190,lbl="Cell 2",lblOff=4,c=3},
@@ -253,7 +255,7 @@ function initShip()
 		minWr=randRangeF(0.000001,0.000004),
 		maxWr=randRangeF(0.00001,0.00004),
 		lvl=CLL_MAX_M3*.7,
-		vent=0.0,
+		fill=0,
 		bb={{minX=44,minY=21,maxX=51,maxY=22}},
 		drw={clDrw},
 		sdsp={{x=94,y=5,minX=145,minY=177,maxX=158,maxY=190,lbl="Cell 3",lblOff=4,c=3},
@@ -265,7 +267,7 @@ function initShip()
 		minWr=randRangeF(0.000001,0.000004),
 		maxWr=randRangeF(0.00001,0.00004),
 		lvl=CLL_MAX_M3*.7,
-		vent=0.0,
+		fill=0,
 		bb={{minX=35,minY=21,maxX=42,maxY=22}},
 		drw={clDrw},
 		sdsp={{x=64,y=5,minX=145,minY=177,maxX=158,maxY=190,lbl="Cell 4",lblOff=4,c=3},
@@ -527,8 +529,6 @@ function TIC()
 		sfx(-1,"D#1",-1,0,0,0)
 	else
 		music()
-		if btnp(5) then showMap=not showMap end
-
 		if comContains(dispNav.bb,p) then
 			if btnp(6) then showNav=not showNav end
 		end
@@ -582,15 +582,14 @@ function TIC()
 			if controlType>4 then controlType=0 end
 
 			if controlType==0 then
+				if btnp(0) or btnp(1) then
+					showMap=not showMap
+				end
+			elseif controlType==1 then
 				if btn(0) then s.con.rot.rtrs=s.con.rot.rtrs+1 end
 				if btn(1) then s.con.rot.rtrs=s.con.rot.rtrs-1 end
 				if s.con.rot.rtrs<0 then s.con.rot.rtrs=0 end
 				if s.con.rot.rtrs>90 then s.con.rot.rtrs=90 end
-			elseif controlType==1 then
-				if btn(0) then s.con.vsi=s.con.vsi+0.02 end
-				if btn(1) then s.con.vsi=s.con.vsi-0.02 end
-				if s.con.vsi<-1.2 then s.con.vsi=-1.2 end
-				if s.con.vsi>1.2 then s.con.vsi=1.2 end
 			elseif controlType==2 then
 				if btn(0) then s.con.alt=s.con.alt+10 end
 				if btn(1) then s.con.alt=s.con.alt-10 end
@@ -1074,8 +1073,6 @@ function drwMap(xSize,ySize,xOff,yOff)
 	sP=getShipTilePos()
 	cYOffset=sP.y-ySize//2
 	cXOffset=sP.x-xSize//2
-	-- print(string.format("%d:%d",cXOffset,cYOffset),2,2,10,false,1,true)
-	print(string.format("%d:%d",s.pos.x//1,s.pos.y//1),2,10,10,false,1,true)
 	for cY=cYOffset,ySize+cYOffset do
 		for cX=cXOffset,xSize+cXOffset do
 			mapVl=getMapTile(cX,cY)
@@ -1085,6 +1082,11 @@ function drwMap(xSize,ySize,xOff,yOff)
 					(cY-cYOffset-1)*8+yOff,0)
 		end
 	end
+	sHCent={x=120,y=68}
+	local pt1=rotV2Ct(sHCent,{x=120,y=64},s.hdg)
+	local pt2=rotV2Ct(sHCent,{x=118,y=72},s.hdg)
+	local pt3=rotV2Ct(sHCent,{x=122,y=72},s.hdg)
+	tri(pt1.x,pt1.y,pt2.x,pt2.y,pt3.x,pt3.y,5)
 end
 
 function drwGame()
@@ -1103,7 +1105,7 @@ function drwGame()
 		print("Heading",204,60,6,false,1,true)
 
 		drwNdlLvlSt(gg.ndl.vsi,s.vsi,-1.2,1.2,0,180,8)
-		drwNdlLvlSt(gg.ndl.con_vsi,s.con.vsi,-1.2,1.2,0,180,10)
+		drwNdlLvlSt(gg.ndl.req_vsi,s.reqVsi,-1.2,1.2,0,180,10)
 
 		drwNdlAglSt(gg.ndl.hdg,s.hdg,{ x=0,y=-8 })
 		drwNdlAglSt(gg.ndl.rot,s.rot,{ x=0,y=15 })
@@ -1158,14 +1160,14 @@ function drwGame()
   		clip()
     end
 
-		if controlType==0 then
-			rectb(114,96,37,34,7)
+    if controlType==0 then
+    	rectb(0,56,80,80,7)
 		elseif controlType==1 then
-			rectb(127,63,18,34,7)
+			rectb(114,96,37,34,7)
 		elseif controlType==2 then
-			rectb(151,63,24,66,7)
+			rectb(149,58,26,71,7)
 		elseif controlType==3 then
-			rectb(175,63,24,66,7)
+			rectb(173,58,26,71,7)
 		elseif controlType==4 then
 			rectb(199,71,34,34,7)
 		end
@@ -1477,10 +1479,10 @@ function strgTanksDmd()
 end
 
 function cellDmd()
-	if cl1.vent<=0 then dmd.H_V.cl1=math.min(CLL_MAX_M3-cl1.lvl,-cl1.vent) end
-	if cl2.vent<=0 then dmd.H_V.cl2=math.min(CLL_MAX_M3-cl2.lvl,-cl2.vent) end
-	if cl3.vent<=0 then dmd.H_V.cl3=math.min(CLL_MAX_M3-cl3.lvl,-cl3.vent) end
-	if cl4.vent<=0 then dmd.H_V.cl4=math.min(CLL_MAX_M3-cl4.lvl,-cl4.vent) end
+	if cl1.fill>0 then dmd.H_V.cl1=math.min(CLL_MAX_M3-cl1.lvl,cl1.fill) end
+	if cl2.fill>0 then dmd.H_V.cl2=math.min(CLL_MAX_M3-cl2.lvl,cl2.fill) end
+	if cl3.fill>0 then dmd.H_V.cl3=math.min(CLL_MAX_M3-cl3.lvl,cl3.fill) end
+	if cl4.fill>0 then dmd.H_V.cl4=math.min(CLL_MAX_M3-cl4.lvl,cl4.fill) end
 end
 
 function btryHydDmd()
@@ -1776,10 +1778,10 @@ function distPwr()
 end
 
 function drainTanks()
-	cl1.lvl=cl1.lvl-math.max(math.max(0.01,1-stToEf(cl1.st))*CLL_MAX_VENT_M3F,cl1.vent)
-	cl2.lvl=cl2.lvl-math.max(math.max(0.01,1-stToEf(cl2.st))*CLL_MAX_VENT_M3F,cl2.vent)
-	cl3.lvl=cl3.lvl-math.max(math.max(0.01,1-stToEf(cl3.st))*CLL_MAX_VENT_M3F,cl3.vent)
-	cl4.lvl=cl4.lvl-math.max(math.max(0.01,1-stToEf(cl4.st))*CLL_MAX_VENT_M3F,cl4.vent)
+	cl1.lvl=cl1.lvl-math.max(math.max(0.01,1-stToEf(cl1.st))*CLL_MAX_VENT_M3F,-cl1.fill)
+	cl2.lvl=cl2.lvl-math.max(math.max(0.01,1-stToEf(cl2.st))*CLL_MAX_VENT_M3F,-cl2.fill)
+	cl3.lvl=cl3.lvl-math.max(math.max(0.01,1-stToEf(cl3.st))*CLL_MAX_VENT_M3F,-cl3.fill)
+	cl4.lvl=cl4.lvl-math.max(math.max(0.01,1-stToEf(cl4.st))*CLL_MAX_VENT_M3F,-cl4.fill)
 
 	tkH.lvl=tkH.lvl-sply.H_V.cl1/H_MASS_TO_VOL-sply.H_V.cl2/H_MASS_TO_VOL-sply.H_V.cl3/H_MASS_TO_VOL-sply.H_V.cl4/H_MASS_TO_VOL
 	tkO.lvl=tkO.lvl-sply.O.bilr
@@ -1888,41 +1890,34 @@ function applyForces()
 
 	s.vsi=s.vsi+0.5*((vForce-ttlShipWeightKN-vertDrag)*0.00027777777)
 	s.pos.z=s.pos.z+s.vsi
+	estVsiPerHV=calcEstVsiPerHV(vForce,ttlShipWeightKG,vertDrag)
 
-	-- Auto controls
-	if s.vsi<s.setVsi then
-		s.con.thrt.rtrs=math.min(s.con.thrt.rtrs+0.1,1)
-	elseif s.vsi>s.setVsi then
-		s.con.thrt.rtrs=math.max(s.con.thrt.rtrs-0.1,0.0)
+	if s.con.alt<s.pos.z then
+		altDiff=clamp01(invLerp(0,2000,s.pos.z-s.con.alt))
+		s.reqVsi=-altDiff*SHIP_MAX_VSI
+	elseif s.con.alt>s.pos.z then
+		altDiff=clamp01(invLerp(0,2000,s.con.alt-s.pos.z))
+		s.reqVsi=altDiff*SHIP_MAX_VSI
 	end
 
-	if s.pos.z-100>s.con.alt and s.vsi>-0.2 then
-		altDiff=math.min((s.pos.z-100-s.con.alt)/100,8)*4
-		ttlLvl=safeDivide(1,cl1.lvl+cl2.lvl+cl3.lvl+cl4.lvl)
-		cl1.vent=altDiff*cl1.lvl*ttlLvl
-		cl2.vent=altDiff*cl2.lvl*ttlLvl
-		cl3.vent=altDiff*cl3.lvl*ttlLvl
-		cl4.vent=altDiff*cl4.lvl*ttlLvl
-	elseif s.pos.z+100<s.con.alt and s.vsi<0.2 then
-		altDiff=math.max((s.pos.z+100-s.con.alt)/100,-8)*4
-		ttlLvl=safeDivide(1,cl1.lvl+cl2.lvl+cl3.lvl+cl4.lvl)
-		cl1.vent=altDiff*(1-cl1.lvl*ttlLvl)
-		cl2.vent=altDiff*(1-cl2.lvl*ttlLvl)
-		cl3.vent=altDiff*(1-cl3.lvl*ttlLvl)
-		cl4.vent=altDiff*(1-cl4.lvl*ttlLvl)
+	vsiDiff=math.abs(s.vsi-s.reqVsi)
+	thrtAdj=lerp(0,1,vsiDiff/SHIP_MAX_VSI)
+	if s.vsi<s.reqVsi then
+		s.con.thrt.rtrs=math.min(s.con.thrt.rtrs+thrtAdj,1)
+		s.reqBou=math.min(lerp(s.reqBou,(s.reqVsi-s.vsi)*estVsiPerHV,.001),4*CLL_MAX_M3F)
+	elseif s.vsi>s.reqVsi then
+		s.con.thrt.rtrs=math.max(s.con.thrt.rtrs-thrtAdj,0)
+		s.reqBou=math.max(lerp(s.reqBou,-(s.vsi-s.reqVsi)*estVsiPerHV,.001),-4*CLL_MAX_M3F)
 	else
-		cl1.vent=0
-		cl2.vent=0
-		cl3.vent=0
-		cl4.vent=0
+		s.reqBou=lerp(s.reqBou,0,.001)
 	end
 
-	if s.pos.z+10<s.con.alt and s.con.vsi>0 then
-		s.setVsi=s.con.vsi
-	elseif s.pos.z-10>s.con.alt and s.con.vsi<0 then
-		s.setVsi=s.con.vsi
-	else
-		s.setVsi=0.0
+	if s.reqBou~=0 and math.abs(s.con.alt-s.pos.z)>200 then
+		trgtLvl=.25*(cl1.lvl+cl2.lvl+cl3.lvl+cl4.lvl+s.reqBou)
+		calcClFill(cl1,trgtLvl)
+		calcClFill(cl2,trgtLvl)
+		calcClFill(cl3,trgtLvl)
+		calcClFill(cl4,trgtLvl)
 	end
 
 	if s.pos.z<=0 then
@@ -1946,6 +1941,19 @@ function calcHydDmd(curAngl,dsrdAngl,st,maxSpd,maxDmd)
 	rtrAnglChg=math.abs(dsrdAngl-curAngl)
 	rtrAnglChg=math.min(rtrAnglChg,maxSpd*st)
 	return (rtrAnglChg/maxSpd)*maxDmd
+end
+
+function calcEstVsiPerHV(vForce,weight,drag)
+	forceReq=7200+drag+weight-vForce
+	return (forceReq/HYDROGEN_LIFT_ADJ/KG_TO_N)/(SEA_LEVEL_AIR_DENSITY-HYDROGEN_DENSITY)
+end
+
+function calcClFill(cl,trgt)
+	if cl.lvl<trgt then
+		cl.fill=math.min(trgt-cl.lvl,CLL_MAX_M3F)
+	elseif cl.lvl>trgt then
+		cl.fill=math.max(trgt-cl.lvl,-CLL_MAX_M3F)
+	end
 end
 
 function rotThrster(type,spl,thrst,maxDmd,maxSpd)
