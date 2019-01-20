@@ -79,20 +79,20 @@ str={
 
 gg={
 	ndl={
-		vsi={x=109,y=79,c=5},
-		hdg={x=175,y=79,c=5},
-		rot={x=92,y=74,c=5},
-		con_vsi={x=109,y=80,c=15},
-		con_hdg={x=176,y=80,c=15},
-		con_rot={x=93,y=75,c=15}
+		vsi={x=141,y=79,c=5},
+		hdg={x=215,y=87,c=5},
+		rot={x=140,y=106,c=5},
+		con_vsi={x=141,y=80,c=15},
+		con_hdg={x=216,y=88,c=15},
+		con_rot={x=141,y=107,c=15}
 	},
 	lvls={
-		con_alt={x=114,y=68,w=4,h=24,c=15},
-		con_thrt={x=138,y=68,w=4,h=24,c=15}
+		con_alt={x=154,y=68,w=4,h=56,c=15},
+		con_thrt={x=178,y=68,w=4,h=56,c=15}
 	},
 	bars={
-		alt={x=114,y=68,w=4,h=24,c=5},
-		spd={x=138,y=68,w=4,h=24,c=5}
+		alt={x=154,y=68,w=4,h=56,c=5},
+		spd={x=178,y=68,w=4,h=56,c=5}
 	}
 }
 sDspIn={x=9,y=56}
@@ -234,7 +234,6 @@ function initShip()
 		drw={clDrw},
 		sdsp={{x=154,y=5,minX=145,minY=177,maxX=158,maxY=190,lbl="Cell 1",lblOff=4,c=3},
 					{x=168,y=5,minX=169,minY=177,maxX=182,maxY=190,lbl="",c=3}},
-		bar={x=202,y=108,w=4,h=16,c=5},
 		dmg={{efct="hydrogen",emi=nil,x=.5,y=.5,xR=4,yR=1}}
 	}
 	cl2={
@@ -247,7 +246,6 @@ function initShip()
 		drw={clDrw},
 		sdsp={{x=124,y=5,minX=145,minY=177,maxX=158,maxY=190,lbl="Cell 2",lblOff=4,c=3},
 					{x=138,y=5,minX=169,minY=177,maxX=182,maxY=190,lbl="",c=3}},
-		bar={x=210,y=108,w=4,h=16,c=5},
 		dmg={{efct="hydrogen",emi=nil,x=.5,y=.5,xR=4,yR=1}}
 	}
 	cl3={
@@ -260,7 +258,6 @@ function initShip()
 		drw={clDrw},
 		sdsp={{x=94,y=5,minX=145,minY=177,maxX=158,maxY=190,lbl="Cell 3",lblOff=4,c=3},
 					{x=108,y=5,minX=169,minY=177,maxX=182,maxY=190,lbl="",c=3}},
-		bar={x=218,y=108,w=4,h=16,c=5},
 		dmg={{efct="hydrogen",emi=nil,x=.5,y=.5,xR=4,yR=1}}
 	}
 	cl4={
@@ -273,7 +270,6 @@ function initShip()
 		drw={clDrw},
 		sdsp={{x=64,y=5,minX=145,minY=177,maxX=158,maxY=190,lbl="Cell 4",lblOff=4,c=3},
 					{x=78,y=5,minX=169,minY=177,maxX=182,maxY=190,lbl="",c=3}},
-		bar={x=226,y=108,w=4,h=16,c=5},
 		dmg={{efct="hydrogen",emi=nil,x=.5,y=.5,xR=4,yR=1}}
 	}
 	dispNav={
@@ -325,8 +321,8 @@ function initShip()
 		bb={{minX=33,minY=22,maxX=34,maxY=24}},
 		drw={prpDrw},
 		sdsp={{x=0,y=5,minX=129,minY=142,maxX=142,maxY=153,lbl="Prop1",c=4}},
-		ndl={x=169,y=113,c=5},
-		bar={x=161,y=108,w=2,h=11,c=5},
+		ndl={x=209,y=121,c=5},
+		bar={x=201,y=116,w=2,h=11,c=5},
 		dmg={{efct="elec",emi=nil,x=.7,y=.5,xR=.8,yR=.6}}
 	}
 	prp2={
@@ -338,8 +334,8 @@ function initShip()
 		bb={{minX=33,minY=26,maxX=34,maxY=28}},
 		drw={prpDrw},
 		sdsp={{x=0,y=29,minX=129,minY=142,maxX=142,maxY=153,lbl="Prop2",c=4}},
-		ndl={x=185,y=113,c=5},
-		bar={x=177,y=108,w=2,h=11,c=5},
+		ndl={x=225,y=121,c=5},
+		bar={x=217,y=116,w=2,h=11,c=5},
 		dmg={{efct="elec",emi=nil,x=.7,y=.5,xR=.8,yR=.6}}
 	}
 	pto1={
@@ -359,8 +355,8 @@ function initShip()
 		bb={{minX=76,minY=32,maxX=81,maxY=32},{minX=78,minY=31,maxX=79,maxY=31}},
 		drw={rtr1Drw,rtr2Drw},
 		sdsp={{x=60,y=54,minX=162,minY=145,maxX=173,maxY=158,lbl="Rtr1",c=4}},
-		ndl={x=85,y=110,c=5},
-		bar={x=73,y=108,w=2,h=11,c=5},
+		ndl={x=101,y=70,c=5},
+		bar={x=89,y=68,w=2,h=11,c=5},
 		dmg={{efct="elec",emi=nil,x=.5,y=.5,xR=1,yR=1}}
 	}
 	rtr2={
@@ -372,8 +368,8 @@ function initShip()
 		bb={{minX=66,minY=32,maxX=71,maxY=32},{minX=68,minY=31,maxX=69,maxY=31}},
 		drw={rtr1Drw,rtr2Drw},
 		sdsp={{x=40,y=54,minX=162,minY=145,maxX=173,maxY=158,lbl="Rtr2",c=4}},
-		ndl={x=101,y=110,c=5},
-		bar={x=89,y=108,w=2,h=11,c=5},
+		ndl={x=101,y=86,c=5},
+		bar={x=89,y=84,w=2,h=11,c=5},
 		dmg={{efct="elec",emi=nil,x=.5,y=.5,xR=1,yR=1}}
 	}
 	rtr3={
@@ -385,8 +381,8 @@ function initShip()
 		bb={{minX=48,minY=32,maxX=53,maxY=32},{minX=50,minY=31,maxX=51,maxY=31}},
 		drw={rtr1Drw,rtr2Drw},
 		sdsp={{x=20,y=54,minX=162,minY=145,maxX=173,maxY=158,lbl="Rtr3",c=4}},
-		ndl={x=133,y=110,c=5},
-		bar={x=121,y=108,w=2,h=11,c=5},
+		ndl={x=101,y=102,c=5},
+		bar={x=89,y=100,w=2,h=11,c=5},
 		dmg={{efct="elec",emi=nil,x=.5,y=.5,xR=1,yR=1}}
 	}
 	rtr4={
@@ -398,8 +394,8 @@ function initShip()
 		bb={{minX=38,minY=32,maxX=43,maxY=32},{minX=40,minY=31,maxX=41,maxY=31}},
 		drw={rtr1Drw,rtr2Drw},
 		sdsp={{x=0,y=54,minX=162,minY=145,maxX=173,maxY=158,lbl="Rtr4",c=4}},
-		ndl={x=149,y=110,c=5},
-		bar={x=137,y=108,w=2,h=11,c=5},
+		ndl={x=101,y=118,c=5},
+		bar={x=89,y=116,w=2,h=11,c=5},
 		dmg={{efct="elec",emi=nil,x=.5,y=.5,xR=1,yR=1}}
 	}
 	spltr={
@@ -439,7 +435,6 @@ function initShip()
 		bb={{minX=68,minY=27,maxX=73,maxY=28}},
 		drw={{s=375,w=3,h=2,rx=2}},
 		sdsp={{x=145,y=29,minX=185,minY=178,maxX=206,maxY=191,lbl="H2O",lblOff=5,c=7}},
-		bar={x=202,y=68,w=4,h=24,c=5},
 		dmg={{efct="water",emi=nil,x=.5,y=.6,xR=1.5,yR=.45}}
 	}
 	tkCH4={
@@ -450,7 +445,6 @@ function initShip()
 		bb={{minX=75,minY=27,maxX=80,maxY=28}},
 		drw={{s=378,w=2,h=2}},
 		sdsp={{x=151,y=53,minX=208,minY=176,maxX=223,maxY=191,lbl="CH4",lblOff=2,c=1}},
-		bar={x=218,y=68,w=4,h=24,c=5},
 		dmg={{efct="methane",emi=nil,x=.5,y=.4,xR=2.2,yR=.6}}
 	}
 	turb={
@@ -468,7 +462,6 @@ function initShip()
 	wear={bilr,turb,hydRes,hydPump,gen,rtr1,rtr2,rtr3,rtr4,prp1,prp2,accH2O,accCH4,cl1,cl2,cl3,cl4,btry,spltr,tkH,tkO,tkH2O,tkCH4}
 	ggPrp={prp1,prp2}
 	ggRtr={rtr1,rtr2,rtr3,rtr4}
-	ggCl={cl1,cl2,cl3,cl4}
 end
 
 function buildMap()
@@ -1101,15 +1094,13 @@ function drwGame()
 	if showNav then
 		map(0,125,30,11,0,48)
 
-		print("Resource Radar",7,57,15,false,1,true)
-		print("RTR",78,57,6,false,1,true)
-		print("Angl",74,65,6,false,1,true)
-		print("VS",100,57,6,false,1,true)
-		print("Alt",111,57,6,false,1,true)
-		print("Spd",135,57,6,false,1,true)
-		print("Heading",163,57,6,false,1,true)
-		print("H2O",199,57,6,false,1,true)
-		print("CH4",215,57,6,false,1,true)
+		print("Resource Radar",15,57,15,false,1,true)
+		print("Rtr Angle",116,98,6,false,1,true)
+		print("Vertical",116,60,6,false,1,true)
+		print("Spd",116,68,6,false,1,true)
+		print("Alt",151,60,6,false,1,true)
+		print("Spd",175,60,6,false,1,true)
+		print("Heading",204,60,6,false,1,true)
 
 		drwNdlLvlSt(gg.ndl.vsi,s.vsi,-1.2,1.2,0,180,8)
 		drwNdlLvlSt(gg.ndl.con_vsi,s.con.vsi,-1.2,1.2,0,180,10)
@@ -1122,68 +1113,61 @@ function drwGame()
 										 { x=0,y=17 })
 
 		drwBarSt(gg.bars.alt,s.pos.z,SHIP_MAX_ALT)
-		drwBarSt(gg.bars.spd,s.spd,SHIP_MAX_SPD)
+		drwBarSt(gg.bars.spd,s.spd+SHIP_MAX_SPD,SHIP_MAX_SPD+SHIP_MAX_SPD)
 
-		drwBarSt(tkH2O.bar,tkH2O.lvl,H2O_TANK_MAX_KG)
-		drwBarSt(tkCH4.bar,tkCH4.lvl,CH4_TANK_MAX_KG)
-
-		altY=lerp(91,67,invLerp(0,SHIP_MAX_ALT,s.pos.z))-2.5
-		spdY=lerp(91,67,invLerp(0,SHIP_MAX_SPD,s.spd))-2.5
-		print(string.sub(string.format("%f",s.pos.z/1000.0),1,-6).."k",120,altY,5,false,1,true)
+		altY=lerp(123,67,invLerp(0,SHIP_MAX_ALT,s.pos.z))-2.5
+		spdY=lerp(123,67,invLerp(-SHIP_MAX_SPD,SHIP_MAX_SPD,s.spd))-2.5
+		print(string.sub(string.format("%f",s.pos.z/1000.0),1,-6).."k",160,altY,5,false,1,true)
 		if s.spd<100 then
-			print(string.sub(string.format("%f",s.spd),1,-6),144,spdY,5,false,1,true)
+			print(string.sub(string.format("%f",s.spd),1,-6),184,spdY,5,false,1,true)
 		else
-			print(string.format("%d",s.spd//1),144,spdY,5,false,1,true)
+			print(string.format("%d",s.spd//1),184,spdY,5,false,1,true)
 		end
 
 		drwLvlSt(gg.lvls.con_alt,s.con.alt,SHIP_MAX_ALT)
 		drwLvlSt(gg.lvls.con_thrt,s.con.thrt.prps,1)
 
-		print("PRP1",159,100,6,false,1,true)
-		print("PRP2",178,100,6,false,1,true)
+		print("Propeller",199,108,6,false,1,true)
+		print("1",213,126,6,false,1,true)
+		print("2",229,126,6,false,1,true)
 
 		for i,prp in pairs(ggPrp) do
 			drwPropRotSt(prp.ndl,prp.rot)
 			drwPropThrstSt(prp.bar,prp.thrst)
 		end
 
-		print("RTR1",71,100,6,false,1,true)
-		print("RTR2",90,100,6,false,1,true)
-		print("RTR3",119,100,6,false,1,true)
-		print("RTR4",138,100,6,false,1,true)
+		print("Rotor",88,60,6,false,1,true)
+		print("1",105,71,6,false,1,true)
+		print("2",105,87,6,false,1,true)
+		print("3",105,103,6,false,1,true)
+		print("4",105,119,6,false,1,true)
 
 		for i,rtr in pairs(ggRtr) do
 			drwRtrRotSt(rtr.ndl,rtr.rot)
 			drwRtrThrstSt(rtr.bar,rtr.thrst)
 		end
 
-		print("Hyd Cells",199,100,6,false,1,true)
-
-		for i,cl in pairs(ggCl) do
-			drwBarSt(cl.bar,cl.lvl,CLL_MAX_M3)
-		end
-
     if dispNav.on then
-  		clip(6,64,50,63)
-  		drwMap(5,7,16,72)
-  		sHCent={x=32,y=96}
-  		local pt1=rotV2Ct(sHCent,{x=32,y=92},s.hdg)
-  		local pt2=rotV2Ct(sHCent,{x=30,y=100},s.hdg)
-  		local pt3=rotV2Ct(sHCent,{x=34,y=100},s.hdg)
+  		clip(6,64,66,63)
+  		drwMap(7,7,16,72)
+  		sHCent={x=40,y=96}
+  		local pt1=rotV2Ct(sHCent,{x=40,y=92},s.hdg)
+  		local pt2=rotV2Ct(sHCent,{x=38,y=100},s.hdg)
+  		local pt3=rotV2Ct(sHCent,{x=42,y=100},s.hdg)
   		tri(pt1.x,pt1.y,pt2.x,pt2.y,pt3.x,pt3.y,5)
   		clip()
     end
 
 		if controlType==0 then
-			rectb(71,63,26,34,7)
+			rectb(114,96,37,34,7)
 		elseif controlType==1 then
-			rectb(95,63,18,34,7)
+			rectb(127,63,18,34,7)
 		elseif controlType==2 then
-			rectb(111,63,24,34,7)
+			rectb(151,63,24,66,7)
 		elseif controlType==3 then
-			rectb(135,63,24,34,7)
+			rectb(175,63,24,66,7)
 		elseif controlType==4 then
-			rectb(159,63,34,34,7)
+			rectb(199,71,34,34,7)
 		end
 	elseif showSta then
 		map(30,125,30,11,0,48)
