@@ -12,7 +12,7 @@ ENT_DWN_ACC=.1
 ENT_DWN_TRM_V=2
 ENT_DRG=.3
 
-SHIP_STRT_SPD=42
+SHIP_STRT_SPD=80
 SHIP_MAX_SPD=300
 SHIP_MAX_VSI=2
 SHIP_MAX_ALT=10000
@@ -75,6 +75,7 @@ str={
 	t=0,
 	x=60,
 	y=42,
+	crashTimeout=0,
 	endTimeOut=0
 }
 
@@ -117,9 +118,25 @@ PAUSED=false
 estVsiPerHV=0
 -- endtemp
 
+function camShake(atTime,crashSpd)
+	cam.isShake=true
+	cam.shakeTime=atTime+clamp01(invLerp(0,-16,crashSpd))*60*2
+end
+
 function updCam(x,y)
-	cam.x=x
-	cam.y=y
+	if cam.shakeTime>0 then
+		tRem=str.t-cam.shakeTime
+		if tRem<0 then
+			amt=invLerp(0,-2*60,tRem)*5//1
+			cam.x=x+math.random(-amt,amt)
+			cam.y=y+math.random(-amt,amt)
+		else
+			cam.shakeTime=0
+		end
+	else
+		cam.x=x
+		cam.y=y
+	end
 	cam.xCell=x//8
 	cam.yCell=y//8
 	cam.xOff=-(x%8)//1
@@ -133,11 +150,11 @@ function rstStr()
 end
 
 function initStats()
-	sta={dis=0,gremlinSightings=0}
+	sta={dis=0,gremlinSightings=0,crashes=0}
 end
 
 function initCam()
-	cam={x=0,y=0,xCell=0,yCell=0,xOff=0,yOff=0}
+	cam={x=0,y=0,xCell=0,yCell=0,xOff=0,yOff=0,shakeTime=0}
 	updCam(p.x-120,136)
 end
 
@@ -404,8 +421,8 @@ function initShip()
 		st=1,effc=1,ut=0,
 		minWr=randRangeF(0.0000015,0.000003),
 		maxWr=randRangeF(0.000015,0.00003),
-		bb={{minX=62,minY=27,maxX=63,maxY=27}},
-		drw={{s=306,w=2,h=1}},
+		bb={{minX=62,minY=27,maxX=63,maxY=27},{minX=62,minY=28,maxX=63,maxY=28}},
+		drw={{s=306,w=2,h=1},{s=0,w=1,h=1}},
 		sdsp={{x=126,y=29,minX=145,minY=144,maxX=158,maxY=150,lbl="Splitter",lblOff=-8,c=4}},
 		dmg={{efct="elec",emi=nil,x=.5,y=.6,xR=.4,yR=.4}}
 	}
@@ -502,10 +519,12 @@ function TIC()
 
 		map()
 		spr(sprId,str.x,str.y,0,2,0,0,8,3)
-		print("Das Luftschiff",4,4)
+		print("Das Luftschiff",5,5,8,false,2)
+		print("Das Luftschiff",4,4,15,false,2)
 		print("X Start",84,94)
 		print("A Repair/Activate",84,106)
 	elseif endScreen then
+	  music()
 		cls()
 		if btnp(5) then
 			rstGame()
@@ -517,14 +536,22 @@ function TIC()
 			endScreen=false
 			strScreen=true
 		end
-		print("Game Over",84,70)
+		map(0,1)
+		spr(57,48,108,0,2,0,0,2,1)
+		spr(73,80,92,0,2,0,0,6,2)
+		spr(59,68,120,0,2,0,0,2,1)
+		spr(61,142,120,0,2,0,0,2,1)
+		print("Das Luftschiff",5,5,8,false,2)
+		print("Das Luftschiff",4,4,15,false,2)
+		print("Game Over",16,32,8,false,2)
 		if s.dis<10000 then
-			print(string.format("Distance: %dm",s.dis//1),84,84)
+			print(string.format("Distance: %dm",s.dis//1),16,48,9)
 		else
-			print(string.format("Distance: %dkm",s.dis//1000),84,84)
+			print(string.format("Distance: %dkm",s.dis//1000),16,48,9)
 		end
-		print(string.format("Gremlin Sightings: %d",sta.gremlinSightings//1),84,98)
-		print("X Restart",84,112)
+		print(string.format("Crashes: %d",sta.crashes//1),16,58,9)
+		print(string.format("Gremlin Sightings: %d",sta.gremlinSightings//1),16,68,9)
+		print("X Restart",174,78,9)
 
 		sfx(-1,"D#1",-1,0,0,0)
 	else
@@ -545,6 +572,7 @@ function TIC()
 
 		--sfx(0,"D#1",-1,0,10,0)
 
+		--[[
 		playAmbientChannel(1,{
 			{c=accH2O,id=6,nt="D#3"},
 			{c=turb,id=5,nt="F-2"},
@@ -554,12 +582,13 @@ function TIC()
 			{c=rtr3,id=4,nt="C-1"},
 			{c=rtr4,id=4,nt="C-1"}
 		},7)
+		--]]
 
 		playAmbientChannel(2,{
-			{c=bilr,id=2,nt="C-1"},
-			{c=gen,id=1,nt="E-3"},
-			{c=accCH4,id=6,nt="F-4"},
-			{c=rtr2,id=4,nt="C-1"}
+			{c=bilr,id=1,nt="C-1"},
+			{c=gen,id=1,nt="C-1"},
+			{c=accCH4,id=1,nt="C-1"},
+			{c=rtr2,id=1,nt="C-1"}
 		},4)
 
 		if gremlinSpawned then
@@ -735,7 +764,7 @@ function drwParticles(yDown)
 				if not dp.flk or (dp.t%2==0) then
 					local rot=0
 					if dp.rot then rot=math.random(3) end
-					spr(dp.spr,dp.x-cam.x,dp.y-cam.y,0,1,rot)
+					spr(dp.spr,dp.x-cam.x,dp.y-cam.y+yDown,0,1,rot)
 				end
 			else
 				table.remove(dmgPart,i)
@@ -987,7 +1016,7 @@ function maybeDoRepair(c,p)
 end
 
 function playAmbient(c,dis,channel,id,note)
-	--sfx(id,note,-1,channel,clamp01(invLerp(2000,0,dis))*12//1,0)
+	sfx(id,note,-1,channel,clamp01(invLerp(2000,0,dis))*10//1,0)
 end
 
 function playAmbientChannel(ch,comps,count)
@@ -1018,7 +1047,9 @@ function drwShipSt()
 	rect(0,0,96,8,8)
 	rect(127,0,113,8,8)
 	print(string.format("Speed: %d",s.spd//1),1,1,6,false,1,true)
-	if s.pos.z >=1000 then
+	if s.pos.z >=10000 then
+		print(string.format("Altitude: %d",s.pos.z//1000).."k",48,1,6,false,1,true)
+	elseif s.pos.z >=1000 then
 		print(string.sub(string.format("Altitude: %f",s.pos.z/1000.0),1,-6).."k",48,1,6,false,1,true)
 	else
 		print(string.format("Altitude: %d",s.pos.z//1),48,1,6,false,1,true)
@@ -1026,9 +1057,16 @@ function drwShipSt()
 	print(string.format("Repair: %d%%",repair),128,1,6,false,1,true)
 	print(string.format("Resources: %d%%",resources),180,1,6,false,1,true)
 
-	if s.pos.z<1 and s.spd<1 and resources<1 then
-		--endScreen=true
-		--str.endTimeOut=str.t
+	if s.pos.z<1 and math.abs(s.spd)<1 and resources<1 then
+		if str.crashTimeout>0 and (str.t-str.crashTimeout)>(30*60) then
+			endScreen=true
+			str.endTimeOut=str.t
+			str.crashTimeout=0
+		elseif str.crashTimeout<1 then
+			str.crashTimeout=str.t
+		end
+	else
+		str.crashTimeout=0
 	end
 end
 
@@ -1920,12 +1958,14 @@ function applyForces()
 		calcClFill(cl4,trgtLvl)
 	end
 
-	if s.pos.z<=0 then
+	if s.pos.z<=1 then
 		s.pos.z=0
 		s.spd=0
 		if not s.isCrash then
 			dmgSysts(s.vsi)
+			camShake(str.t,s.vsi)
 			s.isCrash=true
+			sta.crashes=sta.crashes+1
 		end
 	else
 		if s.isCrash then s.isCrash=false end
