@@ -41,8 +41,8 @@ TURB_MAX_NM=560
 TURB_MAX_STEAM_KNSM=160
 BILR_MAX_STEAM_KNSM=172
 BILR_MAX_REG_STEAM_KNSM=104
-BILR_H2O_KG_PER_KNSM=0.0008
-BILR_CH4_KG_PER_KNSM=0.0394
+BILR_H2O_KG_PER_KNSM=0.0007
+BILR_CH4_KG_PER_KNSM=0.0321
 BILR_O_KG_PER_KNSM=0.0252
 
 BTRY_MAX_CHARGE_KW=650
@@ -68,8 +68,8 @@ CH4_TANK_MAX_KGF=8.274
 LIGHTS_PWR_DMD_KW=0.032
 H2O_ACC_PWR_DMD_KW=0.067
 CH4_ACC_PWR_DMD_KW=0.117
-H2O_ACC_PER_TIC=12
-CH4_ACC_PER_TIC=20
+H2O_ACC_PER_TIC=24
+CH4_ACC_PER_TIC=32
 
 str={
 	t=0,
@@ -165,6 +165,7 @@ function initPlyr()
 end
 
 function initGrmln()
+  gremlinSpawned=false
 	g={bs=264,s=264,x=508,y=190,vx=0,vy=0,isAcc=false,isDeAcc=false,flip=0,onFlr=false,onLdr=false,hasMoLdr=false,inCil=false}
 	gb={up=false,dwn=false,lft=false,rgt=false,srchDir=0,trgt=nil,trgtT=0}
 end
@@ -631,8 +632,8 @@ function TIC()
 		end
 
 		if showNav then
-			if btnp(2) then controlType=controlType-1 end
-			if btnp(3) then controlType=controlType+1 end
+			if btnp(2) and not showMap then controlType=controlType-1 end
+			if btnp(3) and not showMap then controlType=controlType+1 end
 
 			if controlType<0 then controlType=4 end
 			if controlType>4 then controlType=0 end
@@ -1358,7 +1359,7 @@ function drwShip()
 	mapXAdjust=0
 	mapYAdjust=0
 	if showNav or showSta then
-		maxMapHeight=6
+		maxMapHeight=7
 		mapYAdjust=3
 		clip(0,0,240,48)
 	end
@@ -2084,7 +2085,7 @@ function isLinThFlr(lx1,ly1,lx2,ly2)
 	local chkCnt=distance({x=lx1,y=ly1},{x=lx2,y=ly2})//8
 	for i=0,chkCnt do
 		local tId=mget(lerp(lx1,lx2,i/chkCnt)//8,lerp(ly1,ly2,i/chkCnt)//8)
-		if tId==16 or tId==31 or tId==64 or tId==79 or tId==80 or tId==95 or tId==189 or tId==158 or tId==223 or tId==254 then
+		if tId==16 or tId==31 or tId==189 or tId==158 or tId==223 or tId==254 then
 			return true
 		end
 	end
