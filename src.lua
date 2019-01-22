@@ -73,8 +73,8 @@ CH4_ACC_PER_TIC=20
 
 str={
 	t=0,
-	x=60,
-	y=42,
+	x=72,
+	y=36,
 	crashSoundTimeout=0,
 	crashTimeout=0,
 	endTimeOut=0
@@ -100,6 +100,7 @@ gg={
 }
 sDspIn={x=9,y=56}
 strScreen=true
+helpScreen=false
 endScreen=false
 showNav=false
 showSta=false
@@ -508,7 +509,11 @@ function TIC()
 		if btn(1) then str.y=str.y+1 end
 		if btn(2) then str.x=str.x-1 end
 		if btn(3) then str.x=str.x+1 end
-		if btn(5) then strScreen=false end
+		if btnp(5) then strScreen=false end
+		if btnp(4) then
+			strScreen=false
+			helpScreen=true
+		end
 
 		cls(0)
 		sprId=0
@@ -522,8 +527,34 @@ function TIC()
 		spr(sprId,str.x,str.y,0,2,0,0,8,3)
 		print("Das Luftschiff",5,5,8,false,2)
 		print("Das Luftschiff",4,4,15,false,2)
-		print("X Start",84,94)
-		print("A Repair/Activate",84,106)
+		print("A Repair/Activate",25,94,8)
+		print("A Repair/Activate",24,94)
+		print("X Start",25,106,8)
+		print("X Start",24,106)
+		print("Z Help",25,118,8)
+		print("Z Help",24,118)
+	elseif helpScreen then
+		if btnp(4) then
+			strScreen=true
+			helpScreen=false
+		end
+		music()
+		cls()
+		print("Das Luftschiff",5,5,10,false,2)
+		print("Das Luftschiff",4,4,14,false,2)
+		print("Your mission is to keep the ship in the air.",8,24,15)
+		print("To keep your resources up:",8,36,15)
+		spr(148,8,47)
+		print("Aim for clouds of Methane.",20,48,15)
+		spr(153,8,59)
+		print("Seek clouds of Water.",20,60,15)
+		print("To keep your ship in good repair:",8,72,15)
+		spr(264,8,85)
+		print("Tend the wear and tear.",20,84,15)
+		spr(280,8,93)
+		print("Watch out for Gremlins.",20,96,15)
+		print("Good luck.",8,108,15)
+		print("Z Back",190,120)
 	elseif endScreen then
 	  music()
 		cls()
