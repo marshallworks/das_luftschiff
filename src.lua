@@ -561,7 +561,7 @@ function TIC()
 	else
 		music()
 		if comContains(dispNav.bb,p) then
-			if btnp(6) then showNav=not showNav end
+			if btnp(6) and not showMap then showNav=not showNav end
 		end
 		if comContains(dispSta.bb,p) then
 			if btnp(6) then showSta=not showSta end
