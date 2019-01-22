@@ -75,6 +75,7 @@ str={
 	t=0,
 	x=60,
 	y=42,
+	crashSoundTimeout=0,
 	crashTimeout=0,
 	endTimeOut=0
 }
@@ -554,6 +555,9 @@ function TIC()
 		print("X Restart",174,78,9)
 
 		sfx(-1,"D#1",-1,0,0,0)
+		sfx(-1,"D#1",-1,1,0,0)
+		sfx(-1,"D#1",-1,2,0,0)
+		sfx(-1,"D#1",-1,3,0,0)
 	else
 		music()
 		if comContains(dispNav.bb,p) then
@@ -564,32 +568,24 @@ function TIC()
 		end
 		doRepairs()
 
-		if not showNav and btn(6) then
-			if (str.t%16)==0 then
-				--sfx(2,24,4,3,4,2)
-			end
-		end
+		sfx(24,"E-2",-1,0,8,0)
 
-		--sfx(0,"D#1",-1,0,10,0)
-
-		--[[
 		playAmbientChannel(1,{
-			{c=accH2O,id=6,nt="D#3"},
-			{c=turb,id=5,nt="F-2"},
-			{c=prp1,id=3,nt="D-2"},
-			{c=prp2,id=3,nt="D-2"},
-			{c=rtr1,id=4,nt="C-1"},
-			{c=rtr3,id=4,nt="C-1"},
-			{c=rtr4,id=4,nt="C-1"}
-		},7)
-		--]]
+			{c=accH2O,id=22,nt="C-1"},
+			{c=turb,id=23,nt="A-2"},
+			{c=prp1,id=21,nt="D-2"},
+			{c=prp2,id=21,nt="D-2"},
+			{c=rtr1,id=21,nt="D-1"},
+			{c=rtr3,id=21,nt="D-1"}
+		},6)
 
 		playAmbientChannel(2,{
-			{c=bilr,id=1,nt="C-1"},
-			{c=gen,id=1,nt="C-1"},
-			{c=accCH4,id=1,nt="C-1"},
-			{c=rtr2,id=1,nt="C-1"}
-		},4)
+			{c=bilr,id=23,nt="C-1"},
+			{c=gen,id=23,nt="C-4"},
+			{c=accCH4,id=22,nt="D#3"},
+			{c=rtr2,id=21,nt="D-1"},
+			{c=rtr4,id=21,nt="D-1"}
+		},5)
 
 		if gremlinSpawned then
 			if (distance(p,g)<120 and not isLinThFlr(p.x,p.y-7,g.x,g.y-1)) or str.t-gremlinLastSeen<60 then
@@ -636,14 +632,17 @@ function TIC()
 				if s.con.rot.prps>360 then s.con.rot.prps=s.con.rot.prps-360 end
 			end
 		elseif showSta then
-
+			-- Station controls.
 		else
 			playerMovement()
 		end
 		if gremlinSpawned then
 			gremlinMovement()
 			gremlinSpawned=distance(p,g)>2
-			if not gremlinSpawned then doGremlinVanishAnim(g) end
+			if not gremlinSpawned then
+				sfx(26,"F-5",60,3,12)
+				doGremlinVanishAnim(g)
+			end
 		else
 			maybeSpawnGremlin()
 		end
@@ -778,7 +777,7 @@ function playerMovement()
 	entMv(p,btn(0),btn(1),btn(2),btn(3),.06,.8,.04,.3,1.2)
 	entSetSpr(p)
 	if p.onFlr and p.vx~=0 and (str.t%12)==0 then
-		--sfx(2,48,3,3,4,3)
+		sfx(25,12,3,3,2,0)
 	end
 	entSetPos(p)
 	updCam(lerp(cam.x,p.x-120,0.15),lerp(cam.y,136,0.15))
@@ -1012,11 +1011,28 @@ function applyWear()
 end
 
 function maybeDoRepair(c,p)
-	if comContains(c.bb,p) then c.st=math.min(c.st+0.01,1) end
+	if comContains(c.bb,p) then
+		c.st=math.min(c.st+0.01,1)
+		if c.st<1 and not showNav and btn(6) then
+			if (str.t%16)==0 then
+				sfx(25,"C-1",4,3,6,2)
+			end
+		end
+	end
+end
+
+function crashSound(stTime)
+	str.crashSoundTimeout=stTime+48
+	sfx(27,"C-1",24,1,15,1)
+	sfx(27,"D-2",48,2,15,0)
 end
 
 function playAmbient(c,dis,channel,id,note)
-	sfx(id,note,-1,channel,clamp01(invLerp(2000,0,dis))*10//1,0)
+	if str.crashSoundTimeout>0 and str.t>str.crashSoundTimeout then
+		str.crashSoundTimeout=0
+	elseif str.crashSoundTimeout<1 then
+	  sfx(id,note,-1,channel,clamp01(invLerp(1000,0,dis))*15//1,0)
+	end
 end
 
 function playAmbientChannel(ch,comps,count)
@@ -1153,10 +1169,10 @@ function drwGame()
 										 { x=0,y=17 })
 
 		drwBarSt(gg.bars.alt,s.pos.z,SHIP_MAX_ALT)
-		drwBarSt(gg.bars.spd,s.spd+SHIP_MAX_SPD,SHIP_MAX_SPD+SHIP_MAX_SPD)
+		drwBarSt(gg.bars.spd,s.spd,SHIP_MAX_SPD)
 
 		altY=lerp(123,67,invLerp(0,SHIP_MAX_ALT,s.pos.z))-2.5
-		spdY=lerp(123,67,invLerp(-SHIP_MAX_SPD,SHIP_MAX_SPD,s.spd))-2.5
+		spdY=lerp(123,67,invLerp(0,SHIP_MAX_SPD,s.spd))-2.5
 		print(string.sub(string.format("%f",s.pos.z/1000.0),1,-6).."k",160,altY,5,false,1,true)
 		if s.spd<100 then
 			print(string.sub(string.format("%f",s.spd),1,-6),184,spdY,5,false,1,true)
@@ -1964,6 +1980,7 @@ function applyForces()
 		if not s.isCrash then
 			dmgSysts(s.vsi)
 			camShake(str.t,s.vsi)
+			crashSound(str.t)
 			s.isCrash=true
 			sta.crashes=sta.crashes+1
 		end
