@@ -114,12 +114,6 @@ mapVls={}
 CH4pts={}
 H2Opts={}
 
--- temp
-pwrType=0
-PAUSED=false
-estVsiPerHV=0
--- endtemp
-
 function camShake(atTime,crashSpd)
 	cam.isShake=true
 	cam.shakeTime=atTime+clamp01(invLerp(0,-16,crashSpd))*60*2
@@ -1378,6 +1372,10 @@ function drwShip()
 	for i,drw in pairs(drw2) do
 		drwCom(drw,yDown)
 	end
+
+  if dispNav.on then spr(294,453-cam.x,176-cam.y,0,1,0,0,3,1) end
+  if dispNav.on then spr(297,485-cam.x,176-cam.y,0,1,0,0,3,1) end
+
 	drwParticles(yDown)
 	clip()
 end
