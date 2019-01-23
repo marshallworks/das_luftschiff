@@ -1373,8 +1373,13 @@ function drwShip()
 		drwCom(drw,yDown)
 	end
 
-  if dispNav.on then spr(294,453-cam.x,176-cam.y,0,1,0,0,3,1) end
-  if dispNav.on then spr(297,485-cam.x,176-cam.y,0,1,0,0,3,1) end
+	lftDspId=290
+	rgtDspId=296
+	if (str.t%192)//96==0 then lftDspId=293 end
+	if (str.t%248)//124==0 then rgtDspId=299 end
+
+  if dispNav.on then spr(lftDspId,453-cam.x,176-cam.y+yDown,0,1,0,0,3,1) end
+  if dispNav.on then spr(rgtDspId,485-cam.x,176-cam.y+yDown,0,1,0,0,3,1) end
 
 	drwParticles(yDown)
 	clip()
